@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_all"
+            android:icon="@drawable/ic_all"
+            android:title="@string/str_navdraw_show_data"/>
+        <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/ic_star"
+            android:title="@string/str_navdraw_favorites"/>
+        <item
+            android:id="@+id/nav_visited"
+            android:icon="@drawable/ic_check"
+            android:title="@string/str_navdraw_besichtigte_ziele"/>
+        <item
+            android:id="@+id/nav_near"
+            android:icon="@drawable/ic_near"
+            android:title="@string/str_navdraw_nahe_ziele"/>
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/str_settings"/>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_outline"
+                android:title="@string/about"/>
+            <!--<item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send Feedback"/>-->
+        </menu>
+    </item>
+
+</menu>

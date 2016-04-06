@@ -1,0 +1,377 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/noecard_white"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:baselineAligned="false" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/rel_toggleall"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp" >
+
+                <ImageView
+                    android:id="@+id/toggleall"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_hakerl_active" />
+
+                <TextView
+                    android:id="@+id/text_toggleall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggleall"
+                    android:text="@string/filter_all_OnOf" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_toggletop"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/toggletop"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_top_ausflugsziel" />
+
+                <TextView
+                    android:id="@+id/text_toggletop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggletop"
+                    android:text="@string/filter_typ_top" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_togglestift"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_toggletop"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglestift"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_stifte" />
+
+                <TextView
+                    android:id="@+id/text_togglestift"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglestift"
+                    android:text="@string/filter_typ_stifte" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_toggleburguschloe"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglestift"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/toggleburguschloe"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_burgen_schloesser" />
+
+                <TextView
+                    android:id="@+id/text_toggleburguschloe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggleburguschloe"
+                    android:text="@string/filter_typ_burguschloess" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_togglemuseeuausstell"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_toggleburguschloe"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglemuseeuausstell"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_museen_ausstellungen" />
+
+                <TextView
+                    android:id="@+id/text_togglemuseeuausstell"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglemuseeuausstell"
+                    android:text="@string/filter_typ_museenuausstell" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rel_togglehund"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglemuseeuausstell"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglehund"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_hund" />
+
+                <TextView
+                    android:id="@+id/text_togglehund"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglehund"
+                    android:text="@string/filter_typ_hund" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rel_togglerollstuhl"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglehund"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglerollstuhl"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_rollstuhl" />
+
+                <TextView
+                    android:id="@+id/text_togglerollstuhl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglerollstuhl"
+                    android:text="@string/filter_typ_rollstuhl" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="5dp"
+            android:layout_height="fill_parent">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/rel_toggleerlebnatur"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglemuseeuausstell" >
+
+                <ImageView
+                    android:id="@+id/toggleerlebnatur"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_erlebnis_natur" />
+
+                <TextView
+                    android:id="@+id/text_toggleerlebnatur"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggleerlebnatur"
+                    android:text="@string/filter_typ_erlunatur" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_togglesportufreiz"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_toggleerlebnatur"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglesportufreiz"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_sport_u_freizeit" />
+
+                <TextView
+                    android:id="@+id/text_togglesportufreiz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglesportufreiz"
+                    android:text="@string/filter_typ_sportufreiz" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_togglebergbahn"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglesportufreiz"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglebergbahn"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_bergbahnen" />
+
+                <TextView
+                    android:id="@+id/text_togglebergbahn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglebergbahn"
+                    android:text="@string/filter_typ_bergbahnen" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_toggleschiffahrt"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglebergbahn"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/toggleschiffahrt"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_schifffahrt" />
+
+                <TextView
+                    android:id="@+id/text_toggleschiffahrt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggleschiffahrt"
+                    android:text="@string/filter_typ_schiffahrt" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rel_togglelokalbahn"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_toggleschiffahrt"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglelokalbahn"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_lokalbahn" />
+
+                <TextView
+                    android:id="@+id/text_togglelokalbahn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglelokalbahn"
+                    android:text="@string/filter_typ_lokalbahn" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rel_togglekinderwagen"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglelokalbahn"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglekinderwagen"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_kinderwagen" />
+
+                <TextView
+                    android:id="@+id/text_togglekinderwagen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglekinderwagen"
+                    android:text="@string/filter_typ_kinderwagen" />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/rel_togglegruppen"
+                android:layout_width="fill_parent"
+                android:layout_height="34dp"
+                android:layout_below="@+id/rel_togglekinderwagen"
+                android:layout_marginTop="8dp" >
+
+                <ImageView
+                    android:id="@+id/togglegruppen"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_gruppe" />
+
+                <TextView
+                    android:id="@+id/text_togglegruppen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/togglegruppen"
+                    android:text="@string/filter_typ_gruppe" />
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

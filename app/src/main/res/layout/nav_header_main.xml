@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/nav_header_height"
+              android:gravity="bottom"
+              android:orientation="vertical"
+              android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <ImageView
+        android:id="@+id/funktionsgraphik"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:src="@drawable/finderlein_funktionsgraphik"
+        android:scaleType="centerCrop"/>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/funktionsgraphik"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="5dp"
+        android:id="@+id/relativeLayout">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_noecardyear_before"
+            android:text="@string/str_chosen_year"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="3dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/text_noecardyear"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:layout_toRightOf="@+id/text_noecardyear_before"/>
+    </RelativeLayout>
+</RelativeLayout>

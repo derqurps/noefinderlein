@@ -1,0 +1,91 @@
+apply plugin: 'com.android.application'
+
+if (project.hasProperty("NoeFinderlein.properties")
+        && new File(project.property("NoeFinderlein.properties")).exists()) {
+
+    Properties props = new Properties()
+    props.load(new FileInputStream(file(project.property("NoeFinderlein.properties"))))
+
+    android {
+        signingConfigs {
+            release {
+                storeFile file(props['noefinderlein_keystore'])
+                storePassword props['noefinderlein_keystore_pw']
+                keyAlias props['noefinderlein_alias']
+                keyPassword props['noefinderlein_alias_pw']
+            }
+        }
+        buildTypes {
+            debug {
+                resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
+                resValue "string", "api_path", props['noefinderlein_apipath_debug']
+            }
+            release{
+                resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
+                resValue "string", "api_path", props['noefinderlein_apipath']
+            }
+        }
+    }
+}
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    defaultConfig {
+        applicationId "at.qurps.noefinderlein.app"
+        minSdkVersion 9
+        targetSdkVersion 23
+        versionCode 27
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+        }
+        release {
+        }
+    }
+    buildTypes {
+        debug {
+
+            signingConfig signingConfigs.debug
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            shrinkResources true
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            zipAlignEnabled true
+            shrinkResources true
+        }
+    }
+    productFlavors {
+
+    }
+    useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+
+
+
+    compile('io.nlopez.smartlocation:library:3.2.1') {
+        transitive = false
+    }
+
+    /*compile 'com.google.android.gms:play-services-base:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:8.4.0'*/
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
+    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4.+'
+    compile 'joda-time:joda-time:2.9.2'
+}

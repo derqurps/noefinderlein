@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" 
+    xmlns:noecard="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/actionb_destination_visited"
+        android:icon="@mipmap/ic_action_tick"
+        noecard:showAsAction="always|collapseActionView"
+        android:title="@string/title_menu_visited"
+        />
+    <item
+        android:id="@+id/actionb_favorit_star"
+        android:icon="@mipmap/ic_action_star_0"
+        noecard:showAsAction="always|collapseActionView"
+        android:title="@string/title_menu_favorit"
+        />
+    <item
+        android:id="@+id/actionb_navigate_to_dest"
+        android:icon="@mipmap/ic_action_navigate"
+        noecard:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/title_menu_to_destination"
+        />
+	<item
+        android:id="@+id/actionb_show_in_map"
+        android:icon="@mipmap/ic_action_location"
+        noecard:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/title_menu_show_on_map"
+        />
+
+</menu>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/fragment_location_list"
+                android:background="@android:color/white">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/centerbackgroundListImage"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/finderlein_logo_512x512_bw"
+        android:layout_margin="30dp" />
+
+    <ListView
+        android:id="@id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="55dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        tools:listitem="@android:layout/simple_list_item_2"
+        tools:context="at.qurps.noefinderlein.app.LocationListFragment">
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/ersparnis_summe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:background="@color/noecard_blue">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Ges. Ersparnis ca.:"
+            android:id="@+id/ersparnis_text"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="10"
+            android:id="@+id/ersparnis_summe"
+            android:layout_toLeftOf="@+id/ersparnis_euro"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="2dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="€"
+            android:id="@+id/ersparnis_euro"
+            android:layout_alignParentRight="true"
+            android:textColor="@android:color/white"
+            android:gravity="center_vertical"/>
+    </RelativeLayout>
+</RelativeLayout>

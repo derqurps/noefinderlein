@@ -1,0 +1,365 @@
+<resources>
+
+    <string name="app_name">NÖ Finderlein</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="main_menu_list_all_dest">Alle Ziele</string>
+    <string name="main_menu_list_map">Ziele auf der Karte anzeigen</string>
+    <string name="main_menu_list_near_dest">Nahe Ziele auflisten</string>
+    <string name="main_menu_list_region_dest">Ziele nach Regionen auflisten</string>
+
+    <string-array name="main_menu_list">
+        <item>@string/main_menu_list_all_dest</item>
+        <item>@string/main_menu_list_map</item>
+        <item>@string/main_menu_list_near_dest</item>
+        <item>@string/main_menu_list_region_dest</item>
+    </string-array>
+
+    <string name="region_list_all_regions">Alle Regionen/Alle Ziele</string>
+    <string name="region_list_near">Nahe Ziele</string>
+    <string name="region_list_donau_noe">Donau Niederösterreich</string>
+    <string name="region_list_mostviertel">Mostviertel</string>
+    <string name="region_list_waldviertel">Waldviertel</string>
+    <string name="region_list_weinviertel">Weinviertel</string>
+    <string name="region_list_wiener_alpen">Wiener Alpen in Niederösterreich</string>
+    <string name="region_list_wienerwald">Wienerwald</string>
+    <string name="region_list_wien">Wien</string>
+    <string name="region_list_steiermark">Steiermark</string>
+    <string name="region_list_burgenland">Burgenland</string>
+    <string name="region_list_oberoesterreich">Oberösterreich</string>
+
+    <string-array name="region_list">
+        <item>@string/region_list_all_regions</item>
+        <item>@string/region_list_donau_noe</item>
+        <item>@string/region_list_mostviertel</item>
+        <item>@string/region_list_waldviertel</item>
+        <item>@string/region_list_weinviertel</item>
+        <item>@string/region_list_wiener_alpen</item>
+        <item>@string/region_list_wienerwald</item>
+        <item>@string/region_list_wien</item>
+        <item>@string/region_list_steiermark</item>
+        <item>@string/region_list_burgenland</item>
+        <item>@string/region_list_oberoesterreich</item>
+    </string-array>
+
+    <string name="download_button">Download</string>
+    <string name="title_location_list">Ziele</string>
+    <string name="title_location_detail">Ziel Detail</string>
+    <string name="title_location_region_list">@string/main_menu_list_region_dest</string>
+    <string name="title_location_distance_list">@string/main_menu_list_near_dest</string>
+    <string name="title_karte_map">@string/main_menu_list_map</string>
+    <string name="desc_icon_kinderwagengerecht">Kinderwagengerecht</string>
+    <string name="desc_icon_hunde">Hunde erlaubt</string>
+    <string name="desc_icon_rollstuhl">Rollstuhlgerecht</string>
+    <string name="desc_icon_gruppe">Gruppe</string>
+    <string name="desc_telephone"><b>Tel.: </b></string>
+    <string name="desc_tipp">Tipp</string>
+    <string name="desc_geoeffnet">Geöffnet</string>
+    <string name="desc_anreise">Anreise</string>
+    <string name="desc_latitude"><b>Latitude: </b></string>
+    <string name="desc_longitude"><b>Longitude: </b></string>
+    <string name="detail_coordinates_title">Koordinaten</string>
+    <string name="desc_email"><b>Email: </b></string>
+    <string name="desc_webseite"><b>Webseite: </b></string>
+    <string name="desc_aussersonder">*außer Sonderveranstaltungen</string>
+    <string name="title_menu_to_destination">Zum Ziel navigieren</string>
+    <string name="title_menu_show_on_map">Auf der Karte anzeigen</string>
+    <string name="title_menu_show_current_on_map">Aktuelle Liste auf der Karte anzeigen</string>
+    <string name="toast_no_geo_app_found">Keine App für GEO Daten gefunden - Bitte Google Maps installieren</string>
+    <string name="title_menu_filter">Liste Filtern</string>
+    <string name="title_menu_search">In Liste suchen</string>
+    <string name="title_menu_refresh">Liste aktualisieren</string>
+    <string name="test_blabla">blablablablablabla</string>
+    <string name="filter">Filter Setzen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="nothing"></string>
+    <string name="filter_typ_top">Top\nAusflugsziel</string>
+    <string name="filter_typ_stifte">Stifte</string>
+    <string name="filter_typ_burguschloess">Burgen und\nSchlösser</string>
+    <string name="filter_typ_museenuausstell">Museen und\nAusstellungen</string>
+    <string name="filter_typ_erlunatur">Erlebnis und\nNaturparks</string>
+    <string name="filter_typ_sportufreiz">Sport und\nFreizeit</string>
+    <string name="filter_typ_bergbahnen">Bergbahnen</string>
+    <string name="filter_typ_schiffahrt">Schiffahrt</string>
+    <string name="filter_typ_lokalbahn">Lokalbahn</string>
+    <string name="filter_all_OnOf">Alle aktivieren\ndeaktivieren</string>
+
+    <string-array name="filter_typ_list">
+        <item>@string/filter_typ_top</item>
+        <item>@string/filter_typ_stifte</item>
+        <item>@string/filter_typ_burguschloess</item>
+        <item>@string/filter_typ_museenuausstell</item>
+        <item>@string/filter_typ_erlunatur</item>
+        <item>@string/filter_typ_sportufreiz</item>
+        <item>@string/filter_typ_bergbahnen</item>
+        <item>@string/filter_typ_schiffahrt</item>
+        <item>@string/filter_typ_lokalbahn</item>
+        <item>@string/filter_typ_hund</item>
+        <item>@string/filter_typ_rollstuhl</item>
+        <item>@string/filter_typ_kinderwagen</item>
+        <item>@string/filter_typ_gruppe</item>
+    </string-array>
+
+    <string name="preferences_file_key">at.derqurps.noecard.PREFERENCES_G</string>
+    <string name="hint_no_network_location">Keine Netzwerk-Geodaten verfügbar...</string>
+    <string name="hint_gps_and_network_disabled">GPS und Netzwerk Geodaten abgeschaltet</string>
+    <string name="disclaimer">Der Programmierer dieser App übernimmt keine Garantie auf die Richtigkeit der verwendeten Daten. Falls Sie fortfahren diese APP zu nutzen, bestätigen Sie, dass Ihnen das bewusst ist.</string>
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="disclaimer_button_agree">Einverstanden</string>
+    <string name="button_send_changes">Änderung senden</string>
+    <string name="disclaimer_button_disagree">Abbrechen</string>
+    <string name="title_activity_image_viewer_fullscreen">ImageViewer</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="checkin_with_foursquare">Mit Foursquare einchecken</string>
+    <string name="toast_foursquare_app_found">Keine Check-IN APP gefunden</string>
+    <string name="pref_title_download_new">Daten aktualisieren</string>
+    <string name="pref_description_download_new">Aktualisierungen aus dem Internet abrufen</string>
+    <string name="overwrite_year_summary">Soll der automatische Jahreswechsel ausgeschaltet werden?</string>
+    <string name="overwrite_year_title">Manuelles Jahr</string>
+    <string name="str_navdraw_show_data">Alle</string>
+    <string name="str_settings">Einstellungen</string>
+    <string name="str_nav_draw_act_year_descr">Gewähltes Jahr:</string>
+    <string name="str_infoficial_app">Inoffizielle Niederösterreich-CARD-App</string>
+    <string name="str_man_year">Manuelles Jahr wählen</string>
+    <string name="str_dialog_jahr_waehlen">Jahr wählen</string>
+    <string name="str_chosen_year">gewähltes Jahr: </string>
+    <string name="str_navdraw_destinations">Ziele</string>
+    <string name="str_navdraw_favorites">Favoriten</string>
+    <string name="str_navdraw_nahe_ziele">Nahe</string>
+    <string name="str_navdraw_besichtigte_ziele">Besichtigte</string>
+
+
+    <string-array name="navigation_draw_list">
+        <item>@string/str_navdraw_show_data</item>
+        <item>@string/str_navdraw_favorites</item>
+        <item>@string/str_navdraw_besichtigte_ziele</item>
+        <item>@string/str_navdraw_nahe_ziele</item>
+        <item>@string/str_settings</item>
+    </string-array>
+
+    <string name="str_2014_val">2014</string>
+    <string name="str_2015_val">2015</string>
+    <string name="str_2016_val">2016</string>
+    <string name="str_2017_val">2017</string>
+    <string name="str_2018_val">2018</string>
+    <string name="str_2019_val">2019</string>
+
+    <string-array name="pref_year_val">
+        <item>@string/str_2014_val</item>
+        <item>@string/str_2015_val</item>
+        <item>@string/str_2016_val</item>
+        <item>@string/str_2017_val</item>
+        <item>@string/str_2018_val</item>
+        <item>@string/str_2019_val</item>
+    </string-array>
+
+    <string name="str_2014">2014/2015</string>
+    <string name="str_2015">2015/2016</string>
+    <string name="str_2016">2016/2017</string>
+    <string name="str_2017">2017/2018</string>
+    <string name="str_2018">2018/2019</string>
+    <string name="str_2019">2019/2020</string>
+    <string name="title_menu_favorit">Ziel zu Favoriten hinzufügen</string>
+    <string name="title_menu_visited">Ziel als besichtigt markieren</string>
+    <string name="desc_koordinaten">Koordinaten</string>
+    <string name="desc_adresse_koordinaten">Adresse/Koordinaten</string>
+    <string name="filter_typ_hund">Hunde erlaubt</string>
+    <string name="filter_typ_rollstuhl">Rollstuhl-gerecht</string>
+    <string name="filter_typ_kinderwagen">Kinderwagen-gerecht</string>
+    <string name="filter_typ_gruppe">Noecard gilt auch bei Gruppen</string>
+    <string name="title_authenticationclass">Authentifizierung</string>
+    <string name="detail_send_picture">Foto senden</string>
+
+    <string-array name="pref_year">
+        <item>@string/str_2014</item>
+        <item>@string/str_2015</item>
+        <item>@string/str_2016</item>
+        <item>@string/str_2017</item>
+        <item>@string/str_2018</item>
+        <item>@string/str_2019</item>
+    </string-array>
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more...</string>
+    <string name="send_new_photo">Neues Foto senden</string>
+
+    <string name="about">Über</string>
+
+    <string name="close">Schließen</string>
+    <string name="enable">Einschalten</string>
+    <string name="enable_location_services">Positionsbestimmung einschalten</string>
+
+    <string name="visitedChecked">Zu Besichtigten hinzugefügt</string>
+
+    <string name="error_year_not_found_in_database">Jahr in Datenbank nicht gefunden...</string>
+    <string name="error_no_location_services">Keine Positionsbestimmung eingeschalten. Die App funktioniert auch ohne Ortsbestimmung, aber die "nahen Ziele" werden nicht funktionieren</string>
+    <string name="error_no_location_services_en">No Location Services Enabled. You can use this App without Location Services, but the near Destinations feature will not work.</string>
+
+
+    <string name="location_updated_message">Location successful aquired</string>
+    <string name="location_updated_stopped">Location updates stopped.</string>
+    <string name="location_updated_started">Acquiring location...</string>
+    <!-- Strings related to Settings -->
+    <!-- Strings related to Settings -->
+    <!-- Strings related to Settings -->
+
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example settings for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example settings for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="title_activity_activity_detail">ActivityDetail</string>
+    <string name="large_text">
+        "Material is the metaphor.\n\n"
+
+        "A material metaphor is the unifying theory of a rationalized space and a system of motion."
+        "The material is grounded in tactile reality, inspired by the study of paper and ink, yet "
+        "technologically advanced and open to imagination and magic.\n"
+        "Surfaces and edges of the material provide visual cues that are grounded in reality. The "
+        "use of familiar tactile attributes helps users quickly understand affordances. Yet the "
+        "flexibility of the material creates new affordances that supercede those in the physical "
+        "world, without breaking the rules of physics.\n"
+        "The fundamentals of light, surface, and movement are key to conveying how objects move, "
+        "interact, and exist in space and in relation to each other. Realistic lighting shows "
+        "seams, divides space, and indicates moving parts.\n\n"
+
+        "Bold, graphic, intentional.\n\n"
+
+        "The foundational elements of print based design typography, grids, space, scale, color, "
+        "and use of imagery guide visual treatments. These elements do far more than please the "
+        "eye. They create hierarchy, meaning, and focus. Deliberate color choices, edge to edge "
+        "imagery, large scale typography, and intentional white space create a bold and graphic "
+        "interface that immerse the user in the experience.\n"
+        "An emphasis on user actions makes core functionality immediately apparent and provides "
+        "waypoints for the user.\n\n"
+
+        "Motion provides meaning.\n\n"
+
+        "Motion respects and reinforces the user as the prime mover. Primary user actions are "
+        "inflection points that initiate motion, transforming the whole design.\n"
+        "All action takes place in a single environment. Objects are presented to the user without "
+        "breaking the continuity of experience even as they transform and reorganize.\n"
+        "Motion is meaningful and appropriate, serving to focus attention and maintain continuity. "
+        "Feedback is subtle yet clear. Transitions are efﬁcient yet coherent.\n\n"
+
+        "3D world.\n\n"
+
+        "The material environment is a 3D space, which means all objects have x, y, and z "
+        "dimensions. The z-axis is perpendicularly aligned to the plane of the display, with the "
+        "positive z-axis extending towards the viewer. Every sheet of material occupies a single "
+        "position along the z-axis and has a standard 1dp thickness.\n"
+        "On the web, the z-axis is used for layering and not for perspective. The 3D world is "
+        "emulated by manipulating the y-axis.\n\n"
+
+        "Light and shadow.\n\n"
+
+        "Within the material environment, virtual lights illuminate the scene. Key lights create "
+        "directional shadows, while ambient light creates soft shadows from all angles.\n"
+        "Shadows in the material environment are cast by these two light sources. In Android "
+        "development, shadows occur when light sources are blocked by sheets of material at "
+        "various positions along the z-axis. On the web, shadows are depicted by manipulating the "
+        "y-axis only. The following example shows the card with a height of 6dp.\n\n"
+
+        "Resting elevation.\n\n"
+
+        "All material objects, regardless of size, have a resting elevation, or default elevation "
+        "that does not change. If an object changes elevation, it should return to its resting "
+        "elevation as soon as possible.\n\n"
+
+        "Component elevations.\n\n"
+
+        "The resting elevation for a component type is consistent across apps (e.g., FAB elevation "
+        "does not vary from 6dp in one app to 16dp in another app).\n"
+        "Components may have different resting elevations across platforms, depending on the depth "
+        "of the environment (e.g., TV has a greater depth than mobile or desktop).\n\n"
+
+        "Responsive elevation and dynamic elevation offsets.\n\n"
+
+        "Some component types have responsive elevation, meaning they change elevation in response "
+        "to user input (e.g., normal, focused, and pressed) or system events. These elevation "
+        "changes are consistently implemented using dynamic elevation offsets.\n"
+        "Dynamic elevation offsets are the goal elevation that a component moves towards, relative "
+        "to the component’s resting state. They ensure that elevation changes are consistent "
+        "across actions and component types. For example, all components that lift on press have "
+        "the same elevation change relative to their resting elevation.\n"
+        "Once the input event is completed or cancelled, the component will return to its resting "
+        "elevation.\n\n"
+
+        "Avoiding elevation interference.\n\n"
+
+        "Components with responsive elevations may encounter other components as they move between "
+        "their resting elevations and dynamic elevation offsets. Because material cannot pass "
+        "through other material, components avoid interfering with one another any number of ways, "
+        "whether on a per component basis or using the entire app layout.\n"
+        "On a component level, components can move or be removed before they cause interference. "
+        "For example, a floating action button (FAB) can disappear or move off screen before a "
+        "user picks up a card, or it can move if a snackbar appears.\n"
+        "On the layout level, design your app layout to minimize opportunities for interference. "
+        "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
+        "when a user tries to pick up one of cards.\n\n"
+    </string>
+    <string name="title_activity_activity__map">Map</string>
+
+
+</resources>

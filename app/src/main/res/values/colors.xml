@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FFFF9800</color>
+    <color name="colorPrimaryDark">#ffff7802</color>
+    <color name="colorAccent">#FF003672</color>
+
+    <color name="noecard_orange">#FFFF9800</color>
+    <color name="noecard_orange_dark">#ffff7802</color>
+    <color name="noecard_white">#FFFFFFFF</color>
+    <color name="noecard_yellow">#FFFFDE10</color>
+    <color name="noecard_blue">#FF003672</color>
+
+
+
+    <color name="noecard_test1">#FFFF0000</color>
+    <color name="noecard_test2">#FF00FF00</color>
+    <color name="noecard_test3">#FF0000FF</color>
+
+
+    <color name="navbartop">#FFE3ECF5</color>
+    <color name="divider">#ffafb6be</color>
+    <color name="black_overlay">#66000000</color>
+    <color name="background_white">#FFFFFFFF</color>
+    <color name="background_selected">#ffe1dddf</color>
+</resources>

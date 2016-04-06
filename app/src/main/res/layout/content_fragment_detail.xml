@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activity_Detail"
+    tools:showIn="@layout/activity_detail"
+    android:background="@android:color/white"
+    android:id="@+id/item_details">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            android:layout_marginTop="23dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/detail_beschreibung_symbol_rl">
+                <RelativeLayout
+                    android:id="@+id/detail_beschreibung_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/detail_symbolbar_rl" >
+
+
+                    <TextView
+                        android:id="@+id/detail_text_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Wachaubahn"
+                        android:layout_marginBottom="8dp"
+                        android:textSize="20sp"/>
+
+                    <TextView
+                        android:id="@+id/detail_text_beschreibung"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_text_title"
+                        android:text="Begleiten Sie die Wachaubahn bei ihrer Fahrt durch die malerische Landschaft zwischen Krems und Emmersdorf. Die Bahnfahrt eröffnet Ihnen die Vielfalt des Weltkulturerbes in ihrer ganzen Pracht. Ein Stück abseits der Straße, zwischen uraltem Mauerwerk und Weingärten, hat sich die Wachaubahn ihr Wesen bewahrt. Durch die kunstvolle Trassierung in erhöhter Lage ergeben sich altemberaubende Ausblicke."
+                        android:textSize="14sp"/>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/detail_symbolbar_rl"
+                    android:layout_width="@dimen/mini_hund_rollst_usw"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="2dp">
+
+                    <ImageView
+                        android:id="@+id/detail_top_ausflugsziel"
+                        android:layout_width="@dimen/mini_hund_rollst_usw"
+                        android:layout_height="@dimen/mini_hund_rollst_usw"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:src="@mipmap/ic_top_ausflugsziel" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_top_ausflugsziel">
+
+                        <RelativeLayout
+                            android:id="@+id/detail_wrap_gruppe"
+                            android:layout_width="@dimen/mini_hund_rollst_usw"
+                            android:layout_height="@dimen/mini_hund_rollst_usw"
+                            android:layout_alignParentRight="true" >
+
+                            <ImageView
+                                android:id="@+id/detail_gruppe"
+                                android:layout_width="@dimen/mini_hund_rollst_usw"
+                                android:layout_height="@dimen/mini_hund_rollst_usw"
+                                android:contentDescription="@string/desc_icon_gruppe"
+                                android:src="@mipmap/ic_gruppe" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/detail_wrap_hund"
+                            android:layout_width="@dimen/mini_hund_rollst_usw"
+                            android:layout_height="@dimen/mini_hund_rollst_usw"
+                            android:layout_below="@+id/detail_wrap_gruppe" >
+
+                            <ImageView
+                                android:id="@+id/detail_hund"
+                                android:layout_width="@dimen/mini_hund_rollst_usw"
+                                android:layout_height="@dimen/mini_hund_rollst_usw"
+                                android:contentDescription="@string/desc_icon_hunde"
+                                android:src="@mipmap/ic_hund" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/detail_wrap_kinderwagen"
+                            android:layout_width="@dimen/mini_hund_rollst_usw"
+                            android:layout_height="@dimen/mini_hund_rollst_usw"
+                            android:layout_below="@+id/detail_wrap_hund">
+
+                            <ImageView
+                                android:id="@+id/detail_kinderwagen"
+                                android:layout_width="@dimen/mini_hund_rollst_usw"
+                                android:layout_height="@dimen/mini_hund_rollst_usw"
+                                android:contentDescription="@string/desc_icon_kinderwagengerecht"
+                                android:src="@mipmap/ic_kinderwagen" />
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/detail_wrap_rollstuhl"
+                            android:layout_width="@dimen/mini_hund_rollst_usw"
+                            android:layout_height="@dimen/mini_hund_rollst_usw"
+                            android:layout_below="@+id/detail_wrap_kinderwagen">
+
+                            <ImageView
+                                android:id="@+id/detail_rollstuhl"
+                                android:layout_width="@dimen/mini_hund_rollst_usw"
+                                android:layout_height="@dimen/mini_hund_rollst_usw"
+                                android:contentDescription="@string/desc_icon_rollstuhl"
+                                android:src="@mipmap/ic_rollstuhl" />
+                        </RelativeLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/detail_kontakt"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/detail_beschreibung_symbol_rl"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
+
+                <RelativeLayout
+                    android:id="@+id/detail_tel_rellay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/contact_button">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/detail_tel_img"
+                        android:src="@mipmap/ic_action_phone_start_darkgrey"
+                        android:layout_centerHorizontal="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/detail_tel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ANRUFEN"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/detail_tel_img"
+                        android:layout_centerHorizontal="true" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/detail_email_rellay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/contact_button">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/detail_email_img"
+                        android:src="@mipmap/ic_action_mail_darkgrey"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <TextView
+                        android:id="@+id/detail_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MAIL"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/detail_email_img"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/detail_webseite_rellay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/contact_button">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/detail_webseite_img"
+                        android:src="@mipmap/ic_action_globe_darkgrey"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <TextView
+                        android:id="@+id/detail_webseite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WEBSITE"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/detail_webseite_img"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"
+                android:layout_below="@+id/detail_kontakt">
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/detail_new_compl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/detail_kontakt"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp">
+                <RelativeLayout
+                    android:id="@+id/detail_adress_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_marginTop="9dp">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/detail_navigatetopicture"
+                        android:src="@mipmap/ic_action_directions" />
+                    <RelativeLayout
+                        android:id="@+id/detail_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@+id/detail_navigatetopicture"
+                        android:paddingLeft="16dp">
+                        <TextView
+                            android:id="@+id/detail_adresscompl"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+
+                            android:text="3180 Lilienfeld, Klosterrotte 1"
+                            android:textSize="14sp"
+                            />
+
+                        <TextView
+                            android:id="@+id/detail_coordinates_latitude_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/detail_adresscompl"
+                            android:layout_alignLeft="@+id/detail_adresscompl"
+                            android:text="Lat: "
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:id="@+id/detail_coordinates_latitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/detail_adresscompl"
+                            android:layout_toRightOf="@+id/detail_coordinates_latitude_txt"
+                            android:text="213 E 541&apos;"
+                            android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/detail_coordinates_longitude_txt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignLeft="@+id/detail_adresscompl"
+                            android:layout_below="@+id/detail_coordinates_latitude"
+                            android:text="Lon: "
+                            android:textSize="15sp"/>
+                        <TextView
+                            android:id="@+id/detail_coordinates_longitude"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/detail_coordinates_latitude"
+                            android:layout_toRightOf="@+id/detail_coordinates_longitude_txt"
+                            android:text="34 E 42&apos;"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/detail_oeffnungszeiten_rl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/detail_adress_rl"
+                    android:layout_marginTop="8dp">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/detail_openhourspicture"
+                        android:src="@mipmap/ic_action_clock" />
+                    <TextView
+                        android:id="@+id/detail_geoeffnet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="56dp"
+                        android:text="Verkehrstage: 23. März bis 3. Nov., Sa, So und Ftg; sowie tgl. 29. Juni bis 29. September; Zeiten laut Fahrplan
+
+        Abfahrt: ab Bahnhof Krems"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/detail_oeffnungszeiten_rl"
+                    android:id="@+id/detail_weitere_rl"
+                    android:layout_marginTop="10dp">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_centerVertical="true"
+                        android:id="@+id/detail_punktpunkti"
+                        android:src="@mipmap/ic_action_punktipunkti" />
+                    <TextView
+                        android:id="@+id/weitere_infos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="56dp"
+                        android:text="Weitere Infos"
+                        android:textSize="15sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/detail_weitere_items"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@+id/detail_oeffnungszeiten_rl"
+                    android:visibility="gone">
+                    <RelativeLayout
+                        android:id="@+id/detail_tel_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/detail_weitere_tel"
+                            android:src="@mipmap/ic_action_phone_start_darkgrey" />
+                        <TextView
+                            android:id="@+id/weitere_tel"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="56dp"
+                            android:text="+43 61254821"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/detail_mail_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_tel_rl"
+                        android:layout_marginTop="10dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/detail_weitere_mail"
+                            android:src="@mipmap/ic_action_mail_darkgrey" />
+                        <TextView
+                            android:id="@+id/weitere_mail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="56dp"
+                            android:text="test@testsdfsfd.com"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/detail_website_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_mail_rl"
+                        android:layout_marginTop="10dp">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/detail_weitere_website"
+                            android:src="@mipmap/ic_action_globe_darkgrey" />
+                        <TextView
+                            android:id="@+id/weitere_website"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="56dp"
+                            android:text="test@testsdfsfd.com"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/detail_anreise_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_website_rl"
+                        android:layout_marginTop="10dip">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/detail_weitere_anreise"
+                            android:src="@mipmap/ic_action_anreise" />
+                        <TextView
+                            android:id="@+id/detail_anreise"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="56dp"
+                            android:text="Anreise: A4 bis Fischamend, dann B9 und B49 oder Zug bis Marchegg bzw. Hainburg, dann nextbike"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:id="@+id/detail_tipp_rl"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/detail_anreise_rl"
+                        android:layout_marginTop="10dip">
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_centerVertical="true"
+                            android:id="@+id/detail_weitere_tipp"
+                            android:src="@mipmap/ic_action_tipp" />
+                        <TextView
+                            android:id="@+id/detail_tipp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:paddingLeft="56dp"
+                            android:text="Tipp: Führungen, tgl. 11 und 14 h, Gartenführungen, tgl. 15 h, Aufpreis € 3,–; „Meierhof und Tierwelt mit Kutschenfahrt“, So 12.30 h, Aufpreis € 6,–; „Unbekanntes Schloss Hof“, Sa, So und Ftg 16 h, Aufpreis € 6,–; Kinderführung (4–10 Jahre), So 13 h, Aufpreis € 3,– (Begleitperson frei)"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+                </RelativeLayout>
+
+
+            </RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <RelativeLayout
+                android:id="@+id/detail_wrapper_mitdercard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/detail_new_compl"
+                android:layout_marginTop="5dip"
+                android:layout_marginBottom="5dip"
+                android:background="@drawable/border" >
+
+                <RelativeLayout
+                    android:id="@+id/blauer_streifen"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_alignParentLeft="true"
+                    android:background="#5A74A6" >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:paddingLeft="10dp"
+                        android:text="Mit der CARD gratis"
+                        android:textColor="#fff"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/blauer_streifen"
+                    android:paddingLeft="10dp"
+                    android:src="@mipmap/ic_pfeil_mit_der_card" />
+
+                <ImageView
+                    android:id="@+id/detail_mini_noecard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:paddingRight="20dp"
+                    android:paddingTop="15dp"
+                    android:layout_marginBottom="5dp"
+                    android:src="@mipmap/ic_noekarte" />
+
+                <TextView
+                    android:id="@+id/detail_mitdercard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/detail_mini_noecard"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="60dp"
+                    android:paddingBottom="5dp"
+                    android:text="Freier Eintritt mit Führung, sooft Sie wollen"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:id="@+id/detail_aussersonder_rl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/detail_mitdercard">
+                    <TextView
+                        android:id="@+id/detail_aussersonder"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="blablasdfasdfasdfasdfasdfasfdasadfasdfasdfasdkfhjgasldfhjölkaslkjöfasjkdfkjsf"
+                        android:textSize="12sp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="60dp"
+                        android:paddingBottom="5dp"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:paddingBottom="5dp"
+                    android:paddingRight="5dp">
+                    <TextView
+                        android:id="@+id/detail_gespart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:text="(€ 4,-)"
+                        android:textSize="15sp" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true">
+
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>
