@@ -1,4 +1,4 @@
-#  NÖ Finderlein <img style="height:40px;" src="https://raw.githubusercontent.com/derqurps/noefinderlein/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
+#  NÖ Finderlein <img height="40" src="https://raw.githubusercontent.com/derqurps/noefinderlein/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png">
 
 The NÖ Finderlein is a companion App for the [Niederösterreich-Card](http://www.niederoesterreich-card.at/) for people who would like to have all important information for the associated destinations at their fingertip.
 
