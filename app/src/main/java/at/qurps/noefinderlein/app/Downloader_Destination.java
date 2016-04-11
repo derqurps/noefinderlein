@@ -3,23 +3,18 @@ package at.qurps.noefinderlein.app;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -27,9 +22,6 @@ import java.util.HashMap;
  * Created by roman on 12.04.14.
  */
 public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
-
-    // URL to get contacts JSON
-    private static String url = "https://noefinderlein.qurps.at/apidestinations/.json";
 
     // JSON Node names
     private static final String TAG_JQUERY = "jquery";
@@ -43,43 +35,59 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     // Hashmap for ListView
     ArrayList<HashMap<String, String>> contactList;
 
-    private final Context mContext;
+    private Context mContext;
     private DestinationsDB db;
     private int progress_status;
+    private ProgressDialog progress = null;
+    private ProgressDialog.Builder progressBuilder = null;
     private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
+    private NotificationCompat.Builder mBuilder = null;
     private int notifyID = 2;
 
-    public Downloader_Destination(Context context) {
+    private Callbacks mCallbacks = sDummyCallbacks;
+
+    public Downloader_Destination(Context context, Activity_Main acti) {
         super();
         this.mContext = context;
         this.db= new DestinationsDB(this.mContext);
-
+        progress = new ProgressDialog(acti);
+        if (!(acti instanceof Callbacks)) {
+            throw new IllegalStateException(
+                    "Activity must implement callbacks.");
+        }
+        mCallbacks = (Callbacks) acti;
     }
+
+    public interface Callbacks {
+        /**
+         * Callback for when an item has been selected.
+         */
+        public void onDownloadCompleted();
+        public void onDownloadCompleted(int id);
+    }
+    private static Callbacks sDummyCallbacks = new Callbacks() {
+        @Override
+        public void onDownloadCompleted() {
+        }
+        public void onDownloadCompleted(int id) {
+        }
+    };
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
 
+        progress.setCancelable(false);
+        progress.setMessage("Updating Data ...");
+        progress.setTitle("Data Download");
+        progress.setIcon(ContextCompat.getDrawable(mContext, R.drawable.ic_cloud_download));
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.show();
+        //progress.show(mContext, "Data Download", "Updating Data ...");
+
         //mNotifyManager =
         //        (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(mContext);
-        mBuilder.setContentTitle("Data Download")
-                .setContentText("Download in progress")
-                .setSmallIcon(R.mipmap.ic_launcher);
-        Intent resultIntent = new Intent(this.mContext, Activity_Settings.class);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this.mContext);
-        stackBuilder.addParentStack(Activity_Settings.class);
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent =
-                stackBuilder.getPendingIntent(
-                        0,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-        mBuilder.setContentIntent(resultPendingIntent);
-        mNotifyManager =
-                (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotifyManager.notify(2, mBuilder.build());
+
         // Showing progress dialog
         /*pDialog = new ProgressDialog(MainActivity.this);
         pDialog.setMessage("Please wait...");
@@ -98,15 +106,37 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         ServiceHandler sh = new ServiceHandler();
 
 
-        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getLastChangedDate?year="+String.valueOf(year), ServiceHandler.GET);
+        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Changevals/"+String.valueOf(year), ServiceHandler.GET);
         if (jsonStr != null) {
             try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
-                String changed_date = jsonObj.getString(Location_NoeC.KEY_CHANGED_DATE);
-                Integer anzahl = jsonObj.getInt("num");
-                Log.d("Response: ", "> " + changed_date + " " + String.valueOf(year) + " " + anzahl.toString());
-                int updateneeded = db.updateForYearNeeded(year, changed_date, anzahl);
+                int changeid = jsonObj.getInt("changeid");
+                Log.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(year) );
+                int updateneeded = db.updateForYearNeeded(year, changeid);
                 Log.d("Update neeeded?: ", String.valueOf(updateneeded));
+                if(updateneeded == 1 ){
+                    mBuilder = new NotificationCompat.Builder(mContext);
+                    mBuilder.setContentTitle("Data Download")
+                            .setContentText("Download in progress")
+                            .setSmallIcon(R.drawable.noefinderlein_outline_white);
+
+                    Intent resultIntent = new Intent(this.mContext, Activity_Main.class);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this.mContext);
+                    stackBuilder.addParentStack(Activity_Main.class);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    mNotifyManager =
+                            (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotifyManager.notify(2, mBuilder.build());
+
+
+
+                }
                 if (updateneeded == 1) {
                     String putBody = db.getStringAktDates(year);
                     Log.d(TAG, putBody);
@@ -117,6 +147,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                         try {
                             JSONArray nummern = new JSONArray(jsonStrakt);
                             updatewiththisJsondata(nummern);
+                            db.updateChangeId(year,changeid);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -125,19 +156,6 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                         Log.e("ServiceHandler", "Couldn't get any data from the url");
                     }
 
-                }else if(updateneeded == 2){
-                    String jsonStrakt = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear", ServiceHandler.GET);
-                    if (jsonStrakt != null) {
-                        try {
-                            JSONArray nummern = new JSONArray(jsonStrakt);
-                            updatewiththisJsondata(nummern);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.e("ServiceHandler", "Couldn't get any data from the url");
-                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -156,16 +174,23 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     @Override
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        mBuilder.setContentText("Download complete");
-        mBuilder.setProgress(0, 0, false);
-        mNotifyManager.notify(2, mBuilder.build());
-        mNotifyManager.cancel(2);
+        if(mBuilder!= null ) {
+            mBuilder.setContentText("Download complete");
+            mBuilder.setProgress(0, 0, false);
+            mNotifyManager.notify(2, mBuilder.build());
+            mNotifyManager.cancel(2);
+        }
+        if(progress.isShowing()) {
+            progress.dismiss();
+        }
+        mCallbacks.onDownloadCompleted();
     }
 
     protected void updatewiththisJsondata(JSONArray nummern){
         ServiceHandler sh = new ServiceHandler();
         Integer anzahlakt = nummern.length();
         Integer zael = 1;
+        progress.setMax(anzahlakt);
         for (int i = 0; i < nummern.length(); i++) {
 
             try {
@@ -174,14 +199,10 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                 String jsonLocId = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Locations/" + String.valueOf(nummern.getInt(i)), ServiceHandler.GET);
                 JSONObject jsonLoc = new JSONObject(jsonLocId);
                 Log.d(TAG, jsonLoc.toString());
-                /*JSONObject destinationsakt = nummern.getJSONObject(i).getJSONObject(TAG_DESTINATION);
-                Log.d(TAG, destinationsakt.toString());
-                Integer nummer = destinationsakt.getInt(Location_NoeC.KEY_NUMMER);
-                Log.d(TAG, nummer.toString());
 
-                Log.d("Hole ID: ", String.valueOf(nummer) + "  Jahr: " + String.valueOf(year));*/
                 mBuilder.setProgress(anzahlakt, zael, false);
                 mNotifyManager.notify(2, mBuilder.build());
+                progress.setProgress(Integer.valueOf(zael));
                 updatewiththisJsonobj(jsonLoc);
                 zael++;
             }catch (JSONException e) {
@@ -252,11 +273,13 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
             newloc.setChanged_date(destinations.getString(Location_NoeC.KEY_CHANGED_DATE));
             newloc.setChange_index(destinations.getInt(Location_NoeC.KEY_CHANGE_INDEX));
             db.updateLocation(newloc);
+            mCallbacks.onDownloadCompleted(id);
 
         } catch (JSONException e) {
             Log.e("Exception3", String.valueOf(e));
             e.printStackTrace();
         }
     }
+
 
 }

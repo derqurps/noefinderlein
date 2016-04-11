@@ -1,6 +1,9 @@
 package at.qurps.noefinderlein.app;
 
-public class Location_NoeC {
+import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.clustering.ClusterItem;
+
+public class Location_NoeC implements ClusterItem {
 
 	public static final String TABLE_NAME = "location";
 
@@ -144,12 +147,9 @@ public class Location_NoeC {
 	public Location_NoeC(int id,
 						 int nummer,
 						 int jahr,
-						 String typ,
 						 String kat,
 						 String reg,
-						 int sort,
-						 String name,
-						 int mcfid){
+						 String name){
 		this._id= id;
 		this._nummer = nummer;
         this._jahr = jahr;
@@ -423,5 +423,14 @@ public class Location_NoeC {
 	public void setDistance(double distance)
 	{
 		this._distance=distance;
+	}
+
+	@Override
+	public LatLng getPosition() {
+		try {
+			return new LatLng(_latitude, _longitude);
+		}catch(Exception e){
+			return new LatLng(0, 0);
+		}
 	}
 }

@@ -1,8 +1,10 @@
 package at.qurps.noefinderlein.app;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -63,6 +65,8 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
     public ViewGroup mcontainer;
     public int mRegionItemNummer;
     public int mRegionItemJahr;
+
+	private final BroadcastReceiver myBRDataUpd=new DataUpdate();
 
 
 	/**
@@ -132,42 +136,30 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
         if (savedInstanceState != null
                 && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState
-                    .getInt(STATE_ACTIVATED_POSITION));
+					.getInt(STATE_ACTIVATED_POSITION));
         }
     }
 
     public void ChangeView(Bundle arguments) {
-        if (arguments!=null) {
-            if (arguments.containsKey(ARG_ISREGION))
-            {
-                mIsRegion=arguments.getBoolean(ARG_ISREGION);
-            }
-            if (arguments.containsKey(ARG_MTWOPANE)) {
-                mTwoPane=arguments.getBoolean(ARG_MTWOPANE);
+		if (arguments != null) {
+			if (arguments.containsKey(ARG_ISREGION)) {
+				mIsRegion = arguments.getBoolean(ARG_ISREGION);
+			}
+			if (arguments.containsKey(ARG_MTWOPANE)) {
+				mTwoPane = arguments.getBoolean(ARG_MTWOPANE);
 
-            }
-            if (arguments.containsKey(ARG_ITEM_NUMMER)) {
-                mRegionItemNummer=arguments.getInt(ARG_ITEM_NUMMER);
-            }
-            if (arguments.containsKey(ARG_ITEM_JAHR)) {
-                mRegionItemJahr=arguments.getInt(ARG_ITEM_JAHR);
-            }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
-        }
-        if (mIsRegion==true)
-        {
-            listItems = db.getAllMenuLocationstoRegion(mRegionItemNummer,mRegionItemJahr);
-        }
-        else
-        {
-            Log.d(TAG," da 2 ");
-            listItems = db.getAllMenuLocations(mRegionItemJahr);
-        }
-        //Log.d(TAG," --- size "+String.valueOf(listItems.get(0).getName()));
-        adapter=new ArrayAdapter_Mainlist(mContext,listItems);
-        onDialogPositiveClick(getFilterliste());
-        setListAdapter(adapter);
-    }
+			}
+			if (arguments.containsKey(ARG_ITEM_NUMMER)) {
+				mRegionItemNummer = arguments.getInt(ARG_ITEM_NUMMER);
+			}
+			if (arguments.containsKey(ARG_ITEM_JAHR)) {
+				mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
+			}
+			Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+		}
+		dbContentChanged();
+	}
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -179,6 +171,16 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
 		}
 
 		mCallbacks = (Callbacks) activity;
+	}
+	@Override
+	public void onResume() {
+		super.onResume();
+		mContext.registerReceiver(myBRDataUpd, new IntentFilter("dataupdate"));
+	}
+	@Override
+	public void onPause() {
+		mContext.unregisterReceiver(myBRDataUpd);
+		super.onPause();
 	}
 
 	@Override
@@ -214,7 +216,30 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
             outState.putInt(ARG_ITEM_NUMMER, mRegionItemJahr);
         }
 	}
+	public class DataUpdate extends BroadcastReceiver {
+		@Override
+		public void onReceive(Context context, Intent intent) {
 
+			int id = intent.getIntExtra("id",-1);
+			dbContentChanged();
+			adapter.notifyDataSetChanged();
+		}
+	}
+	public void dbContentChanged(){
+		if (mIsRegion==true)
+		{
+			listItems = db.getAllMenuLocationstoRegion(mRegionItemNummer,mRegionItemJahr);
+		}
+		else
+		{
+			Log.d(TAG," da 2 ");
+			listItems = db.getAllMenuLocations(mRegionItemJahr);
+		}
+		//Log.d(TAG," --- size "+String.valueOf(listItems.get(0).getName()));
+		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+		onDialogPositiveClick(getFilterliste());
+		setListAdapter(adapter);
+	}
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be
 	 * given the 'activated' state when touched.

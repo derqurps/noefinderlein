@@ -182,7 +182,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_general);
 
-        // Add 'notifications' preferences, and a corresponding header.
+        /*// Add 'notifications' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_notifications);
         getPreferenceScreen().addPreference(fakeHeader);
@@ -192,7 +192,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
         fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_data_sync);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_data_sync);
+        addPreferencesFromResource(R.xml.pref_data_sync);*/
 
         // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
         // their values. When their values change, their summaries are updated
@@ -218,7 +218,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         if (!isSimplePreferences(this)) {
-            loadHeadersFromResource(R.xml.pref_headers, target);
+            //loadHeadersFromResource(R.xml.pref_headers, target);
         }
     }
 
@@ -283,7 +283,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
+            //addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
@@ -313,7 +313,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
+            //addPreferencesFromResource(R.xml.pref_data_sync);
             setHasOptionsMenu(true);
 
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences

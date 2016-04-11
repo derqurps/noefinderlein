@@ -603,46 +603,36 @@ public class DestinationsDB {
         }
     	return location;
     }
-    public int updateForYearNeeded(int year, String changeddate, int anzahldest)
+    public int updateForYearNeeded(int year, int changedcount)
     {
-        String Query = "SELECT " + Location_NoeC.KEY_CHANGED_DATE + " FROM " + Location_NoeC.TABLE_NAME + " WHERE " + Location_NoeC.KEY_JAHR + " = " + year + " ORDER BY " + Location_NoeC.KEY_CHANGED_DATE + " DESC";
+        String Query = "SELECT " + DB_Changeval.KEY_COUNT + " FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + " = " + year + " AND " + DB_Changeval.KEY_COUNT + " >= "+String.valueOf(changedcount);
+        Log.d("DDBQU: ",Query);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.rawQuery(Query,null);
-        int count = cursor.getCount();
-        Log.d("DB_Anzahl: ",  String.valueOf(count) );
-        Log.d("WEB_Anzahl: ",  String.valueOf(anzahldest) );
-        if (count==anzahldest ) {
-            cursor.moveToFirst();
-            String changeddate_db = cursor.getString(0);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date internDate = null;
-            Date externDate = null;
-            Log.d("DB_Date: ",  String.valueOf(changeddate_db) );
-            Log.d("WEB_Date: ",  String.valueOf(changeddate) );
-
-            boolean datumvergleich = false;
-            try {
-                internDate = sdf.parse(changeddate_db);
-                externDate = sdf.parse(changeddate);
-                if (externDate.after(internDate)) {
-                    datumvergleich = true;
-                }
-            } catch (ParseException e) {
-                e.printStackTrace();
-                Log.d("DDBERR3: ", String.valueOf(e));
-            }
-
-            cursor.close();
-            if (datumvergleich) {
-                return 1;
-            } else {
-                return 0;
-            }
+        Cursor cursor = db.rawQuery(Query, null);
+        Log.d("WEB_Count: ",  String.valueOf(changedcount) );
+        if (cursor != null && cursor.moveToFirst()) {
+            Log.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Changeval.KEY_COUNT))));
+            return 0;
         }
         else
         {
-            return 2;
+            return 1;
         }
+    }
+
+    public int updateChangeId(int year, int changedcount) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DB_Changeval.KEY_YEAR, year);
+        values.put(DB_Changeval.KEY_COUNT, changedcount);
+
+        int id = (int) db.insertWithOnConflict(DB_Changeval.TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        if (id == -1) {
+            db.update(DB_Changeval.TABLE_NAME, values, DB_Changeval.KEY_YEAR+"=?", new String[] {String.valueOf(year)});
+        }
+        // updating row
+        return 1;
     }
     public boolean updateornewForItemNeeded(int id)
     {

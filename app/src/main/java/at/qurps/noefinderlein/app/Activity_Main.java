@@ -1,17 +1,26 @@
 package at.qurps.noefinderlein.app;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -28,25 +37,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.common.server.converter.StringToIntConverter;
+import com.google.android.gms.location.LocationServices;
 
 import org.joda.time.DateTime;
-import io.nlopez.smartlocation.OnActivityUpdatedListener;
-import io.nlopez.smartlocation.OnGeofencingTransitionListener;
-import io.nlopez.smartlocation.OnLocationUpdatedListener;
-import io.nlopez.smartlocation.OnReverseGeocodingListener;
-import io.nlopez.smartlocation.SmartLocation;
-import io.nlopez.smartlocation.geofencing.model.GeofenceModel;
-import io.nlopez.smartlocation.geofencing.utils.TransitionGeofence;
-import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
 
 public class Activity_Main extends AppCompatActivity implements
-            OnLocationUpdatedListener,
+            ConnectionCallbacks,
+            OnConnectionFailedListener,
             NavigationView.OnNavigationItemSelectedListener,
             Fragment_LocationList.Callbacks,
             Fragment_LocationNear.Callbacks,
-            Fragment_LocationFavorits.Callbacks{
+            Fragment_LocationFavorits.Callbacks,
+            Downloader_Destination.Callbacks{
 
     private static final String TAG = "Activity_Main";
     private SharedPreferences mPrefs;
@@ -56,36 +64,19 @@ public class Activity_Main extends AppCompatActivity implements
     public int mActiveyear;
     private boolean mTwoPane;
     public Location mLastLocation;
+    private static final int LOCATION_REQUEST = 1;
+    private static final int LAST_LOCATION_REQUEST = 2;
 
-    // Labels.
-    protected String mLatitudeLabel;
-    protected String mLongitudeLabel;
-    protected String mLastUpdateTimeLabel;
+    protected LocationManager locationManager;
+    private GoogleApiClient mGoogleApiClient;
 
-    private LocationGooglePlayServicesProvider provider;
-
+    private TextView yeartext;
     /**
      * Time when the location was updated represented as a String.
      */
     protected String mLastUpdateTime;
 
     private static final int TWO_MINUTES = 1000 * 60 * 2;
-    /**
-     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
-     */
-    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
-
-    /**
-     * The fastest rate for active location updates. Exact. Updates will never be more frequent
-     * than this value.
-     */
-    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
-    // Keys for storing activity state in the Bundle.
-    protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-    protected final static String LOCATION_KEY = "location-key";
-    protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
 
 
     public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v2";
@@ -96,8 +87,21 @@ public class Activity_Main extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         //JodaTimeAndroid.init(this);
         setContentView(R.layout.activity_list);
+
+        NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
+        View headerLayout = nav_view.getHeaderView(0);
+        yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -166,14 +170,52 @@ public class Activity_Main extends AppCompatActivity implements
         setYearString();
     }*/
     @Override
-    public void onLocationUpdated(Location location) {
-        if(isBetterLocation(location,mLastLocation)) {
-            //Log.d(TAG," better location found "+String.valueOf(mCurrentLocation.distanceTo(location)));
-            mLastLocation = location;
-            //Log.d(TAG," better location found "+String.valueOf(mCurrentLocation.getLatitude())+" " + String.valueOf(mCurrentLocation.getLongitude()));
-            Intent data = new Intent("locationupdate");
-            data.putExtra("key", "now");
-            this.sendBroadcast(data);
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+    protected final LocationListener listener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            locationChanged(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    private void locationChanged(Location location){
+        if(location != null) {
+
+            if (isBetterLocation(location, mLastLocation)) {
+                //Log.d(TAG," better location found "+String.valueOf(mCurrentLocation.distanceTo(location)));
+                mLastLocation = location;
+                //Log.d(TAG," better location found "+String.valueOf(mCurrentLocation.getLatitude())+" " + String.valueOf(mCurrentLocation.getLongitude()));
+                Intent data = new Intent("locationupdate");
+                data.putExtra("key", "now");
+                data.putExtra("lat", location.getLatitude());
+                data.putExtra("lon", location.getLongitude());
+                broadcastUpdate(data);
+            }
+        }else{
+            Util.setToast(this, "Location null", 1);
         }
     }
 
@@ -202,7 +244,7 @@ public class Activity_Main extends AppCompatActivity implements
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Activity_Settings.class);
             startActivity(intent);
             return true;
@@ -228,7 +270,8 @@ public class Activity_Main extends AppCompatActivity implements
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         if(id == R.id.nav_near){
-            startLocationUpdates();
+            getLastKnownLocation();
+            //startLocationUpdates();
         }else{
             stopLocationUpdates();
         }
@@ -265,6 +308,9 @@ public class Activity_Main extends AppCompatActivity implements
      * @param currentBestLocation  The current Location fix, to which you want to compare the new one
      */
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if(location == null){
+            return false;
+        }
         if (currentBestLocation == null) {
             // A new location is always better than no location
             return true;
@@ -481,13 +527,13 @@ public class Activity_Main extends AppCompatActivity implements
     }
     public void setYear(int year){
         mActiveyear=year;
+        setYearString();
     }
     public void setYearString(){
-        setContentView(R.layout.activity_list);
+
         String year = ""+String.valueOf(mActiveyear)+"/"+String.valueOf(mActiveyear+1);
-        TextView text = (TextView) this.findViewById(R.id.text_noecardyear);
-        if(text != null){
-            text.setText(year);
+        if(yeartext != null){
+            yeartext.setText(year);
         }
     }
 
@@ -509,21 +555,42 @@ public class Activity_Main extends AppCompatActivity implements
         return this.db;
     }
 
-    /**
-     * Requests location updates from the FusedLocationApi.
-     */
+
+    protected void getLastKnownLocation(){
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+            if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+                return;
+            }
+            Location loc = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            locationChanged(loc);
+            startLocationUpdates();
+        }
+    }
+
     protected void startLocationUpdates() {
-        provider = new LocationGooglePlayServicesProvider();
-        provider.setCheckLocationSettings(true);
 
-        SmartLocation smartLocation = new SmartLocation.Builder(this).logging(true).build();
+        if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-        smartLocation.location(provider).start(this);
+            ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+            return;
+        }
+        if (locationManager != null) {
+            final int minTime = 10*1000;
+            final int minDistance = 0;
+            final Criteria criteria = new Criteria();
+            String provider;
+            criteria.setAccuracy(Criteria.ACCURACY_FINE);
+            provider = locationManager.getBestProvider(criteria, true);
+            locationManager.requestLocationUpdates(provider, minTime, minDistance, listener);
+        }
         setToast(getResources().getString(R.string.location_updated_started), 0);
     }
-    /**
-     * Removes location updates from the FusedLocationApi.
-     */
+
     protected void stopLocationUpdates() {
         // It is a good practice to remove location requests when the activity is in a paused or
         // stopped state. Doing so helps battery performance and is especially
@@ -531,15 +598,26 @@ public class Activity_Main extends AppCompatActivity implements
 
         // The final argument to {@code requestLocationUpdates()} is a LocationListener
         // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        SmartLocation.with(this).location().stop();
+        if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+            return;
+        }
+        if(locationManager != null) {
+            locationManager.removeUpdates(listener);
+        }
         //setToast(getResources().getString(R.string.location_updated_stopped), 0);
 
+    }
+    protected void broadcastUpdate(Intent data){
+        this.sendBroadcast(data);
     }
     protected void updateDB(){
         Log.d("Response1: ",String.valueOf(mActiveyear));
         Integer [] myTaskParams = { mActiveyear };
-        Log.d("api path: ",String.valueOf(getResources().getString(R.string.api_path)));
-        new Downloader_Destination(getApplicationContext()).execute(myTaskParams);
+        Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
+        new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
     }
     /*
      CALLBACK METHODS
@@ -555,5 +633,59 @@ public class Activity_Main extends AppCompatActivity implements
 
         detailItemChosen(id, year, Fragment_LocationList.TAG);
     }
+    @Override
+    public void onDownloadCompleted() {
+        //Util.setToast(this,"Download finished",1);
+        Intent data = new Intent("dataupdate");
+        data.putExtra("key", "now");
+        this.sendBroadcast(data);
+    }
+    @Override
+    public void onDownloadCompleted(int id) {
 
+        /*Intent data = new Intent("dataupdate");
+        data.putExtra("key", "now");
+        data.putExtra("id", id);
+        this.sendBroadcast(data);*/
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        switch (requestCode){
+            case LOCATION_REQUEST:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    startLocationUpdates();
+                }else{
+                    Util.setToast(this, "Location updates denied", 1);
+                    //startDefaultScreen();
+                }
+                break;
+            case LAST_LOCATION_REQUEST:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getLastKnownLocation();
+                }else{
+                    Util.setToast(this, "Location updates denied", 1);
+                    //startDefaultScreen();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
+
+    }
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
 }
