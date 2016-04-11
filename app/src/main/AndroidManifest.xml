@@ -68,6 +68,15 @@
             android:name=".Activity_Map"
             android:label="@string/title_activity_activity__map">
         </activity>
+        <activity
+            android:name=".Activity_About"
+            android:label="@string/title_activity_activity__about"
+            android:parentActivityName=".Activity_Main"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.qurps.noefinderlein.app.Activity_Main"/>
+        </activity>
     </application>
 
 </manifest>

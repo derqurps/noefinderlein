@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -33,7 +36,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class Fragment_LocationList extends ListFragment implements Fragment_FilterListDialog.NoticeDialogListener{
+public class Fragment_LocationList extends ListFragment implements DialogFragment_FilterList.NoticeDialogListener{
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the
@@ -221,6 +224,10 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
 		public void onReceive(Context context, Intent intent) {
 
 			int id = intent.getIntExtra("id",-1);
+			int year = intent.getIntExtra("year",-1);
+			if(year != -1 && year != mRegionItemJahr){
+				mRegionItemJahr = year;
+			}
 			dbContentChanged();
 			adapter.notifyDataSetChanged();
 		}
@@ -271,14 +278,18 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
 	public void onPrepareOptionsMenu(Menu menu)
 	{
 		MenuItem filtericon=menu.findItem(R.id.actionb_filter_list);
+		Drawable drawable;
 		if(isFilterSet())
 		{
-			filtericon.setIcon(R.mipmap.ic_action_filter_set);
+			drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_filter_full);
 		}
 		else
 		{
-			filtericon.setIcon(R.mipmap.ic_action_filter);
+			drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_filter);
 		}
+		drawable = DrawableCompat.wrap(drawable);
+		DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
+		filtericon.setIcon(drawable);
 	}
 
     @Override
@@ -303,14 +314,18 @@ public class Fragment_LocationList extends ListFragment implements Fragment_Filt
                 return true;
             }
         });
+		Util.colorMenuItems(mContext, menu,R.id.search_list_actionbar, R.color.noecard_white);
+		Util.colorMenuItems(mContext, menu,R.id.actionb_filter_list, R.color.noecard_white);
+		Util.colorMenuItems(mContext, menu,R.id.actionb_show_current_in_map, R.color.noecard_white);
 
         super.onCreateOptionsMenu(menu,inflater);
     }
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.actionb_filter_list:
-            Fragment_FilterListDialog newFragment = new Fragment_FilterListDialog();
+            DialogFragment_FilterList newFragment = new DialogFragment_FilterList();
 			newFragment.setListener(Fragment_LocationList.this);
 		    newFragment.show(Fragment_LocationList.this.getActivity().getSupportFragmentManager(), "filter");
 			return true;

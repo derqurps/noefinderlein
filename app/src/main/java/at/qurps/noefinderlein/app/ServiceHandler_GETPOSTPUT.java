@@ -25,14 +25,14 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class ServiceHandler {
+public class ServiceHandler_GETPOSTPUT {
 
     static String response = null;
     public final static int GET = 1;
     public final static int POST = 2;
     public final static int PUT = 3;
 
-    public ServiceHandler() {
+    public ServiceHandler_GETPOSTPUT() {
 
     }
 

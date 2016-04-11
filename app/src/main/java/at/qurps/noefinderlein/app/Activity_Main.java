@@ -111,6 +111,7 @@ public class Activity_Main extends AppCompatActivity implements
                         .setAction("Action", null).show();
             }
         });
+        fab.hide();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -134,6 +135,11 @@ public class Activity_Main extends AppCompatActivity implements
         Resources res = getResources();
         mTwoPane = res.getBoolean(R.bool.has_two_panes);
         startDefaultScreen();
+
+        ChangeLog cl = new ChangeLog(this);
+        if (cl.firstRun()) {
+            cl.getLogDialog().show();
+        }
 
         if (!mPrefs.getBoolean(KEY_LICENCE_ACCEPTED, false)) {
 
@@ -163,12 +169,14 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
 
+
     }
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
-        setYearString();
-    }*/
+        initYear();
+        onDownloadCompleted();
+    }
     @Override
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -293,7 +301,8 @@ public class Activity_Main extends AppCompatActivity implements
             Intent intent = new Intent(this, Activity_Settings.class);
             startActivity(intent);
         } else if (id == R.id.nav_about) {
-
+            Intent intent = new Intent(this, Activity_About.class);
+            startActivity(intent);
         } /*else if (id == R.id.nav_send) {
 
         }*/
@@ -501,11 +510,11 @@ public class Activity_Main extends AppCompatActivity implements
         Integer year;
         if(overwriteyear){
             year = Integer.valueOf(mPrefs.getString(Activity_Settings.KEY_PREF_OVERWRITE_YEAR_MAN, "2014"));
+            Log.d(TAG, String.valueOf(year));
             if(!(db.isYearInDatabase(year))){
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
-            }else{
-                setYear(year);
             }
+            setYear(year);
         }else{
             DateTime dt = new DateTime();
             year = dt.getYear();
@@ -638,6 +647,7 @@ public class Activity_Main extends AppCompatActivity implements
         //Util.setToast(this,"Download finished",1);
         Intent data = new Intent("dataupdate");
         data.putExtra("key", "now");
+        data.putExtra("year", mActiveyear);
         this.sendBroadcast(data);
     }
     @Override

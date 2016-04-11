@@ -5,18 +5,18 @@
     <item
         android:id="@+id/search_list_actionbar"
         noecard:actionViewClass="android.support.v7.widget.SearchView"
-        android:icon="@mipmap/ic_action_search"
+        android:icon="@drawable/ic_search"
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_search"/>
     <item
         android:id="@+id/actionb_filter_list"
-        android:icon="@mipmap/ic_action_filter"
+        android:icon="@drawable/ic_filter"
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_filter"
         />
     <item
         android:id="@+id/actionb_show_current_in_map"
-        android:icon="@mipmap/ic_action_map"
+        android:icon="@drawable/ic_map"
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_show_current_on_map"
         />

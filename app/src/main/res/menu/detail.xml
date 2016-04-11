@@ -3,25 +3,25 @@
     xmlns:noecard="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/actionb_destination_visited"
-        android:icon="@mipmap/ic_action_tick"
+        android:icon="@drawable/ic_check"
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_visited"
         />
     <item
         android:id="@+id/actionb_favorit_star"
-        android:icon="@mipmap/ic_action_star_0"
+        android:icon="@drawable/ic_star_outline"
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_favorit"
         />
     <item
         android:id="@+id/actionb_navigate_to_dest"
-        android:icon="@mipmap/ic_action_navigate"
+        android:icon="@drawable/ic_navigation"
         noecard:showAsAction="ifRoom|collapseActionView"
         android:title="@string/title_menu_to_destination"
         />
 	<item
         android:id="@+id/actionb_show_in_map"
-        android:icon="@mipmap/ic_action_location"
+        android:icon="@drawable/ic_mini_world_map"
         noecard:showAsAction="ifRoom|collapseActionView"
         android:title="@string/title_menu_show_on_map"
         />

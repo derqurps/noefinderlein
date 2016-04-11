@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 11;
-    public static final String DATABASE_NAME = "NoecardLocationT.db";
+    public static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String TEXT_TYPE_0 = " TEXT DEFAULT (null)";

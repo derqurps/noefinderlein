@@ -1,6 +1,9 @@
 package at.qurps.noefinderlein.app;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -8,16 +11,21 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -30,13 +38,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -96,10 +107,16 @@ public class Activity_Detail extends AppCompatActivity {
 
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.detail, menu);
+
+        Util.colorMenuItems(mContext, menu,R.id.actionb_destination_visited, R.color.noecard_white);
+        Util.colorMenuItems(mContext, menu,R.id.actionb_favorit_star, R.color.noecard_white);
+        Util.colorMenuItems(mContext, menu,R.id.actionb_navigate_to_dest, R.color.noecard_white);
+        Util.colorMenuItems(mContext, menu,R.id.actionb_show_in_map, R.color.noecard_white);
         return true;
     }
 
@@ -147,29 +164,38 @@ public class Activity_Detail extends AppCompatActivity {
             case R.id.actionb_favorit_star:
                 //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
                 //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
-
+                Drawable drawable;
                 if(ziel.getFavorit())
                 {
-                    mMenu.findItem(R.id.actionb_favorit_star).setIcon(R.mipmap.ic_action_star_0);
+                    drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star_outline);
                     ziel.setFavorit(false);
                     Log.d(TAG +"false",String.valueOf(ziel.getFavorit()));
                 }
                 else
                 {
-                    mMenu.findItem(R.id.actionb_favorit_star).setIcon(R.mipmap.ic_action_star_10);
+                    drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
                     ziel.setFavorit(true);
                     Log.d(TAG +"true",String.valueOf(ziel.getFavorit()));
 
                 }
+                drawable = DrawableCompat.wrap(drawable);
+                DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
+                mMenu.findItem(R.id.actionb_favorit_star).setIcon(drawable);
                 //db.updateFavorit(ziel);
                 return true;
             case R.id.actionb_destination_visited:
-                String format = "yyy-MM-dd";
-                SimpleDateFormat sdf = new SimpleDateFormat(format);
-                String date = sdf.format(new Date());
-                Visited_Locations visited = new Visited_Locations(ziel.getId(),ziel.getJahr(),date);
-                db.insertVisitedData(visited);
-                Util.setToast(mContext, getResources().getString(R.string.visitedChecked),0);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                // Create and show the dialog.
+                Bundle argumentsa = new Bundle();
+                argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_ITEMID, ziel.getId());
+                argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_YEAR, ziel.getJahr());
+
+                DialogFragment_ChooseCheckinDate newFragment = new DialogFragment_ChooseCheckinDate();
+                newFragment.setArguments(argumentsa);
+                newFragment.show(ft, "dialog");
+
+
+
 
                 //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
                 //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
@@ -194,19 +220,23 @@ public class Activity_Detail extends AppCompatActivity {
         }
     }
 
+
     private boolean updateOptionsMenu(){
         if(ziel != null) {
             Log.d(TAG , String.valueOf(ziel.getFavorit()));
+            Drawable drawable;
             if (mMenu != null && ziel.getFavorit()) {
-                mMenu.findItem(R.id.actionb_favorit_star).setIcon(R.mipmap.ic_action_star_10);
+                drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
+                drawable = DrawableCompat.wrap(drawable);
+                DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
+                mMenu.findItem(R.id.actionb_favorit_star).setIcon(drawable);
             } else if(mMenu != null){
-                mMenu.findItem(R.id.actionb_favorit_star).setIcon(R.mipmap.ic_action_star_0);
+                drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star_outline);
+                drawable = DrawableCompat.wrap(drawable);
+                DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
+                mMenu.findItem(R.id.actionb_favorit_star).setIcon(drawable);
             }
-            /*if (mMenu != null && ziel.getAngesehen()) {
-                mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick_yellow);
-            } else if(mMenu != null){
-                mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick);
-            }*/
+
         }
         return true;
     }
@@ -429,13 +459,15 @@ public class Activity_Detail extends AppCompatActivity {
             }
             if (ziel.getLatitude()!=0 && ziel.getLongitude()!=0)
             {
-                ((TextView) rootView.findViewById(R.id.detail_coordinates_latitude)).setText(String.valueOf(ziel.getLatitude()));
-
-                ((TextView) rootView.findViewById(R.id.detail_coordinates_longitude)).setText(String.valueOf(ziel.getLongitude()));
-
                 final Location loc = new Location("detail_destination");
                 loc.setLatitude(ziel.getLatitude());
                 loc.setLongitude(ziel.getLongitude());
+
+                ((TextView) rootView.findViewById(R.id.detail_coordinates_latitude)).setText(String.valueOf(Location.convert(loc.getLatitude(),Location.FORMAT_DEGREES)));
+
+                ((TextView) rootView.findViewById(R.id.detail_coordinates_longitude)).setText(String.valueOf(Location.convert(loc.getLongitude(),Location.FORMAT_DEGREES)));
+
+
 
                 ((RelativeLayout) rootView.findViewById(R.id.detail_location)).setOnClickListener(new View.OnClickListener(){
                     Integer format=0;
@@ -542,5 +574,6 @@ public class Activity_Detail extends AppCompatActivity {
             }
         }
     }
+
 
 }

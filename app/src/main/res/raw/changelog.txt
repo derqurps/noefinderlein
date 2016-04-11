@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <style type='text/css'>
+      a            { color:#003672 }
+      div.title    {
+          color:#ff7802;
+          font-size:1.2em;
+          font-weight:bold;
+          margin-top:1em;
+          margin-bottom:0.5em; }
+      div.subtitle {
+          color:#0058BA;
+          font-size:0.8em;
+          margin-bottom:1em;}
+      div.freetext { color:#000000 }
+      div.list     { color:#1D1D1D }
+    </style>
+  </head>
+  <body>
+$ 1.0
+  % Version 1.0
+  _ 2016-04-11
+    * Aufgrund von div API-Änderungen musste ich vor dem Release einer neuen Version vieles neu und hoffentlich besser machen
+$ 0.7.7
+  % Version 0.7.7
+  _ 2015-07-05
+    * Bugfix Release - Danke an alle die Fehlermeldungen geschickt haben!
+    * Den Fehler, bei dem sich das Finderlein beim setzen des "Besichtigt-Häkchens" beendet, konnte ich leider nicht nachvollziehen. Falls dieser noch immer auftreten sollte, bitte ich um erneute Einsendung eines Fehlerberichtes.
+$ 0.7.6
+  % Version 0.7.6
+  _ 2015-06-01
+    * Layout für Tablets korrigiert (Danke an Clemens für den Hinweis!)
+$ 0.7.5
+  % Version 0.7.5
+  _ 2015-04-26
+    * Bugfix Release - Danke an alle die Fehlermeldungen geschickt haben - alle bis jetzt gemeldeten Fehler sollten damit behoben sein. (Falls nicht bitte nochmals melden)
+    * Wechsel des Jahres in den Einstellungen sollte jetzt funktionieren (um die Favoriten/besuchten Ziele des letzten Jahres einsehen zu können)
+    * Tablets sollten jetzt wieder funktionieren
+$ 0.7.4
+  % Version 0.7.4
+  _ 2015-04-05
+    * Update auf neues Niederösterreich-Card - Jahr (2015/2016)
+$ 0.7.3
+  % Version 0.7.3
+  _ 2015-03-09
+    * kleine Fehlerbehebung bei der Darstellung der Details (2 mal PLZ statt Ort)
+$ 0.7.2
+  % Version 0.7.2
+  _ 2015-02-21
+    * kleine Fehlerbehebung bei der Darstellung der Ersparnis (Besichtigte Ziele)
+$ 0.7.1
+  % Version 0.7.1
+  _ 2015-02-15
+    * neues Layout - Anpassung an das Material Design
+    * Verbesserungen bei der Berechnung des gesparten Geldes
+    * Vorbereitung zu inhaltliche Verbesserungsvorschläge senden (Google Account wird benötigt) - nächstes Release
+    * Vorbereitung zu Fotos senden (Google Acount wird benötigt) - nächstes Release
+
+$ END_OF_CHANGE_LOG
+  </body>
+</html>

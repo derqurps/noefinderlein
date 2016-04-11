@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="at.qurps.noefinderlein.app.Activity_About"
+    tools:showIn="@layout/activity_about">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="5dp"
+            android:text="Über Nö Finderlein"
+            android:textStyle="bold"
+            android:textAllCaps="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#999999"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"></View>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Version"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:id="@+id/about_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="14dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/about_github"
+                android:layout_marginBottom="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="GitHub"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="https://github.com/derqurps/noefinderlein"
+                    android:textSize="14dp"/>
+            </LinearLayout>
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="5dp"
+            android:text="Feedback"
+            android:textStyle="bold"
+            android:textAllCaps="true"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dip"
+            android:background="#999999"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"></View>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/about_googleplus">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Google+ Community"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Diskusstion"
+                    android:textSize="14dp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>

@@ -34,6 +34,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 	static class ViewHolder {
 		protected TextView sortnumber;
 		protected TextView name;
+		protected TextView ort;
 		protected ImageView topausflug;
 		protected ImageView burgstiftusw;
         protected ImageView hund;
@@ -51,6 +52,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 			final ViewHolder viewHolder = new ViewHolder();
 			viewHolder.sortnumber = (TextView) view.findViewById(R.id.menuitem_sortnumber);
 			viewHolder.name = (TextView) view.findViewById(R.id.menuitem_name);
+			viewHolder.ort = (TextView) view.findViewById(R.id.menuitem_ort);
 			viewHolder.topausflug = (ImageView) view.findViewById(R.id.topausflug);
 			viewHolder.burgstiftusw = (ImageView) view.findViewById(R.id.burgschloessusw);
             viewHolder.hund = (ImageView) view.findViewById(R.id.menuitem_hund);
@@ -68,6 +70,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		//Log.d(TAG,String.valueOf(list.get(position).getSort()));
 		holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
 		holder.name.setText(filteredData.get(position).getName());
+		holder.ort.setText(filteredData.get(position).getAdr_ort());
 		if (!filteredData.get(position).getTop_ausflugsziel())
 		{
 			holder.topausflug.setVisibility(View.GONE);

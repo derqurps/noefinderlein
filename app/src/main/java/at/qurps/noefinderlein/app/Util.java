@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
@@ -13,8 +14,11 @@ import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -378,5 +382,11 @@ public class Util {
                 }
             }
         });
+    }
+    public static void colorMenuItems (Context mContext, Menu menu, int rId, int cId){
+        Drawable drawable = menu.findItem(rId).getIcon();
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, cId));
+        menu.findItem(rId).setIcon(drawable);
     }
 }

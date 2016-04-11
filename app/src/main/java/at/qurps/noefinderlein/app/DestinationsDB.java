@@ -30,7 +30,7 @@ public class DestinationsDB {
         mDbHelper = new Database_Destinations(context);
     }
 
-    public void insertVisitedData(Visited_Locations visited){
+    public boolean insertVisitedData(Visited_Locations visited){
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String Query = "SELECT " + Visited_Locations.KEY_ID + " FROM " + Visited_Locations.TABLE_NAME + " WHERE " + Visited_Locations.KEY_YEAR + " = " + visited.getYear() + " AND "+ Visited_Locations.KEY_lOC_ID + " = " + visited.getLocId() + " AND " + Visited_Locations.KEY_LOGGED_DATE + " = '" + visited.getDate() +"'";
@@ -45,8 +45,12 @@ public class DestinationsDB {
 
             // Inserting Row
             db.insert(Visited_Locations.TABLE_NAME, null, values);
+            db.close(); // Closing database connection
+            return true;
+        }else{
+            db.close(); // Closing database connection
+            return false;
         }
-        db.close(); // Closing database connection
     }
     // Adding new minimal location
     public void addMinimalLocation(Location_NoeC location) {

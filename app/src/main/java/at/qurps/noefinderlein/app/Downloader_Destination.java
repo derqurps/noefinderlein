@@ -103,10 +103,10 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         JSONObject jquery = null;
         JSONObject destinations= null;
         // Creating service handler class instance
-        ServiceHandler sh = new ServiceHandler();
+        ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
 
 
-        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Changevals/"+String.valueOf(year), ServiceHandler.GET);
+        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Changevals/"+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
         if (jsonStr != null) {
             try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
@@ -140,8 +140,8 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                 if (updateneeded == 1) {
                     String putBody = db.getStringAktDates(year);
                     Log.d(TAG, putBody);
-                    ServiceHandler shput = new ServiceHandler();
-                    String jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler.PUT, null, putBody);
+                    ServiceHandler_GETPOSTPUT shput = new ServiceHandler_GETPOSTPUT();
+                    String jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
                     Log.d(TAG, String.valueOf(jsonStrakt));
                     if (jsonStrakt != null) {
                         try {
@@ -187,7 +187,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     }
 
     protected void updatewiththisJsondata(JSONArray nummern){
-        ServiceHandler sh = new ServiceHandler();
+        ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
         Integer anzahlakt = nummern.length();
         Integer zael = 1;
         progress.setMax(anzahlakt);
@@ -196,7 +196,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
             try {
                 Log.e("Test", String.valueOf(nummern.getInt(i)));
 
-                String jsonLocId = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Locations/" + String.valueOf(nummern.getInt(i)), ServiceHandler.GET);
+                String jsonLocId = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Locations/" + String.valueOf(nummern.getInt(i)), ServiceHandler_GETPOSTPUT.GET);
                 JSONObject jsonLoc = new JSONObject(jsonLocId);
                 Log.d(TAG, jsonLoc.toString());
 

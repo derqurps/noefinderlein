@@ -20,7 +20,7 @@ if (project.hasProperty("NoeFinderlein.properties")
                 resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
                 resValue "string", "api_path", props['noefinderlein_apipath_debug']
             }
-            release{
+            release {
                 resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
                 resValue "string", "api_path", props['noefinderlein_apipath']
             }
@@ -36,7 +36,7 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 28
+        versionCode 30
         versionName "1.0"
         multiDexEnabled true
     }
@@ -69,11 +69,10 @@ android {
     useLibrary 'org.apache.http.legacy'
 }
 
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
-
-
 
     /*compile 'com.google.android.gms:play-services-base:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'*/

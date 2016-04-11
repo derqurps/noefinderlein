@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 
 
-public class Fragment_FilterListDialog extends DialogFragment {
+public class DialogFragment_FilterList extends DialogFragment {
 
 	ImageView[] imgviewlist=new ImageView[13];
 	RelativeLayout[] RelativeLayoutlist=new RelativeLayout[13];
@@ -44,7 +44,7 @@ public class Fragment_FilterListDialog extends DialogFragment {
 
     ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
 
-	public Fragment_FilterListDialog() {
+	public DialogFragment_FilterList() {
 		
 	}
 	
@@ -155,7 +155,7 @@ public class Fragment_FilterListDialog extends DialogFragment {
 		})
 		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				Fragment_FilterListDialog.this.getDialog().cancel();
+				DialogFragment_FilterList.this.getDialog().cancel();
 			}
 		}).create(); 
 		
