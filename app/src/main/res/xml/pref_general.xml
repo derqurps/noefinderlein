@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:title="@string/pref_title_download_new"
+    <!--<Preference android:title="@string/pref_title_download_new"
                 android:key="settings_download_new"
-                android:summary="@string/pref_description_download_new"/>
+                android:summary="@string/pref_description_download_new"/>-->
 
     <!--<Preference android:title="@string/pref_title_download_image_data"
         android:key="settings_image_download_button"

@@ -77,7 +77,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
 
-        progress.setCancelable(false);
+        progress.setCancelable(true);
         progress.setMessage("Updating Data ...");
         progress.setTitle("Data Download");
         progress.setIcon(ContextCompat.getDrawable(mContext, R.drawable.ic_cloud_download));

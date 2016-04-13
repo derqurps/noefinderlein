@@ -36,7 +36,7 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 30
+        versionCode 34
         versionName "1.0"
         multiDexEnabled true
     }
@@ -76,6 +76,7 @@ dependencies {
 
     /*compile 'com.google.android.gms:play-services-base:8.4.0'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'*/
+    /* http://square.github.io/picasso/ compile 'com.squareup.picasso:picasso:2.5.2'*/
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'

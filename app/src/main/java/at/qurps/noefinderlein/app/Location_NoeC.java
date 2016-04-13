@@ -73,6 +73,7 @@ public class Location_NoeC implements ClusterItem {
 
 	double _distance;
 	String _visited_date;
+	int _visited_id;
 	
 	
 	// Empty constructor
@@ -405,6 +406,15 @@ public class Location_NoeC implements ClusterItem {
 	// setting visited_date
 	public void setVisited_date(String visited_date){
 		this._visited_date = visited_date;
+	}
+
+	// getting change_index
+	public int getVisited_id(){
+		return this._visited_id;
+	}
+	// setting change_index
+	public void setVisited_id(int visited_id){
+		this._visited_id = visited_id;
 	}
 
     // getting favorit

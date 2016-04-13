@@ -198,10 +198,11 @@
     <string name="visitedChecked">Zu Besichtigten hinzugefügt</string>
     <string name="visitedNotChecked">Eintrag schon hinzugefügt</string>
     <string name="visitedChooseWhen">Für welchen tag abhaken?</string>
+    <string name="deleteVisited">Besichtigten Eintrag löschen?</string>
     <string name="visitedtoday">Heute</string>
     <string name="visitedchoose">Auswählen</string>
 
-    <string name="error_year_not_found_in_database">Jahr in Datenbank nicht gefunden...</string>
+    <string name="error_year_not_found_in_database">Jahr in lokaler Datenbank nicht gefunden...</string>
     <string name="error_no_location_services">Keine Positionsbestimmung eingeschalten. Die App funktioniert auch ohne Ortsbestimmung, aber die "nahen Ziele" werden nicht funktionieren</string>
     <string name="error_no_location_services_en">No Location Services Enabled. You can use this App without Location Services, but the near Destinations feature will not work.</string>
 

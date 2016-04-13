@@ -50,8 +50,7 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog builder = new AlertDialog.Builder(getActivity())
 
-            .setTitle("Title")
-            .setMessage(R.string.visitedChooseWhen)
+            .setTitle(R.string.visitedChooseWhen)
             .setPositiveButton(R.string.visitedtoday, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     setVisited(new Date());

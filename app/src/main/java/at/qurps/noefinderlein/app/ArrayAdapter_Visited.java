@@ -81,6 +81,9 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
     public int getIdtoPosition(int position) {
         return filteredData.get(position).getId();
     }
+    public int getVIdtoPosition(int position) {
+        return filteredData.get(position).getVisited_id();
+    }
     public int getJahrtoPosition(int position) {
         return filteredData.get(position).getJahr();
     }

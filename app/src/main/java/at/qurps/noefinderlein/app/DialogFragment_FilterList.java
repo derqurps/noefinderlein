@@ -132,7 +132,7 @@ public class DialogFragment_FilterList extends DialogFragment {
         }
 		setAllOnOffFilter();
 		Dialog builder = new AlertDialog.Builder(getActivity())
-		.setIcon(R.mipmap.ic_menu_filter_active)
+		.setIcon(R.drawable.ic_filter_full)
 		.setTitle(R.string.title_menu_filter)
 		// Add action buttons
 		.setView(View_kompl)

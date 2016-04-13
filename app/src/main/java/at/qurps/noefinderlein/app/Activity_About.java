@@ -1,5 +1,6 @@
 package at.qurps.noefinderlein.app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,11 +17,13 @@ import android.widget.TextView;
 public class Activity_About extends AppCompatActivity {
 
     private View rootView;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
+        mContext = getApplication();
         rootView = getWindow().getDecorView().getRootView();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -52,6 +55,12 @@ public class Activity_About extends AppCompatActivity {
                 String url = "https://github.com/derqurps/noefinderlein";
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(browserIntent);
+            }
+        });
+        ((LinearLayout) rootView.findViewById(R.id.about_changelog)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ChangeLog cl = new ChangeLog(Activity_About.this);
+                cl.getFullLogDialog().show();
             }
         });
     }

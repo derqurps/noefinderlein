@@ -179,6 +179,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	public void onResume() {
 		super.onResume();
 		mContext.registerReceiver(myBRDataUpd, new IntentFilter("dataupdate"));
+		dbContentChanged();
+		adapter.notifyDataSetChanged();
 	}
 	@Override
 	public void onPause() {

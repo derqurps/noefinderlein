@@ -31,6 +31,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_search"
-        android:tint="@color/noecard_white"/>
+        android:tint="@color/noecard_white"
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

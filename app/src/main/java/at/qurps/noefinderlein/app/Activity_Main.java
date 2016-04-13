@@ -284,7 +284,7 @@ public class Activity_Main extends AppCompatActivity implements
             stopLocationUpdates();
         }
         if (id == R.id.nav_all) {
-            fab.show();
+            //fab.show();
         }else{
             fab.hide();
         }
@@ -511,10 +511,11 @@ public class Activity_Main extends AppCompatActivity implements
         if(overwriteyear){
             year = Integer.valueOf(mPrefs.getString(Activity_Settings.KEY_PREF_OVERWRITE_YEAR_MAN, "2014"));
             Log.d(TAG, String.valueOf(year));
+            setYear(year);
             if(!(db.isYearInDatabase(year))){
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
+                updateDB();
             }
-            setYear(year);
         }else{
             DateTime dt = new DateTime();
             year = dt.getYear();
@@ -623,6 +624,10 @@ public class Activity_Main extends AppCompatActivity implements
         this.sendBroadcast(data);
     }
     protected void updateDB(){
+        updateDB(false);
+    }
+    protected void updateDB(boolean force){
+
         Log.d("Response1: ",String.valueOf(mActiveyear));
         Integer [] myTaskParams = { mActiveyear };
         Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
@@ -644,6 +649,7 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     public void onDownloadCompleted() {
+        System.gc();
         //Util.setToast(this,"Download finished",1);
         Intent data = new Intent("dataupdate");
         data.putExtra("key", "now");

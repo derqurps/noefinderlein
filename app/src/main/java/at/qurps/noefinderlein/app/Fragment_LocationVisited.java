@@ -1,15 +1,18 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,6 +44,7 @@ public class Fragment_LocationVisited extends ListFragment {
 
     public boolean mIsRegion=false;
     public int mRegionItemJahr;
+    private View rootView;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -81,18 +85,13 @@ public class Fragment_LocationVisited extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_location_visited, container, false);
+        rootView = inflater.inflate(R.layout.fragment_location_visited, container, false);
         //container.removeAllViews();
 
         parseArguments(getArguments());
 
 
-        listItems = db.getAllVisitedLocations(mRegionItemJahr);
-        adapter=new ArrayAdapter_Visited(getActivity(),listItems);
-        setListAdapter(adapter);
-        TextView ersparnis = (TextView) rootView.findViewById(R.id.ersparnis_summe);
-
-        ersparnis.setText(adapter.getGesamtErsparnis());
+        updateList();
 
         return rootView;
     }
@@ -106,7 +105,33 @@ public class Fragment_LocationVisited extends ListFragment {
             setActivatedPosition(savedInstanceState
                     .getInt(STATE_ACTIVATED_POSITION));
         }
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> av, View v, int position, long id) {
+                final int subpos = position;
+                AlertDialog.Builder ad = new AlertDialog.Builder(mContext);
+                ad.setCancelable(false);
+                ad.setTitle(mContext.getString(R.string.deleteVisited));
+                ad.setPositiveButton(mContext.getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        db.removeVisited(adapter.getVIdtoPosition(subpos));
+                        updateList();
+                    }
+                });
+                ad.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                    }
+                });
+
+                ad.create().show();
+
+                return true;
+            }
+        });
     }
+
 
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
@@ -136,7 +161,14 @@ public class Fragment_LocationVisited extends ListFragment {
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
         }
     }
+    public void updateList() {
+        listItems = db.getAllVisitedLocations(mRegionItemJahr);
+        adapter=new ArrayAdapter_Visited(getActivity(),listItems);
+        setListAdapter(adapter);
+        TextView ersparnis = (TextView) rootView.findViewById(R.id.ersparnis_summe);
 
+        ersparnis.setText(adapter.getGesamtErsparnis());
+    }
     public void parseArguments(Bundle arguments) {
         if (arguments!=null) {
             if (arguments.containsKey(ARG_ISREGION)) {

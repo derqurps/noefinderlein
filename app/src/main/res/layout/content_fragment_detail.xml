@@ -64,7 +64,7 @@
                         android:layout_height="@dimen/mini_hund_rollst_usw"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentTop="true"
-                        android:src="@mipmap/ic_top_ausflugsziel" />
+                        android:src="@drawable/ic_top_ausflugsziel" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                                 android:layout_width="@dimen/mini_hund_rollst_usw"
                                 android:layout_height="@dimen/mini_hund_rollst_usw"
                                 android:contentDescription="@string/desc_icon_gruppe"
-                                android:src="@mipmap/ic_gruppe" />
+                                android:src="@drawable/ic_gruppe" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -96,7 +96,7 @@
                                 android:layout_width="@dimen/mini_hund_rollst_usw"
                                 android:layout_height="@dimen/mini_hund_rollst_usw"
                                 android:contentDescription="@string/desc_icon_hunde"
-                                android:src="@mipmap/ic_hund" />
+                                android:src="@drawable/ic_hund" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -110,7 +110,7 @@
                                 android:layout_width="@dimen/mini_hund_rollst_usw"
                                 android:layout_height="@dimen/mini_hund_rollst_usw"
                                 android:contentDescription="@string/desc_icon_kinderwagengerecht"
-                                android:src="@mipmap/ic_kinderwagen" />
+                                android:src="@drawable/ic_kinderwagen" />
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -124,7 +124,7 @@
                                 android:layout_width="@dimen/mini_hund_rollst_usw"
                                 android:layout_height="@dimen/mini_hund_rollst_usw"
                                 android:contentDescription="@string/desc_icon_rollstuhl"
-                                android:src="@mipmap/ic_rollstuhl" />
+                                android:src="@drawable/ic_rollstuhl" />
                         </RelativeLayout>
                     </RelativeLayout>
                 </RelativeLayout>
@@ -150,7 +150,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:id="@+id/detail_tel_img"
-                        android:src="@mipmap/ic_action_phone_start_darkgrey"
+                        android:src="@drawable/ic_call"
+                        android:tint="@color/noecard_text_grey"
                         android:layout_centerHorizontal="true"
                         />
 
@@ -176,7 +177,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:id="@+id/detail_email_img"
-                        android:src="@mipmap/ic_action_mail_darkgrey"
+                        android:src="@drawable/ic_mail"
+                        android:tint="@color/noecard_text_grey"
                         android:layout_centerHorizontal="true"
                         />
                     <TextView
@@ -200,7 +202,8 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:id="@+id/detail_webseite_img"
-                        android:src="@mipmap/ic_action_globe_darkgrey"
+                        android:src="@drawable/ic_globe"
+                        android:tint="@color/noecard_text_grey"
                         android:layout_centerHorizontal="true"
                         />
                     <TextView
@@ -242,7 +245,8 @@
                         android:layout_height="40dp"
                         android:layout_centerVertical="true"
                         android:id="@+id/detail_navigatetopicture"
-                        android:src="@mipmap/ic_action_directions" />
+                        android:tint="@color/noecard_text_grey"
+                        android:src="@drawable/ic_place" />
                     <RelativeLayout
                         android:id="@+id/detail_location"
                         android:layout_width="match_parent"
@@ -307,7 +311,8 @@
                         android:layout_height="40dp"
                         android:layout_centerVertical="true"
                         android:id="@+id/detail_openhourspicture"
-                        android:src="@mipmap/ic_action_clock" />
+                        android:tint="@color/noecard_text_grey"
+                        android:src="@drawable/ic_schedule" />
                     <TextView
                         android:id="@+id/detail_geoeffnet"
                         android:layout_width="match_parent"
@@ -332,7 +337,8 @@
                         android:layout_height="40dp"
                         android:layout_centerVertical="true"
                         android:id="@+id/detail_punktpunkti"
-                        android:src="@mipmap/ic_action_punktipunkti" />
+                        android:tint="@color/noecard_text_grey"
+                        android:src="@drawable/ic_more_horiz" />
                     <TextView
                         android:id="@+id/weitere_infos"
                         android:layout_width="match_parent"
@@ -360,7 +366,8 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:id="@+id/detail_weitere_tel"
-                            android:src="@mipmap/ic_action_phone_start_darkgrey" />
+                            android:tint="@color/noecard_text_grey"
+                            android:src="@drawable/ic_call" />
                         <TextView
                             android:id="@+id/weitere_tel"
                             android:layout_width="match_parent"
@@ -382,7 +389,8 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:id="@+id/detail_weitere_mail"
-                            android:src="@mipmap/ic_action_mail_darkgrey" />
+                            android:src="@drawable/ic_mail"
+                            android:tint="@color/noecard_text_grey" />
                         <TextView
                             android:id="@+id/weitere_mail"
                             android:layout_width="match_parent"
@@ -404,7 +412,8 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:id="@+id/detail_weitere_website"
-                            android:src="@mipmap/ic_action_globe_darkgrey" />
+                            android:tint="@color/noecard_text_grey"
+                            android:src="@drawable/ic_globe" />
                         <TextView
                             android:id="@+id/weitere_website"
                             android:layout_width="match_parent"
@@ -426,7 +435,8 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:id="@+id/detail_weitere_anreise"
-                            android:src="@mipmap/ic_action_anreise" />
+                            android:tint="@color/noecard_text_grey"
+                            android:src="@drawable/ic_directions" />
                         <TextView
                             android:id="@+id/detail_anreise"
                             android:layout_width="match_parent"
@@ -448,7 +458,8 @@
                             android:layout_height="40dp"
                             android:layout_centerVertical="true"
                             android:id="@+id/detail_weitere_tipp"
-                            android:src="@mipmap/ic_action_tipp" />
+                            android:tint="@color/noecard_text_grey"
+                            android:src="@drawable/ic_info_outline" />
                         <TextView
                             android:id="@+id/detail_tipp"
                             android:layout_width="match_parent"

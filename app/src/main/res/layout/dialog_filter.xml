@@ -51,7 +51,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_top_ausflugsziel" />
+                    android:src="@drawable/ic_top_ausflugsziel" />
 
                 <TextView
                     android:id="@+id/text_toggletop"
@@ -76,7 +76,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_stifte" />
+                    android:src="@drawable/ic_stifte" />
 
                 <TextView
                     android:id="@+id/text_togglestift"
@@ -101,7 +101,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_burgen_schloesser" />
+                    android:src="@drawable/ic_burgen_schloesser" />
 
                 <TextView
                     android:id="@+id/text_toggleburguschloe"
@@ -126,7 +126,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_museen_ausstellungen" />
+                    android:src="@drawable/ic_museen_ausstellungen" />
 
                 <TextView
                     android:id="@+id/text_togglemuseeuausstell"
@@ -150,7 +150,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_hund" />
+                    android:src="@drawable/ic_hund" />
 
                 <TextView
                     android:id="@+id/text_togglehund"
@@ -174,7 +174,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_rollstuhl" />
+                    android:src="@drawable/ic_rollstuhl" />
 
                 <TextView
                     android:id="@+id/text_togglerollstuhl"
@@ -212,7 +212,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_erlebnis_natur" />
+                    android:src="@drawable/ic_erlebnis_natur" />
 
                 <TextView
                     android:id="@+id/text_toggleerlebnatur"
@@ -237,7 +237,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_sport_u_freizeit" />
+                    android:src="@drawable/ic_sport_und_freizeit" />
 
                 <TextView
                     android:id="@+id/text_togglesportufreiz"
@@ -262,7 +262,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_bergbahnen" />
+                    android:src="@drawable/ic_bergbahnen" />
 
                 <TextView
                     android:id="@+id/text_togglebergbahn"
@@ -287,7 +287,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_schifffahrt" />
+                    android:src="@drawable/ic_schifffahrt" />
 
                 <TextView
                     android:id="@+id/text_toggleschiffahrt"
@@ -312,7 +312,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_lokalbahn" />
+                    android:src="@drawable/ic_lokalbahn" />
 
                 <TextView
                     android:id="@+id/text_togglelokalbahn"
@@ -336,7 +336,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_kinderwagen" />
+                    android:src="@drawable/ic_kinderwagen" />
 
                 <TextView
                     android:id="@+id/text_togglekinderwagen"
@@ -360,7 +360,7 @@
                     android:layout_height="34dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_gruppe" />
+                    android:src="@drawable/ic_gruppe" />
 
                 <TextView
                     android:id="@+id/text_togglegruppen"

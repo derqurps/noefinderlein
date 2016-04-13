@@ -68,7 +68,13 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		}
 		ViewHolder holder = (ViewHolder) view.getTag();
 		//Log.d(TAG,String.valueOf(list.get(position).getSort()));
-		holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
+		int nummer = filteredData.get(position).getNummer();
+		if(nummer!= 0) {
+			holder.sortnumber.setVisibility(View.VISIBLE);
+			holder.sortnumber.setText(String.valueOf(nummer));
+		}else{
+			holder.sortnumber.setVisibility(View.GONE);
+		}
 		holder.name.setText(filteredData.get(position).getName());
 		holder.ort.setText(filteredData.get(position).getAdr_ort());
 		if (!filteredData.get(position).getTop_ausflugsziel())
@@ -105,7 +111,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		}
 		case 5:
 		{
-			holder.burgstiftusw.setImageResource(R.mipmap.ic_sport_u_freizeit);
+			holder.burgstiftusw.setImageResource(R.mipmap.ic_sport_und_freizeit);
 			break;
 		}
 		case 6:

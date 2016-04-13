@@ -141,7 +141,7 @@ public class ChangeLog {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(
                 new ContextThemeWrapper(
-                        this.context, android.R.style.Theme_Material_Dialog));
+                        this.context, R.style.AppTheme));
         builder.setTitle(
                 context.getResources().getString(
                         full ? R.string.changelog_full_title
@@ -184,7 +184,7 @@ public class ChangeLog {
         // } else {
         // editor.apply();
         // }
-        editor.commit();
+        editor.apply();
     }
 
     /**

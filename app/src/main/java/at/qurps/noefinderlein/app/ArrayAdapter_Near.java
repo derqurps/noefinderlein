@@ -67,7 +67,13 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         }
         ViewHolder holder = (ViewHolder) view.getTag();
         //Log.d(TAG,String.valueOf(list.get(position).getSort()));
-        holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
+        int nummer = filteredData.get(position).getNummer();
+        if(nummer!= 0) {
+            holder.sortnumber.setVisibility(View.VISIBLE);
+            holder.sortnumber.setText(String.valueOf(nummer));
+        }else{
+            holder.sortnumber.setVisibility(View.GONE);
+        }
         holder.name.setText(filteredData.get(position).getName());
 
         holder.distance_to_destination.setText(Util.getmkmdistance(filteredData.get(position).getDistance()));
@@ -78,42 +84,42 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         {
             case 1:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_stifte);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_stifte);
                 break;
             }
             case 2:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_burgen_schloesser);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_burgen_schloesser);
                 break;
             }
             case 3:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_museen_ausstellungen);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_museen_ausstellungen);
                 break;
             }
             case 4:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_erlebnis_natur);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_erlebnis_natur);
                 break;
             }
             case 5:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_sport_u_freizeit);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_sport_und_freizeit);
                 break;
             }
             case 6:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_bergbahnen);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_bergbahnen);
                 break;
             }
             case 7:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_schifffahrt);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_schifffahrt);
                 break;
             }
             case 8:
             {
-                holder.burgstiftusw.setImageResource(R.mipmap.ic_lokalbahn);
+                holder.burgstiftusw.setImageResource(R.drawable.ic_lokalbahn);
                 break;
             }
         }

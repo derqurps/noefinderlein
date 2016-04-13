@@ -214,7 +214,11 @@ public class DestinationsDB {
         cursor.close();
         return locationList;
     }
-    
+    // Getting All locations
+    public boolean removeVisited(int id) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        return db.delete(Visited_Locations.TABLE_NAME, Visited_Locations.KEY_ID + "=" + id, null) > 0;
+    }
     //gets all locations to a specified locations String
     public List<Location_NoeC> getAllLocations_toDestIDs(String locationIDs,int year) {
     	String locationIDs_split[]=locationIDs.split(";");
@@ -318,9 +322,10 @@ public class DestinationsDB {
                     returnArray.put(newObj);
                 } while (cursor.moveToNext());
                 returnObj.put("el",returnArray);
+                returnObj.put("year",year);
             }
             else {
-
+                returnObj.put("year",year);
             }
             db.close();
             cursor.close();
@@ -601,6 +606,7 @@ public class DestinationsDB {
         location.setFavorit(getBooleanfromInt(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_FAVORIT)))));
 
         try{
+            location.setVisited_id(cursor.getInt(cursor.getColumnIndex(Visited_Locations.KEY_ID)));
             location.setVisited_date(cursor.getString(cursor.getColumnIndex(Visited_Locations.KEY_LOGGED_DATE)));
         }catch(Exception e){
             Log.d("DDBERR2: ",  String.valueOf(e) );
