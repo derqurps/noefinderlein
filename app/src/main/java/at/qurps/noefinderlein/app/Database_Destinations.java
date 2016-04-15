@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -27,8 +27,8 @@ public class Database_Destinations extends SQLiteOpenHelper {
                     Location_NoeC.KEY_ID + " INTEGER PRIMARY KEY NOT NULL DEFAULT (0)," +
                     Location_NoeC.KEY_NUMMER + INT_TYPE_0 + COMMA_SEP +
                     Location_NoeC.KEY_JAHR + INT_TYPE_0 + COMMA_SEP +
-                    Location_NoeC.KEY_KAT + TEXT_TYPE_0 + COMMA_SEP +
-                    Location_NoeC.KEY_REG + TEXT_TYPE_0 + COMMA_SEP +
+                    Location_NoeC.KEY_KAT + INT_TYPE_0 + COMMA_SEP +
+                    Location_NoeC.KEY_REG + INT_TYPE_0 + COMMA_SEP +
                     Location_NoeC.KEY_NAME + TEXT_TYPE + COMMA_SEP +
                     Location_NoeC.KEY_EMAIL + TEXT_TYPE + COMMA_SEP +
                     Location_NoeC.KEY_LAT + DOUBLE_TYPE_0 + COMMA_SEP +
@@ -86,10 +86,14 @@ public class Database_Destinations extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_LOCATIONS);
-        db.execSQL(SQL_CREATE_LOCATIONS);
-        db.execSQL(SQL_DELETE_CHANGEVAL);
-        db.execSQL(SQL_CREATE_CHANGEVAL);
+        //db.execSQL(SQL_DELETE_LOCATIONS);
+        //db.execSQL(SQL_CREATE_LOCATIONS);
+        if(oldVersion < 3 ){
+            db.execSQL(SQL_DELETE_LOCATIONS);
+            db.execSQL(SQL_CREATE_LOCATIONS);
+            db.execSQL(SQL_DELETE_CHANGEVAL);
+            db.execSQL(SQL_CREATE_CHANGEVAL);
+        }
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);

@@ -1,6 +1,7 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,9 +86,8 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		{
 			holder.topausflug.setVisibility(View.VISIBLE);
 		}
-        String category = filteredData.get(position).getKat();
-        int[] catIArray = Util.getIntArrayFromString(category);
-		switch (catIArray[0])
+        int category = filteredData.get(position).getKat();
+		switch (category)
 		{
 		case 1:
 		{
@@ -227,45 +227,74 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		final List<Location_NoeC> firstlist = originalData;
 		int count = firstlist.size();
 		final ArrayList<Location_NoeC> firstnlist = new ArrayList<Location_NoeC>(count);
-
+		boolean zusfilt = true;
+		for (boolean t:filterbool) {
+			if(t){
+				zusfilt = false;
+				break;
+			}
+		}
 		Location_NoeC filterableLocation ;
 		for (int i = 0; i < count; i++) {
+			
 			filterableLocation = firstlist.get(i);
-
-			if ( (filterbool[0] && filterableLocation.getTop_ausflugsziel()) ) {
+			int[] bla = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+			if(zusfilt){
 				firstnlist.add(filterableLocation);
 				continue;
 			}
-            if(filterbool.length>9) {
-                if ((filterbool[9] && filterableLocation.getHund())) {
-                    firstnlist.add(filterableLocation);
-                    continue;
-                }
-            }
-            if(filterbool.length>10) {
-                if ((filterbool[10] && filterableLocation.getRollstuhl())) {
-                    firstnlist.add(filterableLocation);
-                    continue;
-                }
-            }
-            if(filterbool.length>11) {
-                if ((filterbool[11] && filterableLocation.getKinderwagen())) {
-                    firstnlist.add(filterableLocation);
-                    continue;
-                }
-            }
-            if(filterbool.length>12) {
-                if ((filterbool[12] && filterableLocation.getGruppe())) {
-                    firstnlist.add(filterableLocation);
-                    continue;
-                }
-            }
+			
 
+            if(filterbool.length>8 && filterbool[8]) {
+                if (filterableLocation.getHund()) {
+                    bla[8]=1;
+                }else {
+					bla[8]=2;
+				}
+            }
+            if(filterbool.length>9 && filterbool[9]) {
+                if (filterableLocation.getRollstuhl()) {
+					bla[9]=1;
+                }else {
+					bla[9]=2;
+				}
+            }
+            if(filterbool.length>10 && filterbool[10]) {
+                if (filterableLocation.getKinderwagen()) {
+					bla[10]=1;
+                }else {
+					bla[10]=2;
+				}
+            }
+            if(filterbool.length>11 && filterbool[11]) {
+                if (filterableLocation.getGruppe()) {
+					bla[11]=1;
+                }else {
+					bla[11]=2;
+				}
+            }
+			if(filterbool.length>12 && filterbool[12]) {
+				if (filterableLocation.getTop_ausflugsziel()) {
+					bla[12]=1;
+				}else {
+					bla[12]=2;
+				}
+			}
+			boolean minZusFilter = true;
+			for (int j = 8; j < bla.length; j++) {
+				if(bla[j]==2){
+					minZusFilter = false;
+					break;
+				}
+			}
+			if(!minZusFilter){
+				continue;
+			}
+
+			int category = filterableLocation.getKat();
 			for(int j=1;j<filterbool.length;j++)
 			{
-                String category = filterableLocation.getKat();
-                int[] catIArray = Util.getIntArrayFromString(category);
-				if(filterbool[j] && catIArray[0]==j){
+				if(filterbool[j-1] && category==j){
 					firstnlist.add(filterableLocation);
 					break;
 				}

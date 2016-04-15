@@ -306,8 +306,13 @@ public class Activity_Detail extends AppCompatActivity {
 
             Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detailtoolbar);
             //toolbar.setTitle(ziel.getBeschreibung().toString());
+            String title = "";
+            if(ziel.getNummer()!=0){
+                title = String.valueOf(ziel.getNummer()) + "  ";
+            }
+            title = title + ziel.getName().toString();
             setSupportActionBar(toolbar);
-            getSupportActionBar().setTitle(String.valueOf(ziel.getNummer()) + "  " + ziel.getName().toString());
+            getSupportActionBar().setTitle(title);
 
             TextView name=((TextView) rootView.findViewById(R.id.detail_text_title));
             name.setText(String.valueOf(ziel.getName().toString()));

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
@@ -48,15 +49,26 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog builder = new AlertDialog.Builder(getActivity())
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, 3, 1, 0, 0, 0);
+        final long minDate = calendar.getTimeInMillis();
+        Calendar calendar2 = Calendar.getInstance();
+        calendar2.set(year+1, 2, 31, 23, 59, 0);
+        final long maxDate = calendar2.getTimeInMillis();
+        Calendar calendar3 = Calendar.getInstance();
+        long heute = calendar3.getTimeInMillis();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-            .setTitle(R.string.visitedChooseWhen)
-            .setPositiveButton(R.string.visitedtoday, new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.visitedChooseWhen);
+        // don't allow heute when year is not current year
+        if(heute>minDate && heute<maxDate && year==calendar3.get(Calendar.YEAR)) {
+            builder.setPositiveButton(R.string.visitedtoday, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     setVisited(new Date());
                 }
-            })
-            .setNegativeButton(R.string.visitedchoose, new DialogInterface.OnClickListener() {
+            });
+        }
+        builder.setNegativeButton(R.string.visitedchoose, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     Calendar newCalendar = Calendar.getInstance();
                     DatePickerDialog newFragment = new DatePickerDialog(mContext,new DatePickerDialog.OnDateSetListener() {
@@ -69,16 +81,20 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
                         }
 
                     },newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+
+                        newFragment.getDatePicker().setMinDate(minDate);
+                        newFragment.getDatePicker().setMaxDate(maxDate);
+                    }
                     newFragment.show();
                 }
-            })
-            .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            });
+        builder.setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User cancelled the dialog
                 }
-            })
-            .create();
-        return builder;
+            });
+        return builder.create();
     }
     private void setVisited(Date checkDate){
         if(this.id != -1 && this.year != -1){

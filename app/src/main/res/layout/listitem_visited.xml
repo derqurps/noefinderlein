@@ -3,66 +3,73 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="5dip">
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:minHeight="50dp">
 
     <TextView
         android:id="@+id/menuitem_sortnumber"
-        android:layout_width="35dip"
-        android:layout_height="35dip"
-        android:layout_alignParentLeft="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dip"
         android:background="@color/noecard_orange_dark"
         android:gravity="center_vertical|center_horizontal"
-        android:padding="3dip"
         android:textColor="#FFFFFF"
+        android:text="T380"
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/menuitem_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/menuitem_sortnumber"
-        android:layout_toRightOf="@+id/menuitem_sortnumber"
-        android:text="Schloss Artstetten"
-        android:textColor="@color/noecard_orange_dark"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:typeface="sans"
-        android:singleLine="true"/>
-
-    <TextView
-        android:id="@+id/menuitem_untertitel"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/menuitem_name"
-        android:layout_marginTop="1dip"
-        android:layout_toRightOf="@+id/menuitem_sortnumber"
-        android:text="Artstetten"
-        android:textColor="#343434"
-        android:textSize="10sp" />
     <RelativeLayout
+        android:id="@+id/allbutnr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="1dip"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true">
+        android:layout_toRightOf="@+id/menuitem_sortnumber"
+        android:layout_marginLeft="10dp">
         <TextView
-            android:id="@+id/menuitem_visiteddate"
+            android:id="@+id/menuitem_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2016-01-01"
-            android:textColor="#343434"
-            android:textSize="12sp" />
-        <TextView
-            android:id="@+id/menuitem_ersparnis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/menuitem_visiteddate"
-            android:text="Artstetten"
-            android:textColor="#343434"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/vis_right_elements"
+            android:text="TSchloss Artstetten  test test test test test test test"
+            android:textColor="@color/noecard_orange_dark"
+            android:textSize="16sp"
+            android:typeface="sans"
+            android:singleLine="true"/>
 
+        <TextView
+            android:id="@+id/menuitem_untertitel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/menuitem_name"
+            android:layout_marginTop="1dip"
+            android:text="TArtstetten"
+            android:textColor="#343434"
+            android:textSize="14sp" />
+        <RelativeLayout
+            android:id="@+id/vis_right_elements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="1dip"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true">
+            <TextView
+                android:id="@+id/menuitem_visiteddate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T2016-01-01"
+                android:textColor="#343434"
+                android:textSize="14sp" />
+            <TextView
+                android:id="@+id/menuitem_ersparnis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/menuitem_visiteddate"
+                android:text="T € 18,00"
+                android:textColor="#343434"
+                android:textSize="14sp" />
+        </RelativeLayout>
+    </RelativeLayout>
 </RelativeLayout>

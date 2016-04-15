@@ -16,6 +16,7 @@
         android:dependency="pref_overwrite_year_man"
         android:key="year_chosen_2"
         android:title="@string/str_man_year"
+        android:summary=""
         android:dialogTitle="@string/str_dialog_jahr_waehlen"
         android:entries="@array/pref_year"
         android:entryValues="@array/pref_year_val"

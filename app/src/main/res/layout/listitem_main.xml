@@ -31,7 +31,7 @@
             android:id="@+id/menuitem_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TSchloss Artstetten"
+            android:text="TSchloss Artstetten test test test test test test test"
             android:textColor="@color/noecard_orange_dark"
             android:textSize="16sp"
             android:fontFamily="sans-serif"

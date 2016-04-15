@@ -22,4 +22,6 @@
     <color name="black_overlay">#66000000</color>
     <color name="background_white">#FFFFFFFF</color>
     <color name="background_selected">#ffe1dddf</color>
+    <color name="black">#ff000000</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>

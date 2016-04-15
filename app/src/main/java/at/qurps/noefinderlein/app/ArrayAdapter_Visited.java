@@ -33,6 +33,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
 
     static class ViewHolder {
         protected TextView sortnumber;
+        protected TextView ort;
         protected TextView name;
         protected TextView ersparnis;
         protected TextView date;
@@ -48,6 +49,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
             view = inflator.inflate(R.layout.listitem_visited, null);
             final ViewHolder viewHolder = new ViewHolder();
             viewHolder.sortnumber = (TextView) view.findViewById(R.id.menuitem_sortnumber);
+            viewHolder.ort = (TextView) view.findViewById(R.id.menuitem_untertitel);
             viewHolder.name = (TextView) view.findViewById(R.id.menuitem_name);
             viewHolder.ersparnis = (TextView) view.findViewById(R.id.menuitem_ersparnis);
             viewHolder.date = (TextView) view.findViewById(R.id.menuitem_visiteddate);
@@ -60,8 +62,16 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
         }
         ViewHolder holder = (ViewHolder) view.getTag();
         //Log.d(TAG,String.valueOf(list.get(position).getSort()));
-        holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
+        int nummer = filteredData.get(position).getNummer();
+        if(nummer!= 0) {
+            holder.sortnumber.setVisibility(View.VISIBLE);
+            holder.sortnumber.setText(String.valueOf(nummer));
+        }else{
+            holder.sortnumber.setVisibility(View.GONE);
+        }
+        //holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
         holder.name.setText(filteredData.get(position).getName());
+        holder.ort.setText(filteredData.get(position).getAdr_ort());
 
         holder.ersparnis.setText(filteredData.get(position).getErsparnis());
 
@@ -170,9 +180,8 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
 
             for(int j=1;j<filterbool.length;j++)
             {
-                String category = filterableLocation.getKat();
-                int[] catIArray = Util.getIntArrayFromString(category);
-                if(filterbool[j] && catIArray[0]==j){
+                int category = filterableLocation.getKat();
+                if(filterbool[j] && category==j){
                     firstnlist.add(filterableLocation);
                     break;
                 }

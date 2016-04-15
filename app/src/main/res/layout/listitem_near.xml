@@ -52,7 +52,7 @@
             android:layout_marginTop="1dip"
             android:paddingRight="80dp"
             android:layout_toRightOf="@+id/burgschloessusw"
-            android:text="Artstetten"
+            android:text="TArtstetten"
             android:textColor="#343434"
             android:textSize="14sp"
             android:fontFamily="sans-serif"/>

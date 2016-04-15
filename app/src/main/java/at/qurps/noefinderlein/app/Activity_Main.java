@@ -138,7 +138,7 @@ public class Activity_Main extends AppCompatActivity implements
 
         ChangeLog cl = new ChangeLog(this);
         if (cl.firstRun()) {
-            cl.getLogDialog().show();
+            cl.getFullLogDialog().show();
         }
 
         if (!mPrefs.getBoolean(KEY_LICENCE_ACCEPTED, false)) {

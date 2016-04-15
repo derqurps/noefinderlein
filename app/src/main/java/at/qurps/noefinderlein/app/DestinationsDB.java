@@ -140,8 +140,8 @@ public class DestinationsDB {
             location.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_ID))));
             location.setNummer(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NUMMER))));
             location.setJahr(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_JAHR))));
-            location.setKat(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
-            location.setReg(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_REG)));
+            location.setKat(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
+            location.setReg(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_REG)));
             location.setName(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NAME)));
 
             cursor.close();
@@ -284,7 +284,7 @@ public class DestinationsDB {
                 location.setJahr(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_JAHR)));
     			location.setName(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NAME)));
     			location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
-    			location.setKat(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
+    			location.setKat(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
     			location.setAdr_ort(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_ADR_ORT)));
 
                 location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_HUND))));
@@ -368,7 +368,7 @@ public class DestinationsDB {
                 location.setJahr(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_JAHR)));
     			location.setName(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NAME)));
     			location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
-    			location.setKat(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
+    			location.setKat(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
     			location.setAdr_ort(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_ADR_ORT)));
                 location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_HUND))));
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_ROLLSTUHL))));
@@ -416,7 +416,7 @@ public class DestinationsDB {
                 location.setJahr(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_JAHR)));
     			location.setName(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NAME)));
     			location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
-    			location.setKat(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
+    			location.setKat(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
     			location.setAdr_ort(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_ADR_ORT)));
     			location.setLatitude(cursor.getDouble(cursor.getColumnIndex(Location_NoeC.KEY_LAT)));
     			location.setLongitude(cursor.getDouble(cursor.getColumnIndex(Location_NoeC.KEY_LON)));
@@ -574,8 +574,8 @@ public class DestinationsDB {
         location.setJahr(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_JAHR))));
         location.setChange_index(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_CHANGE_INDEX))));
 
-        location.setKat(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
-        location.setReg(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_REG)));
+        location.setKat(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_KAT)));
+        location.setReg(cursor.getInt(cursor.getColumnIndex(Location_NoeC.KEY_REG)));
         location.setEmail(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_EMAIL)));
         location.setName(cursor.getString(cursor.getColumnIndex(Location_NoeC.KEY_NAME)));
 

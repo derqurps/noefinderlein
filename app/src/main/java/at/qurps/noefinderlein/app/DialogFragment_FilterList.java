@@ -25,6 +25,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 	ImageView[] imgviewlist=new ImageView[13];
 	RelativeLayout[] RelativeLayoutlist=new RelativeLayout[13];
 	TextView[] textviewlist=new TextView[13];
+	public boolean[] bList = {true, true, true, true, true, true, true, true, false, false, false, false, false};
 	RelativeLayout RelativeLayoutfilter_all;
 	ImageView imgviewfilter_all;
 	TextView textviewfilter_all;
@@ -69,67 +70,65 @@ public class DialogFragment_FilterList extends DialogFragment {
 		View View_kompl =inflater.inflate(R.layout.dialog_filter, null);
 		// Inflate and set the layout for the dialog
 		// Pass null as the parent view because its going in the dialog layout
-		imgviewlist[0]= (ImageView)View_kompl.findViewById(R.id.toggletop);
-		imgviewlist[1]= (ImageView)View_kompl.findViewById(R.id.togglestift);
-		imgviewlist[2]= (ImageView)View_kompl.findViewById(R.id.toggleburguschloe);
-		imgviewlist[3]= (ImageView)View_kompl.findViewById(R.id.togglemuseeuausstell);
-		imgviewlist[4]= (ImageView)View_kompl.findViewById(R.id.toggleerlebnatur);
-		imgviewlist[5]= (ImageView)View_kompl.findViewById(R.id.togglesportufreiz);
-		imgviewlist[6]= (ImageView)View_kompl.findViewById(R.id.togglebergbahn);
-		imgviewlist[7]= (ImageView)View_kompl.findViewById(R.id.toggleschiffahrt);
-		imgviewlist[8]= (ImageView)View_kompl.findViewById(R.id.togglelokalbahn);
-        imgviewlist[9]= (ImageView)View_kompl.findViewById(R.id.togglehund);
-        imgviewlist[10]= (ImageView)View_kompl.findViewById(R.id.togglerollstuhl);
-        imgviewlist[11]= (ImageView)View_kompl.findViewById(R.id.togglekinderwagen);
-        imgviewlist[12]= (ImageView)View_kompl.findViewById(R.id.togglegruppen);
+
+		imgviewlist[0]= (ImageView)View_kompl.findViewById(R.id.togglestift);
+		imgviewlist[1]= (ImageView)View_kompl.findViewById(R.id.toggleburguschloe);
+		imgviewlist[2]= (ImageView)View_kompl.findViewById(R.id.togglemuseeuausstell);
+		imgviewlist[3]= (ImageView)View_kompl.findViewById(R.id.toggleerlebnatur);
+		imgviewlist[4]= (ImageView)View_kompl.findViewById(R.id.togglesportufreiz);
+		imgviewlist[5]= (ImageView)View_kompl.findViewById(R.id.togglebergbahn);
+		imgviewlist[6]= (ImageView)View_kompl.findViewById(R.id.toggleschiffahrt);
+		imgviewlist[7]= (ImageView)View_kompl.findViewById(R.id.togglelokalbahn);
+
+        imgviewlist[8]= (ImageView)View_kompl.findViewById(R.id.togglehund);
+        imgviewlist[9]= (ImageView)View_kompl.findViewById(R.id.togglerollstuhl);
+        imgviewlist[10]= (ImageView)View_kompl.findViewById(R.id.togglekinderwagen);
+        imgviewlist[11]= (ImageView)View_kompl.findViewById(R.id.togglegruppen);
+		imgviewlist[12]= (ImageView)View_kompl.findViewById(R.id.toggletop);
 		
-		RelativeLayoutlist[0]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggletop);
-		RelativeLayoutlist[1]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglestift);
-		RelativeLayoutlist[2]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleburguschloe);
-		RelativeLayoutlist[3]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglemuseeuausstell);
-		RelativeLayoutlist[4]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleerlebnatur);
-		RelativeLayoutlist[5]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglesportufreiz);
-		RelativeLayoutlist[6]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglebergbahn);
-		RelativeLayoutlist[7]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleschiffahrt);
-		RelativeLayoutlist[8]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglelokalbahn);
-        RelativeLayoutlist[9]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglehund);
-        RelativeLayoutlist[10]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglerollstuhl);
-        RelativeLayoutlist[11]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglekinderwagen);
-        RelativeLayoutlist[12]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglegruppen);
+
+		RelativeLayoutlist[0]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglestift);
+		RelativeLayoutlist[1]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleburguschloe);
+		RelativeLayoutlist[2]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglemuseeuausstell);
+		RelativeLayoutlist[3]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleerlebnatur);
+		RelativeLayoutlist[4]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglesportufreiz);
+		RelativeLayoutlist[5]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglebergbahn);
+		RelativeLayoutlist[6]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleschiffahrt);
+		RelativeLayoutlist[7]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglelokalbahn);
+        RelativeLayoutlist[8]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglehund);
+        RelativeLayoutlist[9]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglerollstuhl);
+        RelativeLayoutlist[10]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglekinderwagen);
+        RelativeLayoutlist[11]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglegruppen);
+		RelativeLayoutlist[12]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggletop);
 		
-		textviewlist[0]=(TextView)View_kompl.findViewById(R.id.text_toggletop);
-		textviewlist[1]=(TextView)View_kompl.findViewById(R.id.text_togglestift);
-		textviewlist[2]=(TextView)View_kompl.findViewById(R.id.text_toggleburguschloe);
-		textviewlist[3]=(TextView)View_kompl.findViewById(R.id.text_togglemuseeuausstell);
-		textviewlist[4]=(TextView)View_kompl.findViewById(R.id.text_toggleerlebnatur);
-		textviewlist[5]=(TextView)View_kompl.findViewById(R.id.text_togglesportufreiz);
-		textviewlist[6]=(TextView)View_kompl.findViewById(R.id.text_togglebergbahn);
-		textviewlist[7]=(TextView)View_kompl.findViewById(R.id.text_toggleschiffahrt);
-		textviewlist[8]=(TextView)View_kompl.findViewById(R.id.text_togglelokalbahn);
-        textviewlist[9]=(TextView)View_kompl.findViewById(R.id.text_togglehund);
-        textviewlist[10]=(TextView)View_kompl.findViewById(R.id.text_togglerollstuhl);
-        textviewlist[11]=(TextView)View_kompl.findViewById(R.id.text_togglekinderwagen);
-        textviewlist[12]=(TextView)View_kompl.findViewById(R.id.text_togglegruppen);
+
+		textviewlist[0]=(TextView)View_kompl.findViewById(R.id.text_togglestift);
+		textviewlist[1]=(TextView)View_kompl.findViewById(R.id.text_toggleburguschloe);
+		textviewlist[2]=(TextView)View_kompl.findViewById(R.id.text_togglemuseeuausstell);
+		textviewlist[3]=(TextView)View_kompl.findViewById(R.id.text_toggleerlebnatur);
+		textviewlist[4]=(TextView)View_kompl.findViewById(R.id.text_togglesportufreiz);
+		textviewlist[5]=(TextView)View_kompl.findViewById(R.id.text_togglebergbahn);
+		textviewlist[6]=(TextView)View_kompl.findViewById(R.id.text_toggleschiffahrt);
+		textviewlist[7]=(TextView)View_kompl.findViewById(R.id.text_togglelokalbahn);
+        textviewlist[8]=(TextView)View_kompl.findViewById(R.id.text_togglehund);
+        textviewlist[9]=(TextView)View_kompl.findViewById(R.id.text_togglerollstuhl);
+        textviewlist[10]=(TextView)View_kompl.findViewById(R.id.text_togglekinderwagen);
+        textviewlist[11]=(TextView)View_kompl.findViewById(R.id.text_togglegruppen);
+		textviewlist[12]=(TextView)View_kompl.findViewById(R.id.text_toggletop);
 		
 		RelativeLayoutfilter_all= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleall);
 		imgviewfilter_all= (ImageView)View_kompl.findViewById(R.id.toggleall);
 		textviewfilter_all=(TextView)View_kompl.findViewById(R.id.text_toggleall);
 
-        if(areAllFiltered()){
-            for (int i = 0; i < filterlist.length; i++) {
-                setInactive(i);
-                filterlist[i]=false;
-            }
-        }
-        else {
-            for (int i = 0; i < filterlist.length; i++) {
-                if (!filterlist[i]) {
-                    setInactive(i);
-                } else {
-                    setActive(i);
-                }
-            }
-        }
+
+		for (int i = 0; i < filterlist.length; i++) {
+			if (!filterlist[i]) {
+				setInactive(i);
+			} else {
+				setActive(i);
+			}
+		}
+
 		setAllOnOffFilter();
 		Dialog builder = new AlertDialog.Builder(getActivity())
 		.setIcon(R.drawable.ic_filter_full)
@@ -157,7 +156,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 			public void onClick(DialogInterface dialog, int id) {
 				DialogFragment_FilterList.this.getDialog().cancel();
 			}
-		}).create(); 
+		}).create();
 		
 		RelativeLayoutfilter_all.setOnClickListener(new OnClickListener() {
 			@Override
@@ -213,14 +212,9 @@ public class DialogFragment_FilterList extends DialogFragment {
 	}
 	private boolean[] filterlistForPositive(boolean[] filterlistinnen){
 
-        if(areNoneFiltered(filterlistinnen)){
-            boolean[] returnfilterlist = new boolean[filterlistinnen.length];
-            Arrays.fill(returnfilterlist, Boolean.TRUE);
-            return returnfilterlist;
-        }
-        else {
-            return filterlistinnen;
-        }
+
+		return filterlistinnen;
+
     }
 	private void setInactive(int i)
 	{

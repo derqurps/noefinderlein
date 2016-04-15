@@ -36,8 +36,8 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 34
-        versionName "1.0"
+        versionCode 40
+        versionName "1.0.2"
         multiDexEnabled true
     }
     signingConfigs {
@@ -83,6 +83,8 @@ dependencies {
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.google.android.gms:play-services-location:8.4.0'
+    //compile 'com.google.android.gms:play-services-gcm:8.4.0'
+    //compile 'com.google.android.gms:play-services-auth:8.4.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'joda-time:joda-time:2.9.2'
 }

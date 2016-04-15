@@ -222,8 +222,8 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                     newloc.setId(id);
                     newloc.setNummer(destination.getInt(Location_NoeC.KEY_NUMMER));
                     newloc.setJahr(destination.getInt(Location_NoeC.KEY_JAHR));
-                    newloc.setKat(destination.getString(Location_NoeC.KEY_KAT));
-                    newloc.setReg(destination.getString(Location_NoeC.KEY_REG));
+                    newloc.setKat(destination.getInt(Location_NoeC.KEY_KAT));
+                    newloc.setReg(destination.getInt(Location_NoeC.KEY_REG));
                     newloc.setName(destination.getString(Location_NoeC.KEY_NAME));
                     newloc.setLatitude(destination.getDouble(Location_NoeC.KEY_LAT));
                     newloc.setLongitude(destination.getDouble(Location_NoeC.KEY_LON));
@@ -245,8 +245,8 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
             newloc.setId(destinations.getInt(Location_NoeC.KEY_ID));
             newloc.setNummer(destinations.getInt(Location_NoeC.KEY_NUMMER));
             newloc.setJahr(destinations.getInt(Location_NoeC.KEY_JAHR));
-            newloc.setKat(destinations.getString(Location_NoeC.KEY_KAT));
-            newloc.setReg(destinations.getString(Location_NoeC.KEY_REG));
+            newloc.setKat(destinations.getInt(Location_NoeC.KEY_KAT));
+            newloc.setReg(destinations.getInt(Location_NoeC.KEY_REG));
             newloc.setName(destinations.getString(Location_NoeC.KEY_NAME));
             newloc.setEmail(destinations.getString(Location_NoeC.KEY_EMAIL));
             newloc.setLatitude(destinations.getDouble(Location_NoeC.KEY_LAT));

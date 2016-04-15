@@ -68,6 +68,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
     public ViewGroup mcontainer;
     public int mRegionItemNummer;
     public int mRegionItemJahr;
+	private Bundle msavedInstanceState;
 
 	private final BroadcastReceiver myBRDataUpd=new DataUpdate();
 
@@ -127,6 +128,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+		msavedInstanceState = savedInstanceState;
         Log.d(TAG,"--- hier "+ String.valueOf(savedInstanceState));
         if (savedInstanceState != null) {
             //Restore the fragment's state here
@@ -179,8 +181,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	public void onResume() {
 		super.onResume();
 		mContext.registerReceiver(myBRDataUpd, new IntentFilter("dataupdate"));
-		dbContentChanged();
-		adapter.notifyDataSetChanged();
+		//dbContentChanged();
+		//adapter.notifyDataSetChanged();
 	}
 	@Override
 	public void onPause() {
@@ -360,7 +362,6 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
         boolean noneset = true;
-        boolean allset = true;
 		for(int i=0;i<dest_typ_list.length;i++)
 		{
 			/*if(!sharedPref.getBoolean(dest_typ_list[i], true))
@@ -368,14 +369,11 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 				returnval=true;
 			}
             else {*/
-            if(sharedPref.getBoolean(dest_typ_list[i], true)){
+            if(sharedPref.getBoolean(dest_typ_list[i], false)){
                 noneset = false;
             }
-            else {
-                allset = false;
-            }
 		}
-        if(noneset || allset){
+        if(noneset){
             returnval=false;
         }
 		return returnval;
@@ -387,7 +385,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 
 		for(int i=0;i<dest_typ_list.length;i++)
 		{
-			returnbool[i]=sharedPref.getBoolean(dest_typ_list[i], true);
+			returnbool[i]=sharedPref.getBoolean(dest_typ_list[i], false);
 		}
 		return returnbool;
 	}

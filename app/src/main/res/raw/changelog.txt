@@ -17,11 +17,19 @@
     </style>
   </head>
   <body>
+$ 1.0.2
+  % Version 1.0.2
+  _ 2016-04-15
+    * Fix für ListItems in Nahe Ziele und Besichtigte Ziele (Ort wurde nicht ausgefüllt)
+    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich dies jedes Jahr halb automatisch generieren. Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese immer im orangefarbenen Kästchen neben dem Namen. Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter <b><a href="https://docs.google.com/spreadsheets/d/1RGr-bYEiZbM_NB-1y8jM54ONqpDhrOfLogCq9LIY7yA/edit?usp=sharing">diesem Google Calc Link</a></b>
+$ 1.0.1
+  % Version 1.0.1
+  _ 2016-04-15
+    * Fix für Devices < API Level 21 (Vektor Graphics)
 $ 1.0.0
   % Version 1.0.0
   _ 2016-04-13
     * Aufgrund von div. API-Änderungen musste ich vor dem Release der neuen Version vieles neu und hoffentlich besser machen.
-    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich dies jedes Jahr halb automatisch generieren. Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese immer im orangefarbenen Kästchen neben dem Namen. Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter <b><a href="https://docs.google.com/spreadsheets/d/1RGr-bYEiZbM_NB-1y8jM54ONqpDhrOfLogCq9LIY7yA/edit?usp=sharing">diesem Google Calc Link</a></b>
     * Der Datenbestand ist jetzt weitestgehend von der App Entwicklung entkoppelt. Dies deutet sich auch durch den Download der Ziele an, die nicht mehr mit der App mitgeliefert werden. Somit sollte das Problem, das die besichtigten Ziele mit jedem neuen Jahr wieder verschwinden, für die ab jetzt kommenden Jahre gelöst sein.
     * Die App ist jetzt Open Source (<b><a href="https://github.com/derqurps/noefinderlein">NÖ Finderlein auf Github</a></b>) somit können gewünschte Verbesserungen auch direkt gleich als Pull-Request zu Verfügung gestellt werden.
 $ 0.7.7

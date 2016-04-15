@@ -42,8 +42,8 @@ public class Location_NoeC implements ClusterItem {
     int _id;
 	int _nummer;
     int _jahr;
-	String _kat;
-	String _reg;
+	int _kat;
+	int _reg;
 	String _name;
 	String _email;
 	double _latitude;
@@ -84,8 +84,8 @@ public class Location_NoeC implements ClusterItem {
 	public Location_NoeC(int id,
 						 int nummer,
 						 int jahr,
-						 String kat,
-						 String reg,
+						 int kat,
+						 int reg,
 						 String name,
 						 String email,
 						 float latitude,
@@ -148,8 +148,8 @@ public class Location_NoeC implements ClusterItem {
 	public Location_NoeC(int id,
 						 int nummer,
 						 int jahr,
-						 String kat,
-						 String reg,
+						 int kat,
+						 int reg,
 						 String name){
 		this._id= id;
 		this._nummer = nummer;
@@ -187,19 +187,19 @@ public class Location_NoeC implements ClusterItem {
 
 	
 	// getting kat
-	public String getKat(){
+	public int getKat(){
 		return this._kat;
 	}
 	// setting kat
-	public void setKat(String kat){
+	public void setKat(int kat){
 		this._kat = kat;
 	}
 	// getting reg
-	public String getReg(){
+	public int getReg(){
 		return this._reg;
 	}
 	// setting reg
-	public void setReg(String reg){
+	public void setReg(int reg){
 		this._reg = reg;
 	}
 	// getting name

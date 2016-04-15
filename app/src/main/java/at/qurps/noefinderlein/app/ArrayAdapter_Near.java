@@ -40,6 +40,7 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
 
     static class ViewHolder {
         protected TextView sortnumber;
+        protected TextView ort;
         protected TextView name;
         protected TextView distance_to_destination;
         protected ImageView destinationarrow;
@@ -54,6 +55,7 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
             view = inflator.inflate(R.layout.listitem_near, null);
             final ViewHolder viewHolder = new ViewHolder();
             viewHolder.sortnumber = (TextView) view.findViewById(R.id.menuitem_sortnumber);
+            viewHolder.ort = (TextView) view.findViewById(R.id.menuitem_untertitel);
             viewHolder.name = (TextView) view.findViewById(R.id.menuitem_name);
             viewHolder.distance_to_destination = (TextView) view.findViewById(R.id.distancetodestination);
             viewHolder.destinationarrow = (ImageView) view.findViewById(R.id.compastodest);
@@ -75,51 +77,51 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
             holder.sortnumber.setVisibility(View.GONE);
         }
         holder.name.setText(filteredData.get(position).getName());
+        holder.ort.setText(filteredData.get(position).getAdr_ort());
 
         holder.distance_to_destination.setText(Util.getmkmdistance(filteredData.get(position).getDistance()));
 
-        String category = filteredData.get(position).getKat();
-        int[] catIArray = Util.getIntArrayFromString(category);
-        switch (catIArray[0])
+        int category = filteredData.get(position).getKat();
+        switch (category)
         {
             case 1:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_stifte);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_stifte);
                 break;
             }
             case 2:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_burgen_schloesser);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_burgen_schloesser);
                 break;
             }
             case 3:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_museen_ausstellungen);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_museen_ausstellungen);
                 break;
             }
             case 4:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_erlebnis_natur);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_erlebnis_natur);
                 break;
             }
             case 5:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_sport_und_freizeit);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_sport_und_freizeit);
                 break;
             }
             case 6:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_bergbahnen);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_bergbahnen);
                 break;
             }
             case 7:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_schifffahrt);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_schifffahrt);
                 break;
             }
             case 8:
             {
-                holder.burgstiftusw.setImageResource(R.drawable.ic_lokalbahn);
+                holder.burgstiftusw.setImageResource(R.mipmap.ic_lokalbahn);
                 break;
             }
         }
