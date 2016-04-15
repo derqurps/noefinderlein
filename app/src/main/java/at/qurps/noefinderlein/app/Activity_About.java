@@ -63,5 +63,12 @@ public class Activity_About extends AppCompatActivity {
                 cl.getFullLogDialog().show();
             }
         });
+        ((LinearLayout) rootView.findViewById(R.id.about_githubbug)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String url = "https://github.com/derqurps/noefinderlein/issues";
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
     }
 }
