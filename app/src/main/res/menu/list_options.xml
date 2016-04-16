@@ -9,6 +9,12 @@
         noecard:showAsAction="always|collapseActionView"
         android:title="@string/title_menu_search"/>
     <item
+        android:id="@+id/actionb_sort_list"
+        android:icon="@drawable/ic_sort_by_alpha"
+        noecard:showAsAction="always|collapseActionView"
+        android:title="@string/title_menu_sort"
+        />
+    <item
         android:id="@+id/actionb_filter_list"
         android:icon="@drawable/ic_filter"
         noecard:showAsAction="always|collapseActionView"

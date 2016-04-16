@@ -439,6 +439,14 @@ public class DestinationsDB {
 
     	return cursor.getCount(); // return count
     }
+    // Getting contacts Count
+    public int getLocationsCountToYear(int year) {
+        String countQuery = "SELECT  * FROM " + Location_NoeC.TABLE_NAME+" WHERE "+Location_NoeC.KEY_JAHR +"="+String.valueOf(year);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        return cursor.getCount(); // return count
+    }
 
     // Getting All locations as Cursor
     public Cursor getAllLocations_asCursor() {
@@ -491,6 +499,8 @@ public class DestinationsDB {
 
     	ContentValues values = new ContentValues();
         values.put(Location_NoeC.KEY_ID,location.getId());
+        values.put(Location_NoeC.KEY_NUMMER, location.getNummer());
+        values.put(Location_NoeC.KEY_JAHR, location.getJahr());
     	values.put(Location_NoeC.KEY_KAT,location.getKat());
     	values.put(Location_NoeC.KEY_REG,location.getReg());
     	values.put(Location_NoeC.KEY_NAME, location.getName());
@@ -517,7 +527,6 @@ public class DestinationsDB {
         values.put(Location_NoeC.KEY_TOP_AUSFLUGSZIEL,location.getTop_ausflugsziel());
         values.put(Location_NoeC.KEY_CHANGED_DATE,location.getChanged_date());
         values.put(Location_NoeC.KEY_CHANGE_INDEX,location.getChange_index());
-        values.put(Location_NoeC.KEY_FAVORIT,location.getFavorit());
         
     	// updating row
     	return db.update(Location_NoeC.TABLE_NAME,
@@ -662,7 +671,21 @@ public class DestinationsDB {
         }
 
     }
-
+    public boolean areNumbersAvailable(int year){
+        int countpyear = getLocationsCountToYear(year);
+        String Query = "SELECT " + Location_NoeC.KEY_ID + " FROM " + Location_NoeC.TABLE_NAME + " WHERE " + Location_NoeC.KEY_JAHR + " = " + String.valueOf(year) + " AND "+Location_NoeC.KEY_NUMMER+"!=0";
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery(Query,null);
+        //Log.d("cursor: ",DatabaseUtils.dumpCursorToString(cursor));
+        int count = 0;
+        count=cursor.getCount();
+        if(count != countpyear){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
     private boolean getBooleanfromInt(int x)
     {
     	return x == 1;

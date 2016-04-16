@@ -138,11 +138,17 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
 
                 }
                 if (updateneeded == 1) {
-                    String putBody = db.getStringAktDates(year);
-                    Log.d(TAG, putBody);
+                    String jsonStrakt;
                     ServiceHandler_GETPOSTPUT shput = new ServiceHandler_GETPOSTPUT();
-                    String jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
-                    Log.d(TAG, String.valueOf(jsonStrakt));
+                    if(year==2016 && !db.areNumbersAvailable(year)){
+                        jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
+                    }else {
+                        String putBody = db.getStringAktDates(year);
+                        Log.d(TAG, putBody);
+
+                        jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
+                        Log.d(TAG, String.valueOf(jsonStrakt));
+                    }
                     if (jsonStrakt != null) {
                         try {
                             JSONArray nummern = new JSONArray(jsonStrakt);

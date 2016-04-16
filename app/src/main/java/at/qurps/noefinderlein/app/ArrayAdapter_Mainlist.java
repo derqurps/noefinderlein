@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*implements SectionIndexer*/ {
@@ -23,6 +25,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 	private boolean[] filtertyp;
 	private static final String TAG = "Mainlist-ArrayAdapter";
     //private static String sections = "abcdefghijklmnopqrstuvwxyz";
+	private int anz;
 
 	public ArrayAdapter_Mainlist(Context context, List<Location_NoeC> list) {
 		super(context, R.layout.listitem_main, list);
@@ -30,6 +33,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		//this.list = list;
 		this.filteredData = list ;
 		this.originalData = list ;
+		this.anz = DialogFragment_FilterList.anz;
 	}
 
 	static class ViewHolder {
@@ -228,10 +232,19 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		int count = firstlist.size();
 		final ArrayList<Location_NoeC> firstnlist = new ArrayList<Location_NoeC>(count);
 		boolean zusfilt = true;
+		boolean zusfiltTop = true;
 		for (boolean t:filterbool) {
 			if(t){
 				zusfilt = false;
 				break;
+			}
+		}
+		if(filterbool.length>anz-1) {
+			for (int i = 0; i < anz; i++) {
+				if(filterbool[i]){
+					zusfiltTop = false;
+					break;
+				}
 			}
 		}
 		Location_NoeC filterableLocation ;
@@ -290,15 +303,17 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 			if(!minZusFilter){
 				continue;
 			}
-
-			int category = filterableLocation.getKat();
-			for(int j=1;j<filterbool.length;j++)
-			{
-				if(filterbool[j-1] && category==j){
-					firstnlist.add(filterableLocation);
-					break;
+			if(zusfiltTop){
+				firstnlist.add(filterableLocation);
+			}else {
+				int category = filterableLocation.getKat();
+				for (int j = 1; j < filterbool.length; j++) {
+					if (filterbool[j - 1] && category == j) {
+						firstnlist.add(filterableLocation);
+						break;
+					}
 				}
-			}	
+			}
 		}
 
 
@@ -345,6 +360,21 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		} else {
 			notifyDataSetInvalidated();
 		}
+	}
+	public void sortBy(final int what){
+		Collections.sort(filteredData, new Comparator<Location_NoeC>() {
+			@Override
+			public int compare(Location_NoeC item1, Location_NoeC item2) {
+				switch (what){
+					case Fragment_LocationList.SORT_BY_NAME:
+						return item1.getName().compareTo(item2.getName());
+					default:
+					case Fragment_LocationList.SORT_BY_NOECNUM:
+						return item1.getNummer()-item2.getNummer();
+				}
+			}
+		});
+		notifyDataSetChanged();
 	}
 	
 }

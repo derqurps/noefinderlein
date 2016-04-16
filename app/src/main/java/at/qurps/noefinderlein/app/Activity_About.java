@@ -70,5 +70,18 @@ public class Activity_About extends AppCompatActivity {
                 startActivity(browserIntent);
             }
         });
+        ((LinearLayout) rootView.findViewById(R.id.about_emailbug)).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String email = "derqurps@gmail.com";
+                final Intent emailIntent = new Intent(Intent.ACTION_SEND);
+
+                        /* Fill it with Data */
+                emailIntent.setType("plain/text");
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{email});
+
+                        /* Send it off to the Activity-Chooser */
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            }
+        });
     }
 }

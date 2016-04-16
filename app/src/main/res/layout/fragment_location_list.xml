@@ -14,13 +14,41 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/finderlein_logo_512x512_bw"
         android:layout_margin="30dp" />-->
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toptext">
 
+        <TextView
+            android:id="@+id/mainlist_filtertext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/mainlist_regiontext"
+            android:text="@string/filteractive"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:background="@color/noecard_blue"
+            android:textColor="@color/noecard_white"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/mainlist_regiontext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TWienerwald"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:background="@color/noecard_blue"
+            android:textColor="@color/noecard_white"
+            android:layout_marginBottom="1dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/toptext"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:fastScrollEnabled="true"

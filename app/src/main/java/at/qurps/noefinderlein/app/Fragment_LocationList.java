@@ -3,16 +3,19 @@ package at.qurps.noefinderlein.app;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,7 +24,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,10 +50,15 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	 */
     public static final String TAG = "Fragment_LocationList";
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
-	public static final String ARG_ITEM_NUMMER = "item_nummer" ;
     public static final String ARG_ITEM_JAHR = "item_jahr" ;
 	public static final String ARG_MTWOPANE ="mTwoPane" ;
 	public static final String ARG_ISREGION ="isRegion" ;
+    public static final String ARG_REGION ="item_Region" ;
+	public static final String ARG_REGION_NAME ="item_Region_name" ;
+    public static final String PREF_SORT_STRING ="sort_by" ;
+
+    public static final int SORT_BY_NAME = 1;
+    public static final int SORT_BY_NOECNUM = 2;
 	/**
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
@@ -62,6 +73,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	private DestinationsDB db;
 	private  Context mContext;
 	public boolean mIsRegion=false;
+    private int mRegion;
+	private String mRegionName="";
 	List<Location_NoeC> listItems=new ArrayList<Location_NoeC>();
     ArrayAdapter_Mainlist adapter;
 	private boolean mTwoPane;
@@ -69,6 +82,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
     public int mRegionItemNummer;
     public int mRegionItemJahr;
 	private Bundle msavedInstanceState;
+	private View rootView;
 
 	private final BroadcastReceiver myBRDataUpd=new DataUpdate();
 
@@ -115,7 +129,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
         //container.removeAllViews();
         mcontainer=container;
         ChangeView(getArguments());
@@ -133,8 +147,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
         if (savedInstanceState != null) {
             //Restore the fragment's state here
             mIsRegion=savedInstanceState.getBoolean(ARG_ISREGION);
+            mRegion=savedInstanceState.getInt(ARG_REGION);
             mTwoPane=savedInstanceState.getBoolean(ARG_MTWOPANE);
-            mRegionItemNummer=savedInstanceState.getInt(ARG_ITEM_NUMMER);
             mRegionItemJahr=savedInstanceState.getInt(ARG_ITEM_JAHR);
         }
         // Restore the previously serialized activated item position.
@@ -150,33 +164,46 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 			if (arguments.containsKey(ARG_ISREGION)) {
 				mIsRegion = arguments.getBoolean(ARG_ISREGION);
 			}
+            if (arguments.containsKey(ARG_REGION)) {
+                mRegion = arguments.getInt(ARG_REGION);
+            }
 			if (arguments.containsKey(ARG_MTWOPANE)) {
 				mTwoPane = arguments.getBoolean(ARG_MTWOPANE);
 
 			}
-			if (arguments.containsKey(ARG_ITEM_NUMMER)) {
-				mRegionItemNummer = arguments.getInt(ARG_ITEM_NUMMER);
+			if (arguments.containsKey(ARG_REGION_NAME)) {
+				mRegionName = arguments.getString(ARG_REGION_NAME);
+
 			}
 			if (arguments.containsKey(ARG_ITEM_JAHR)) {
 				mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
 			}
 			Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
 		}
+
+        final TextView txt = (TextView)rootView.findViewById(R.id.mainlist_regiontext);
+
+        if (mRegionName != "" && txt != null) {
+            txt.setText(mRegionName);
+            txt.setVisibility(View.VISIBLE);
+		}else{
+            txt.setVisibility(View.GONE);
+        }
 		dbContentChanged();
 	}
 
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        // Activities containing this fragment must implement its callbacks.
+        if (!(context instanceof Callbacks)) {
+            throw new IllegalStateException(
+                    "Activity must implement fragment's callbacks.");
+        }
 
-		// Activities containing this fragment must implement its callbacks.
-		if (!(activity instanceof Callbacks)) {
-			throw new IllegalStateException(
-					"Activity must implement fragment's callbacks.");
-		}
-
-		mCallbacks = (Callbacks) activity;
-	}
+        mCallbacks = (Callbacks) context;
+    }
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -216,11 +243,14 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 			// Serialize and persist the activated item position.
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 		}
-        if(mRegionItemNummer!=-1){
-            outState.putInt(ARG_ITEM_NUMMER, mRegionItemNummer);
-        }
         if(mRegionItemJahr!=-1){
-            outState.putInt(ARG_ITEM_NUMMER, mRegionItemJahr);
+            outState.putInt(ARG_ITEM_JAHR, mRegionItemJahr);
+        }
+
+        outState.putBoolean(ARG_ISREGION, mIsRegion);
+        outState.putBoolean(ARG_MTWOPANE, mTwoPane);
+        if(mRegion!=-1){
+            outState.putInt(ARG_REGION, mRegion);
         }
 	}
 	public class DataUpdate extends BroadcastReceiver {
@@ -237,9 +267,9 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		}
 	}
 	public void dbContentChanged(){
-		if (mIsRegion==true)
+		if (mIsRegion)
 		{
-			listItems = db.getAllMenuLocationstoRegion(mRegionItemNummer,mRegionItemJahr);
+			listItems = db.getAllMenuLocationstoRegion(mRegion,mRegionItemJahr);
 		}
 		else
 		{
@@ -247,8 +277,11 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 			listItems = db.getAllMenuLocations(mRegionItemJahr);
 		}
 		//Log.d(TAG," --- size "+String.valueOf(listItems.get(0).getName()));
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        int sortByWhat = sharedPref.getInt(PREF_SORT_STRING,0);
 		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
 		onDialogPositiveClick(getFilterliste());
+        sortBy(sortByWhat);
 		setListAdapter(adapter);
 	}
 	/**
@@ -319,6 +352,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
             }
         });
 		Util.colorMenuItems(mContext, menu,R.id.search_list_actionbar, R.color.noecard_white);
+        Util.colorMenuItems(mContext, menu,R.id.actionb_sort_list, R.color.noecard_white);
 		Util.colorMenuItems(mContext, menu,R.id.actionb_filter_list, R.color.noecard_white);
 		Util.colorMenuItems(mContext, menu,R.id.actionb_show_current_in_map, R.color.noecard_white);
 
@@ -333,6 +367,26 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 			newFragment.setListener(Fragment_LocationList.this);
 		    newFragment.show(Fragment_LocationList.this.getActivity().getSupportFragmentManager(), "filter");
 			return true;
+        case R.id.actionb_sort_list:
+            AlertDialog.Builder SortDBuilder = new AlertDialog.Builder(mContext);
+            final SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            SortDBuilder.setCancelable(true);
+            SortDBuilder.setTitle(R.string.sortby);
+            SortDBuilder.setPositiveButton(R.string.sort_name, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    sharedPref.edit().putInt(PREF_SORT_STRING, SORT_BY_NAME).apply();
+                    sortBy(SORT_BY_NAME);
+                }
+            });
+            SortDBuilder.setNegativeButton(R.string.sort_noecnum, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    sharedPref.edit().putInt(PREF_SORT_STRING, SORT_BY_NOECNUM).apply();
+                    sortBy(SORT_BY_NOECNUM);
+                }
+            });
+            SortDBuilder.create().show();
+
+            return true;
 		case R.id.actionb_show_current_in_map:
 
             mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
@@ -357,6 +411,9 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		ActivityCompat.invalidateOptionsMenu(getActivity());
 		adapter.filterwithtyp(filterlist);
     }
+    private void sortBy(int what){
+        adapter.sortBy(what);
+    }
 	private boolean isFilterSet(){
 		boolean returnval=true;
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -376,7 +433,27 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
         if(noneset){
             returnval=false;
         }
+        showFilterActive(returnval);
 		return returnval;
+	}
+	private void showFilterActive(boolean filtered){
+		final TextView txt = (TextView)rootView.findViewById(R.id.mainlist_filtertext);
+		if(filtered && txt.getVisibility()==View.GONE){
+            txt.setVisibility(View.VISIBLE);
+			final Animation animLinearDown = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_top);
+			txt.startAnimation(animLinearDown);
+		}else if(!filtered && txt.getVisibility()==View.VISIBLE){
+			final Animation animLinearUp = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_top);
+            animLinearUp.setAnimationListener(new Animation.AnimationListener() {
+                public void onAnimationStart(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationEnd(Animation animation) {
+                    txt.setVisibility(View.GONE);
+                }
+            });
+			txt.startAnimation(animLinearUp);
+
+		}
 	}
 	private boolean[] getFilterliste(){
         String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);

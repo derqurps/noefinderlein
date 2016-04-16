@@ -14,6 +14,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -54,6 +55,7 @@ public class Activity_Main extends AppCompatActivity implements
             Fragment_LocationList.Callbacks,
             Fragment_LocationNear.Callbacks,
             Fragment_LocationFavorits.Callbacks,
+            Fragment_Regions.Callbacks,
             Downloader_Destination.Callbacks{
 
     private static final String TAG = "Activity_Main";
@@ -119,8 +121,7 @@ public class Activity_Main extends AppCompatActivity implements
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        nav_view.setNavigationItemSelectedListener(this);
 
 
 
@@ -291,12 +292,18 @@ public class Activity_Main extends AppCompatActivity implements
 
         if (id == R.id.nav_all) {
             startDefaultScreen();
+        } else if (id == R.id.nav_region) {
+            startRegionsScreen();
         } else if (id == R.id.nav_favorites) {
             startFavoritsScreen();
         } else if (id == R.id.nav_visited) {
             startVisitedScreen();
         } else if (id == R.id.nav_near) {
             startNearScreen();
+        } else if (id == R.id.nav_money) {
+            String url = String.valueOf("https://noecard.reitschmied.at/donate");
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            startActivity(browserIntent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Activity_Settings.class);
             startActivity(intent);
@@ -371,14 +378,54 @@ public class Activity_Main extends AppCompatActivity implements
     }
 
     private void startDefaultScreen(){
+        startDefaultScreen(false,0,"", true);
+    }
+    private void startDefaultScreen(boolean isRegion, int regionId, String name, boolean forcereplace){
         Fragment_LocationList testfrag = (Fragment_LocationList) getSupportFragmentManager().findFragmentByTag(Fragment_LocationList.TAG);
-        if(testfrag==null || !testfrag.isVisible()) {
+        Fragment_Regions testReg = (Fragment_Regions) getSupportFragmentManager().findFragmentByTag(Fragment_Regions.TAG);
+        if(testfrag==null || !testfrag.isVisible() || (forcereplace && name.equals(""))) {
             Bundle arguments = new Bundle();
             arguments.putInt(Fragment_LocationList.ARG_ITEM_JAHR, mActiveyear);
             arguments.putBoolean(Fragment_LocationList.ARG_MTWOPANE, mTwoPane);
-            arguments.putBoolean(Fragment_LocationList.ARG_ISREGION, false);
+            arguments.putBoolean(Fragment_LocationList.ARG_ISREGION, isRegion);
+            arguments.putInt(Fragment_LocationList.ARG_REGION, regionId);
+            arguments.putString(Fragment_LocationList.ARG_REGION_NAME, name);
 
             Fragment_LocationList fragment = new Fragment_LocationList();
+            fragment.setArguments(arguments);
+            FragmentManager man = getSupportFragmentManager();
+
+            if (man.getBackStackEntryCount() > 0) {
+                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+            }
+
+            man.beginTransaction().remove(fragment).commit();
+            FragmentTransaction transABla = man.beginTransaction();
+            transABla.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left);
+            transABla.replace(R.id.region_list_container, fragment, Fragment_LocationList.TAG);
+            transABla.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+            if(testReg != null && testReg.isVisible()) {
+                transABla.addToBackStack(Fragment_Regions.TAG);
+            }
+            transABla.commit();
+                /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
+                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
+                    Log.d(TAG," lalala----");
+                    onItemSelected(0);
+                }*/
+        }
+    }
+    private void startRegionsScreen(){
+        Fragment_Regions testfrag = (Fragment_Regions) getSupportFragmentManager().findFragmentByTag(Fragment_Regions.TAG);
+        if(testfrag==null || !testfrag.isVisible()) {
+            Bundle arguments = new Bundle();
+            arguments.putInt(Fragment_Regions.ARG_ITEM_JAHR, mActiveyear);
+            arguments.putBoolean(Fragment_Regions.ARG_MTWOPANE, mTwoPane);
+
+            Fragment_Regions fragment = new Fragment_Regions();
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
@@ -389,7 +436,7 @@ public class Activity_Main extends AppCompatActivity implements
             man.beginTransaction().remove(fragment).commit();
             man.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
-                    .replace(R.id.region_list_container, fragment, Fragment_LocationList.TAG)
+                    .replace(R.id.region_list_container, fragment, Fragment_Regions.TAG)
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
@@ -703,5 +750,10 @@ public class Activity_Main extends AppCompatActivity implements
     @Override
     public void onConnectionSuspended(int i) {
 
+    }
+
+    @Override
+    public void onRegionSelected(int i, String name) {
+        startDefaultScreen(true, i, name, false);
     }
 }

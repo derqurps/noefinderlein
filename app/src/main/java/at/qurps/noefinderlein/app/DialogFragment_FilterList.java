@@ -25,7 +25,6 @@ public class DialogFragment_FilterList extends DialogFragment {
 	ImageView[] imgviewlist=new ImageView[13];
 	RelativeLayout[] RelativeLayoutlist=new RelativeLayout[13];
 	TextView[] textviewlist=new TextView[13];
-	public boolean[] bList = {true, true, true, true, true, true, true, true, false, false, false, false, false};
 	RelativeLayout RelativeLayoutfilter_all;
 	ImageView imgviewfilter_all;
 	TextView textviewfilter_all;
@@ -44,6 +43,7 @@ public class DialogFragment_FilterList extends DialogFragment {
           };
 
     ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
+	public static final int anz=8;
 
 	public DialogFragment_FilterList() {
 		
@@ -57,7 +57,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 		String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
 		for(int i=0;i<filterlist.length;i++)
 		{
-			filterlist[i]=sharedPref.getBoolean(dest_typ_list[i], true);
+			filterlist[i]=sharedPref.getBoolean(dest_typ_list[i], false);
 		}
 		
 	}
@@ -95,6 +95,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 		RelativeLayoutlist[5]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglebergbahn);
 		RelativeLayoutlist[6]= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleschiffahrt);
 		RelativeLayoutlist[7]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglelokalbahn);
+
         RelativeLayoutlist[8]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglehund);
         RelativeLayoutlist[9]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglerollstuhl);
         RelativeLayoutlist[10]= (RelativeLayout)View_kompl.findViewById(R.id.rel_togglekinderwagen);
@@ -111,6 +112,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 		textviewlist[6]=(TextView)View_kompl.findViewById(R.id.text_toggleschiffahrt);
 		textviewlist[7]=(TextView)View_kompl.findViewById(R.id.text_togglelokalbahn);
         textviewlist[8]=(TextView)View_kompl.findViewById(R.id.text_togglehund);
+
         textviewlist[9]=(TextView)View_kompl.findViewById(R.id.text_togglerollstuhl);
         textviewlist[10]=(TextView)View_kompl.findViewById(R.id.text_togglekinderwagen);
         textviewlist[11]=(TextView)View_kompl.findViewById(R.id.text_togglegruppen);
@@ -161,18 +163,18 @@ public class DialogFragment_FilterList extends DialogFragment {
 		RelativeLayoutfilter_all.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int anzchecked=checkifAllfiltered();
-				if(anzchecked==filterlist.length)
+				int anzchecked=checkifAllTopfiltered();
+				if(anzchecked==anz)
 				{
-					Arrays.fill(filterlist, Boolean.FALSE);
+					filterlist = fillTopFilter(filterlist, Boolean.FALSE);
 				}
 				else if(anzchecked==0)
 				{
-					Arrays.fill(filterlist, Boolean.TRUE);
+					filterlist = fillTopFilter(filterlist, Boolean.TRUE);
 				}
 				else
 				{
-					Arrays.fill(filterlist, Boolean.TRUE);
+					filterlist = fillTopFilter(filterlist, Boolean.TRUE);
 				}
 				for(int i=0;i<filterlist.length;i++)
 				{
@@ -210,6 +212,15 @@ public class DialogFragment_FilterList extends DialogFragment {
 		}
 		return builder;
 	}
+	private boolean[] fillTopFilter(boolean[] list, boolean set){
+
+		if(list.length>anz-1) {
+			for (int i = 0; i < anz; i++) {
+				list[i]=set;
+			}
+		}
+		return list;
+	}
 	private boolean[] filterlistForPositive(boolean[] filterlistinnen){
 
 
@@ -233,12 +244,13 @@ public class DialogFragment_FilterList extends DialogFragment {
 	public void setListener(NoticeDialogListener listener) {
         mListener = listener;
     }
-	private int checkifAllfiltered(){
+	private int checkifAllTopfiltered(){
 		int truevar=0;
-		for(int i=0;i<filterlist.length;i++)
-		{
-			if(filterlist[i])
-				truevar++;
+		if(filterlist.length>anz-1) {
+			for (int i = 0; i < anz; i++) {
+				if (filterlist[i])
+					truevar++;
+			}
 		}
 		return truevar;
 	}
@@ -264,8 +276,8 @@ public class DialogFragment_FilterList extends DialogFragment {
         return returnvar;
     }
 	private void setAllOnOffFilter(){
-		int truevar=checkifAllfiltered();
-		if(truevar==filterlist.length)
+		int truevar=checkifAllTopfiltered();
+		if(truevar==anz)
 		{
 			RelativeLayoutfilter_all.setBackgroundColor(Color.TRANSPARENT);
 			imgviewfilter_all.setImageResource(R.mipmap.ic_hakerl_active);

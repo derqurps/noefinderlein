@@ -72,9 +72,15 @@
     <string name="toast_no_geo_app_found">Keine App für GEO Daten gefunden - Bitte Google Maps installieren</string>
     <string name="title_menu_filter">Liste Filtern</string>
     <string name="title_menu_search">In Liste suchen</string>
+    <string name="title_menu_sort">Liste sortieren</string>
     <string name="title_menu_refresh">Liste aktualisieren</string>
     <string name="test_blabla">blablablablablabla</string>
     <string name="filter">Filter Setzen</string>
+    <string name="filteractive">Filter aktiv</string>
+
+    <string name="sortby">Sortieren nach...?</string>
+    <string name="sort_name">Namen</string>
+    <string name="sort_noecnum">NöCard Nummer</string>
     <string name="cancel">Abbrechen</string>
     <string name="nothing"></string>
     <string name="filter_typ_top">Top\nAusflugsziel</string>
@@ -121,7 +127,9 @@
     <string name="pref_description_download_new">Aktualisierungen aus dem Internet abrufen</string>
     <string name="overwrite_year_summary">Soll der automatische Jahreswechsel ausgeschaltet werden?</string>
     <string name="overwrite_year_title">Jahr selber festlegen</string>
+    <string name="str_donate">Dem Entwickler spenden</string>
     <string name="str_navdraw_show_data">Alle</string>
+    <string name="str_navdraw_show_region">Regionen</string>
     <string name="str_settings">Einstellungen</string>
     <string name="str_nav_draw_act_year_descr">Gewähltes Jahr:</string>
     <string name="str_infoficial_app">Inoffizielle Niederösterreich-CARD-App</string>
