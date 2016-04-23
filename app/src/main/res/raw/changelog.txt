@@ -17,11 +17,23 @@
     </style>
   </head>
   <body>
+$ 1.0.4
+  % Version 1.0.4
+  _ 2016-04-23
+    * Filter style changed
+    * Fixed error in asking for location in wrong places - API >23 ( Android >6 )
+    * Translated to english - hopefully i didn't made to many mistakes ;)
+$ 1.0.3
+  % Version 1.0.3
+  _ 2016-04-17
+    * Viele Detailverbesserungen
+    * Regionen hinzugefügt
+    * Sortierung hinzugefügt
+    * Marker - Aktionen auf der Karte hinzugefügt
 $ 1.0.2
   % Version 1.0.2
   _ 2016-04-15
     * Fix für ListItems in Nahe Ziele und Besichtigte Ziele (Ort wurde nicht ausgefüllt)
-    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich dies jedes Jahr halb automatisch generieren. Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese immer im orangefarbenen Kästchen neben dem Namen. Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter <b><a href="https://docs.google.com/spreadsheets/d/1RGr-bYEiZbM_NB-1y8jM54ONqpDhrOfLogCq9LIY7yA/edit?usp=sharing">diesem Google Calc Link</a></b>
 $ 1.0.1
   % Version 1.0.1
   _ 2016-04-15

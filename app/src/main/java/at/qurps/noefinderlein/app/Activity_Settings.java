@@ -47,6 +47,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
     public static final String KEY_PREF_DOWNLOAD_NEW = "settings_download_new";
     public static final String KEY_PREF_OVERWRITE_YEAR = "pref_overwrite_year_man";
     public static final String KEY_PREF_OVERWRITE_YEAR_MAN = "year_chosen_2";
+    public static final String KEY_PREF_OFFLINE_MODE = "pref_offline_mode";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -68,29 +69,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            } else if (preference instanceof RingtonePreference) {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue)) {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null) {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
-            } else {
+            }  else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);

@@ -10,9 +10,9 @@
         android:padding="5dp"
         android:baselineAligned="false" >
         <RelativeLayout
-            android:gravity="center"
             android:id="@+id/rel_toggleall"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="15dp"
             android:layout_height="34dp" >
 
             <ImageView
@@ -32,9 +32,6 @@
                 android:layout_toRightOf="@+id/toggleall"
                 android:text="@string/filter_all_OnOf" />
         </RelativeLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="15dp"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -253,14 +250,39 @@
 
             </LinearLayout>
         </LinearLayout>
-        <TextView
+        <View
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="40sp"
-            android:text="&amp;"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"/>
+            android:layout_height="2dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@color/noecard_text_grey"
+            />
+
+        <RelativeLayout
+            android:id="@+id/rel_togglesett"
+            android:layout_width="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:layout_height="34dp" >
+
+            <ImageView
+                android:id="@+id/togglesett"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:src="@mipmap/ic_hakerl_active" />
+
+            <TextView
+                android:id="@+id/text_togglesett"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/togglesett"
+                android:text="@string/filter_all_OnOf_Sett" />
+        </RelativeLayout>
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

@@ -9,6 +9,7 @@
     <color name="noecard_white">#FFFFFFFF</color>
     <color name="noecard_yellow">#FFFFDE10</color>
     <color name="noecard_blue">#FF003672</color>
+    <color name="noecard_mild_blue">#FF005ebe</color>
 
     <color name="noecard_text_grey">#757575</color>
 

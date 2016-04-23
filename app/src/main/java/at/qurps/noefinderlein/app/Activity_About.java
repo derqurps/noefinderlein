@@ -39,7 +39,7 @@ public class Activity_About extends AppCompatActivity {
         fab.hide();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportActionBar().setTitle(R.string.title_activity_about);
+        getSupportActionBar().setTitle(R.string.title_activity_activity__about);
 
         ((TextView) rootView.findViewById(R.id.about_version)).setText(BuildConfig.VERSION_NAME);
         ((LinearLayout) rootView.findViewById(R.id.about_googleplus)).setOnClickListener(new View.OnClickListener() {

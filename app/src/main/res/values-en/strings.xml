@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_settings">Settings</string>
+    <string name="main_menu_list_all_dest">All destinations</string>
+    <string name="main_menu_list_map">Show destinations on the map</string>
+    <string name="main_menu_list_near_dest">List near destinations</string>
+    <string name="main_menu_list_region_dest">Show destinations per region</string>
+
+
+
+    <string name="region_list_all_regions">All regions/all destinations</string>
+    <string name="region_list_near">Near destinations</string>
+
+
+
+    <plurals name="mapinfo_clusterdest">
+        <item quantity="one">%d Destination</item>
+        <item quantity="other">%d Destinations</item>
+    </plurals>
+    <string name="download_button">Download</string>
+    <string name="title_location_list">Destinations</string>
+    <string name="title_location_detail">Location detail</string>
+
+    <string name="desc_icon_kinderwagengerecht">Baby carriage suitable</string>
+    <string name="desc_icon_hunde">Dogs allowed</string>
+    <string name="desc_icon_rollstuhl">Wheelchair suitable</string>
+    <string name="desc_icon_gruppe">Groups</string>
+    <string name="desc_telephone"><b>Tel.: </b></string>
+    <string name="desc_tipp">Tip</string>
+    <string name="desc_geoeffnet">Open</string>
+    <string name="desc_anreise">Directions</string>
+    <string name="desc_latitude"><b>Latitude: </b></string>
+    <string name="desc_longitude"><b>Longitude: </b></string>
+    <string name="detail_coordinates_title">Coordinates</string>
+    <string name="desc_email"><b>Email: </b></string>
+    <string name="desc_webseite"><b>Webpage: </b></string>
+    <string name="desc_aussersonder">*except special events</string>
+    <string name="title_menu_to_destination">Navigate to destination</string>
+    <string name="title_menu_show_on_map">Show on map</string>
+    <string name="title_menu_show_current_on_map">Show current list on map</string>
+    <string name="toast_no_geo_app_found">No app for GEO data found - please install Google Maps</string>
+    <string name="title_menu_filter">Filter list</string>
+    <string name="title_menu_search">Search in list</string>
+    <string name="title_menu_sort">Sort list</string>
+    <string name="title_menu_refresh">Refresh list</string>
+    <string name="test_blabla">blablablablablabla</string>
+    <string name="filter">Set filter</string>
+    <string name="filteractive">Filter active</string>
+
+    <string name="sortby">Sort by…?</string>
+    <string name="sort_name">Names</string>
+    <string name="sort_noecnum">NöCard number</string>
+    <string name="cancel">Cancel</string>
+    <string name="nothing"></string>
+    <string name="filter_typ_top">Top\nDestination</string>
+    <string name="filter_typ_stifte">Monastery</string>
+    <string name="filter_typ_burguschloess">Castle and\nPalace</string>
+    <string name="filter_typ_museenuausstell">Museum and\nExhibition</string>
+    <string name="filter_typ_erlunatur">Adventure and\nNature park</string>
+    <string name="filter_typ_sportufreiz">Sport and\nRecreation</string>
+    <string name="filter_typ_bergbahnen">Mountain railway</string>
+    <string name="filter_typ_schiffahrt">Shipping</string>
+    <string name="filter_typ_lokalbahn">Local railway</string>
+    <string name="filter_all_OnOf">Activate\ndeactivate all destinations</string>
+    <string name="filter_all_OnOf_Sett">Activate\ndeactivate all properties</string>
+
+
+    <string name="preferences_file_key">at.derqurps.noecard.PREFERENCES_G</string>
+    <string name="hint_no_network_location">No network-geodata available…</string>
+    <string name="hint_gps_and_network_disabled">GPS and network-geodata disabled</string>
+    <string name="disclaimer">The developer of this app does not guarantee the completeness and the correctness of the showed data. If you continue to use this app, you confirm that you are aware of this.</string>
+    <string name="disclaimer_title">Disclaimer</string>
+    <string name="disclaimer_button_agree">Agree</string>
+    <string name="button_send_changes">Send changes</string>
+    <string name="disclaimer_button_disagree">Cancel</string>
+    <string name="title_activity_image_viewer_fullscreen">ImageViewer</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="toast_foursquare_app_found">No Check-IN APP found</string>
+    <string name="pref_title_download_new">Update data</string>
+    <string name="pref_description_download_new">Update data from internet</string>
+    <string name="overwrite_year_summary">Should the automatic year changing be disabled?</string>
+    <string name="overwrite_year_title">Choose year manually</string>
+    <string name="str_donate">Donate to the developer</string>
+    <string name="str_navdraw_show_data">All</string>
+    <string name="str_navdraw_show_region">Regions</string>
+    <string name="str_settings">Settings</string>
+    <string name="str_nav_draw_act_year_descr">Chosen Year:</string>
+    <string name="str_infoficial_app">Unofficial Niederösterreich-CARD-App</string>
+    <string name="str_man_year">Choose Year</string>
+    <string name="str_man_year_sub">This maybe requires an APP restart</string>
+    <string name="str_dialog_jahr_waehlen">Choose Year</string>
+    <string name="str_chosen_year">chosen Year: </string>
+    <string name="str_navdraw_destinations">Destinations</string>
+    <string name="str_navdraw_favorites">Favourites</string>
+    <string name="str_navdraw_nahe_ziele">Near</string>
+    <string name="str_navdraw_besichtigte_ziele">Visited</string>
+
+
+
+
+    <string name="title_menu_favorit">Add destination to favourites</string>
+    <string name="title_menu_visited">Mark destination as visited</string>
+    <string name="desc_koordinaten">Coordinates</string>
+    <string name="desc_adresse_koordinaten">Address/Coordinates</string>
+    <string name="filter_typ_hund">Dogs allowed</string>
+    <string name="filter_typ_rollstuhl">Wheelchair suitable</string>
+    <string name="filter_typ_kinderwagen">Baby carriage suitable</string>
+    <string name="filter_typ_gruppe">Noecard also applies to groups</string>
+    <string name="title_authenticationclass">Authentication</string>
+    <string name="detail_send_picture">send photo</string>
+
+
+    <string name="changelog_full_title">Change Log</string>
+    <string name="changelog_title">What\'s New</string>
+    <string name="changelog_ok_button">OK</string>
+    <string name="changelog_show_full">more…</string>
+    <string name="send_new_photo">Send new photo</string>
+
+    <string name="about">About</string>
+
+    <string name="close">Close</string>
+    <string name="enable">Enable</string>
+    <string name="readon">Read on</string>
+    <string name="enable_location_services">Enable location services</string>
+
+    <string name="visitedChecked">Added to visited</string>
+    <string name="visitedNotChecked">Entry already present</string>
+    <string name="visitedChooseWhen">Tick off for which day?</string>
+    <string name="deleteVisited">Delete visited entry?</string>
+    <string name="visitedtoday">Today</string>
+    <string name="visitedchoose">Choose Date</string>
+
+    <string name="error_year_not_found_in_database">Year not found in local database…</string>
+    <string name="error_no_location_services">No location services enabled. The app will work, but the near destinations feature will not</string>
+    <string name="error_no_location_services_en">No Location Services Enabled. You can use this App without Location Services, but the near Destinations feature will not work.</string>
+
+
+    <string name="location_updated_message">Location successful acquired</string>
+    <string name="location_updated_stopped">Location updates stopped.</string>
+    <string name="location_updated_started">Acquiring location…</string>
+
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="title_activity_activity__map">Map</string>
+    <string name="title_activity_activity__info">Info</string>
+    <string name="title_activity_activity__about">About</string>
+
+    <string name="pref_offline">Offline mode</string>
+    <string name="pref_offline_desc">Don´t try to update on each App open</string>
+
+    <string name="toast_offline">Updates disabled - see settings</string>
+
+</resources>

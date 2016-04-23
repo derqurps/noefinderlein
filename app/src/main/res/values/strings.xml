@@ -1,9 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">NÖ Finderlein</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
@@ -45,7 +43,10 @@
         <item>@string/region_list_burgenland</item>
         <item>@string/region_list_oberoesterreich</item>
     </string-array>
-
+    <plurals name="mapinfo_clusterdest">
+        <item quantity="one">%d Ziel</item>
+        <item quantity="other">%d Ziele</item>
+    </plurals>
     <string name="download_button">Download</string>
     <string name="title_location_list">Ziele</string>
     <string name="title_location_detail">Ziel Detail</string>
@@ -78,7 +79,7 @@
     <string name="filter">Filter Setzen</string>
     <string name="filteractive">Filter aktiv</string>
 
-    <string name="sortby">Sortieren nach...?</string>
+    <string name="sortby">Sortieren nach…?</string>
     <string name="sort_name">Namen</string>
     <string name="sort_noecnum">NöCard Nummer</string>
     <string name="cancel">Abbrechen</string>
@@ -90,9 +91,10 @@
     <string name="filter_typ_erlunatur">Erlebnis und\nNaturparks</string>
     <string name="filter_typ_sportufreiz">Sport und\nFreizeit</string>
     <string name="filter_typ_bergbahnen">Bergbahnen</string>
-    <string name="filter_typ_schiffahrt">Schiffahrt</string>
+    <string name="filter_typ_schiffahrt">Schifffahrt</string>
     <string name="filter_typ_lokalbahn">Lokalbahn</string>
-    <string name="filter_all_OnOf">Alle aktivieren\ndeaktivieren</string>
+    <string name="filter_all_OnOf">Alle Ziele aktivieren\ndeaktivieren</string>
+    <string name="filter_all_OnOf_Sett">Alle Eigenschaften aktivieren\ndeaktivieren</string>
 
     <string-array name="filter_typ_list">
         <item>@string/filter_typ_stifte</item>
@@ -111,7 +113,7 @@
     </string-array>
 
     <string name="preferences_file_key">at.derqurps.noecard.PREFERENCES_G</string>
-    <string name="hint_no_network_location">Keine Netzwerk-Geodaten verfügbar...</string>
+    <string name="hint_no_network_location">Keine Netzwerk-Geodaten verfügbar…</string>
     <string name="hint_gps_and_network_disabled">GPS und Netzwerk Geodaten abgeschaltet</string>
     <string name="disclaimer">Der Programmierer dieser App übernimmt keine Garantie auf die Richtigkeit der verwendeten Daten. Falls Sie fortfahren diese APP zu nutzen, bestätigen Sie, dass Ihnen das bewusst ist.</string>
     <string name="disclaimer_title">Disclaimer</string>
@@ -195,13 +197,14 @@
     <string name="changelog_full_title">Change Log</string>
     <string name="changelog_title">What\'s New</string>
     <string name="changelog_ok_button">OK</string>
-    <string name="changelog_show_full">more...</string>
+    <string name="changelog_show_full">mehr…</string>
     <string name="send_new_photo">Neues Foto senden</string>
 
     <string name="about">Über</string>
 
     <string name="close">Schließen</string>
     <string name="enable">Einschalten</string>
+    <string name="readon">Weiterlesen</string>
     <string name="enable_location_services">Positionsbestimmung einschalten</string>
 
     <string name="visitedChecked">Zu Besichtigten hinzugefügt</string>
@@ -211,85 +214,24 @@
     <string name="visitedtoday">Heute</string>
     <string name="visitedchoose">Auswählen</string>
 
-    <string name="error_year_not_found_in_database">Jahr in lokaler Datenbank nicht gefunden...</string>
+    <string name="error_year_not_found_in_database">Jahr in lokaler Datenbank nicht gefunden…</string>
     <string name="error_no_location_services">Keine Positionsbestimmung eingeschalten. Die App funktioniert auch ohne Ortsbestimmung, aber die "nahen Ziele" werden nicht funktionieren</string>
     <string name="error_no_location_services_en">No Location Services Enabled. You can use this App without Location Services, but the near Destinations feature will not work.</string>
 
 
-    <string name="location_updated_message">Location successful aquired</string>
-    <string name="location_updated_stopped">Location updates stopped.</string>
-    <string name="location_updated_started">Acquiring location...</string>
-    <!-- Strings related to Settings -->
-    <!-- Strings related to Settings -->
-    <!-- Strings related to Settings -->
+    <string name="location_updated_message">Aktuellen Standort gefunden</string>
+    <string name="location_updated_stopped">Standort updates gestoppt.</string>
+    <string name="location_updated_started">Hole aktuellen Standort…</string>
 
+    <string name="title_activity_settings">Einstellungen</string>
 
-    <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_about">Über</string>
-
-    <!-- Strings related to Settings -->
-
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
-
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
-
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
-    <string name="title_activity_activity_detail">ActivityDetail</string>
-    <string name="large_text">
-    </string>
     <string name="title_activity_activity__map">Map</string>
     <string name="title_activity_activity__info">Info</string>
-    <string name="title_activity_activity__about">Activity_About</string>
+    <string name="title_activity_activity__about">Über</string>
+    <string name="title_activity_activity_detail">Detail</string>
 
+    <string name="pref_offline">Offline Modus</string>
+    <string name="pref_offline_desc">Nicht bei jedem Öffnen der App ein Update versuchen</string>
+    <string name="toast_offline">Updates deaktiviert - Siehe Einstellungen</string>
 
 </resources>

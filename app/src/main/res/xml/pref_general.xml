@@ -21,7 +21,11 @@
         android:entries="@array/pref_year"
         android:entryValues="@array/pref_year_val"
         android:defaultValue="2016" />
-
+    <CheckBoxPreference
+        android:key="pref_offline_mode"
+        android:title="@string/pref_offline"
+        android:summary="@string/pref_offline_desc"
+        android:defaultValue="false" />
     <!--<SwitchPreference
         android:defaultValue="true"
         android:key="example_switch"

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/minfoV_first_rl"
+        android:background="@drawable/border_with_shadow"
+        android:padding="10dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/minfoV_img"
+            android:layout_marginBottom="10dp"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/minfoV_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/minfoV_img"
+            android:textColor="@color/noecard_mild_blue"
+            android:layout_marginBottom="6dp"
+            android:textSize="25dp"
+            android:text="Tsdfsd"/>
+        <TextView
+            android:id="@+id/minfoV_strasse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/minfoV_name"
+            android:textColor="@color/noecard_text_grey"
+            android:layout_marginBottom="6dp"
+            android:textSize="16dp"
+            android:text="Tsdfsd"/>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/minfoV_strasse"
+            android:id="@+id/minfoV_plz_ort">
+            <TextView
+                android:id="@+id/minfoV_plz"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/noecard_text_grey"
+                android:textSize="16dp"
+                android:text="T3040"/>
+            <TextView
+                android:id="@+id/minfoV_ort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/minfoV_plz"
+                android:textColor="@color/noecard_text_grey"
+                android:layout_marginLeft="10dp"
+                android:textSize="16dp"
+                android:text="TOrth an der Donau"/>
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/readon"
+            android:id="@+id/button"
+            android:padding="10dp"
+            android:background="@color/noecard_mild_blue"
+            android:textSize="20dp"
+            android:textColor="@color/noecard_white"
+            android:layout_below="@+id/minfoV_plz_ort"
+            android:layout_marginTop="10dp"/>
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/minfoV_first_rl"
+        android:src="@drawable/ic_pfeil_gmap"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>

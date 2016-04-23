@@ -28,6 +28,9 @@ public class DialogFragment_FilterList extends DialogFragment {
 	RelativeLayout RelativeLayoutfilter_all;
 	ImageView imgviewfilter_all;
 	TextView textviewfilter_all;
+	RelativeLayout RelativeLayoutfilter_all_Sett;
+	ImageView imgviewfilter_all_Sett;
+	TextView textviewfilter_all_Sett;
 	boolean[] filterlist=new boolean[13];
     public static final String TAG = "FilterListDialogFragment";
 
@@ -44,6 +47,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 
     ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
 	public static final int anz=8;
+	public static final int anzSett=5;
 
 	public DialogFragment_FilterList() {
 		
@@ -111,8 +115,8 @@ public class DialogFragment_FilterList extends DialogFragment {
 		textviewlist[5]=(TextView)View_kompl.findViewById(R.id.text_togglebergbahn);
 		textviewlist[6]=(TextView)View_kompl.findViewById(R.id.text_toggleschiffahrt);
 		textviewlist[7]=(TextView)View_kompl.findViewById(R.id.text_togglelokalbahn);
-        textviewlist[8]=(TextView)View_kompl.findViewById(R.id.text_togglehund);
 
+        textviewlist[8]=(TextView)View_kompl.findViewById(R.id.text_togglehund);
         textviewlist[9]=(TextView)View_kompl.findViewById(R.id.text_togglerollstuhl);
         textviewlist[10]=(TextView)View_kompl.findViewById(R.id.text_togglekinderwagen);
         textviewlist[11]=(TextView)View_kompl.findViewById(R.id.text_togglegruppen);
@@ -121,6 +125,10 @@ public class DialogFragment_FilterList extends DialogFragment {
 		RelativeLayoutfilter_all= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleall);
 		imgviewfilter_all= (ImageView)View_kompl.findViewById(R.id.toggleall);
 		textviewfilter_all=(TextView)View_kompl.findViewById(R.id.text_toggleall);
+
+		RelativeLayoutfilter_all_Sett = (RelativeLayout)View_kompl.findViewById(R.id.rel_togglesett);
+		imgviewfilter_all_Sett = (ImageView)View_kompl.findViewById(R.id.togglesett);
+		textviewfilter_all_Sett =(TextView)View_kompl.findViewById(R.id.text_togglesett);
 
 
 		for (int i = 0; i < filterlist.length; i++) {
@@ -163,7 +171,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 		RelativeLayoutfilter_all.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				int anzchecked=checkifAllTopfiltered();
+				int anzchecked=checkifAllTopFiltered();
 				if(anzchecked==anz)
 				{
 					filterlist = fillTopFilter(filterlist, Boolean.FALSE);
@@ -175,6 +183,32 @@ public class DialogFragment_FilterList extends DialogFragment {
 				else
 				{
 					filterlist = fillTopFilter(filterlist, Boolean.TRUE);
+				}
+				for(int i=0;i<filterlist.length;i++)
+				{
+					if(filterlist[i])
+						setActive(i);
+					else
+						setInactive(i);
+				}
+				setAllOnOffFilter();
+			}
+		});
+		RelativeLayoutfilter_all_Sett.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int anzchecked=checkifAllBottomFiltered();
+				if(anzchecked==anzSett)
+				{
+					filterlist = fillBottomFilter(filterlist, Boolean.FALSE);
+				}
+				else if(anzchecked==0)
+				{
+					filterlist = fillBottomFilter(filterlist, Boolean.TRUE);
+				}
+				else
+				{
+					filterlist = fillBottomFilter(filterlist, Boolean.TRUE);
 				}
 				for(int i=0;i<filterlist.length;i++)
 				{
@@ -221,6 +255,15 @@ public class DialogFragment_FilterList extends DialogFragment {
 		}
 		return list;
 	}
+	private boolean[] fillBottomFilter(boolean[] list, boolean set){
+
+		if(list.length>(anzSett+anz-1)) {
+			for (int i = anz; i < (anz+anzSett); i++) {
+				list[i]=set;
+			}
+		}
+		return list;
+	}
 	private boolean[] filterlistForPositive(boolean[] filterlistinnen){
 
 
@@ -244,7 +287,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 	public void setListener(NoticeDialogListener listener) {
         mListener = listener;
     }
-	private int checkifAllTopfiltered(){
+	private int checkifAllTopFiltered(){
 		int truevar=0;
 		if(filterlist.length>anz-1) {
 			for (int i = 0; i < anz; i++) {
@@ -254,6 +297,16 @@ public class DialogFragment_FilterList extends DialogFragment {
 		}
 		return truevar;
 	}
+    private int checkifAllBottomFiltered(){
+        int truevar=0;
+        if(filterlist.length>(anz+anzSett-1)) {
+            for (int i = anz; i < (anz+anzSett); i++) {
+                if (filterlist[i])
+                    truevar++;
+            }
+        }
+        return truevar;
+    }
     public boolean areNoneFiltered(){
         return areNoneFiltered(filterlist);
     }
@@ -275,23 +328,32 @@ public class DialogFragment_FilterList extends DialogFragment {
         }
         return returnvar;
     }
-	private void setAllOnOffFilter(){
-		int truevar=checkifAllTopfiltered();
-		if(truevar==anz)
-		{
+	private void setAllOnOffFilter() {
+		int truevar = checkifAllTopFiltered();
+		if (truevar == anz) {
 			RelativeLayoutfilter_all.setBackgroundColor(Color.TRANSPARENT);
 			imgviewfilter_all.setImageResource(R.mipmap.ic_hakerl_active);
 			//textviewfilter_all;
-		}
-		else if(truevar==0)
-		{
+		} else if (truevar == 0) {
 			RelativeLayoutfilter_all.setBackgroundColor(bgcolor_notactive);
 			imgviewfilter_all.setImageResource(R.mipmap.ic_hakerl_not_active);
-		}
-		else
-		{
+		} else {
 			RelativeLayoutfilter_all.setBackgroundColor(Color.TRANSPARENT);
 			imgviewfilter_all.setImageResource(R.mipmap.ic_hakerl_half_active);
 		}
+
+		int truevarSett = checkifAllBottomFiltered();
+		if (truevarSett == anzSett) {
+			RelativeLayoutfilter_all_Sett.setBackgroundColor(Color.TRANSPARENT);
+			imgviewfilter_all_Sett.setImageResource(R.mipmap.ic_hakerl_active);
+			//textviewfilter_all;
+		} else if (truevarSett == 0) {
+			RelativeLayoutfilter_all_Sett.setBackgroundColor(bgcolor_notactive);
+			imgviewfilter_all_Sett.setImageResource(R.mipmap.ic_hakerl_not_active);
+		} else {
+			RelativeLayoutfilter_all_Sett.setBackgroundColor(Color.TRANSPARENT);
+			imgviewfilter_all_Sett.setImageResource(R.mipmap.ic_hakerl_half_active);
+		}
 	}
+
 }

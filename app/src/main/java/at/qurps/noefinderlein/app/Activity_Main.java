@@ -66,6 +66,7 @@ public class Activity_Main extends AppCompatActivity implements
     public int mActiveyear;
     private boolean mTwoPane;
     public Location mLastLocation;
+    private boolean locationUpdatesRunning = false;
     private static final int LOCATION_REQUEST = 1;
     private static final int LAST_LOCATION_REQUEST = 2;
 
@@ -91,8 +92,12 @@ public class Activity_Main extends AppCompatActivity implements
         setContentView(R.layout.activity_list);
 
         NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
-        View headerLayout = nav_view.getHeaderView(0);
-        yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
+        if(nav_view!=null) {
+            View headerLayout = nav_view.getHeaderView(0);
+            nav_view.setNavigationItemSelectedListener(this);
+            yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -106,22 +111,26 @@ public class Activity_Main extends AppCompatActivity implements
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "This does nothing...", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        fab.hide();
+        if(fab!=null) {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Snackbar.make(view, "This does nothing...", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            });
+            fab.hide();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        if(drawer!=null) {
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.setDrawerListener(toggle);
+            toggle.syncState();
+        }
 
-        nav_view.setNavigationItemSelectedListener(this);
+
 
 
 
@@ -268,7 +277,7 @@ public class Activity_Main extends AppCompatActivity implements
      */
     @Override
     public void onItemSelected_Fragment_LocationNear(int id,int jahr) {
-        detailItemChosen(id, jahr, Fragment_LocationNear.TAG);
+        detailItemChosen(id, jahr);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -537,16 +546,18 @@ public class Activity_Main extends AppCompatActivity implements
                 }*/
         }
     }
+    private void detailItemChosen(int id, int year){
+        detailItemChosen(id, year, this);
+    }
+    public static void detailItemChosen(int id, int year, Context mContext) {
 
-    private void detailItemChosen(int id, int year, String fragmentTAG) {
-        int selectedid = id;
         Bundle arguments = new Bundle();
-        arguments.putInt(Activity_Detail.ARG_ITEM_ID, selectedid);
+        arguments.putInt(Activity_Detail.ARG_ITEM_ID, id);
         arguments.putInt(Activity_Detail.ARG_ITEM_JAHR, year);
-        arguments.putBoolean(Activity_Detail.ARG_MTWOPANE, mTwoPane);
-        Intent intent = new Intent(this, Activity_Detail.class);
+        //arguments.putBoolean(Activity_Detail.ARG_MTWOPANE, mTwoPane);
+        Intent intent = new Intent(mContext, Activity_Detail.class);
         intent.putExtras(arguments);
-        startActivity(intent);
+        mContext.startActivity(intent);
         //finish();
 
 
@@ -644,28 +655,25 @@ public class Activity_Main extends AppCompatActivity implements
             criteria.setAccuracy(Criteria.ACCURACY_FINE);
             provider = locationManager.getBestProvider(criteria, true);
             locationManager.requestLocationUpdates(provider, minTime, minDistance, listener);
+            locationUpdatesRunning = true;
         }
         setToast(getResources().getString(R.string.location_updated_started), 0);
     }
 
     protected void stopLocationUpdates() {
-        // It is a good practice to remove location requests when the activity is in a paused or
-        // stopped state. Doing so helps battery performance and is especially
-        // recommended in applications that request frequent location updates.
 
-        // The final argument to {@code requestLocationUpdates()} is a LocationListener
-        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
-        if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(locationUpdatesRunning) {
+            if (ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-            return;
+                ActivityCompat.requestPermissions(Activity_Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+                return;
+            }
+            if (locationManager != null) {
+                locationManager.removeUpdates(listener);
+            }
+            locationUpdatesRunning = false;
         }
-        if(locationManager != null) {
-            locationManager.removeUpdates(listener);
-        }
-        //setToast(getResources().getString(R.string.location_updated_stopped), 0);
-
     }
     protected void broadcastUpdate(Intent data){
         this.sendBroadcast(data);
@@ -674,11 +682,15 @@ public class Activity_Main extends AppCompatActivity implements
         updateDB(false);
     }
     protected void updateDB(boolean force){
-
-        Log.d("Response1: ",String.valueOf(mActiveyear));
-        Integer [] myTaskParams = { mActiveyear };
-        Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
-        new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
+        Boolean offlinemode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OFFLINE_MODE, false);
+        if(!offlinemode) {
+            Log.d("Response1: ", String.valueOf(mActiveyear));
+            Integer[] myTaskParams = {mActiveyear};
+            Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
+            new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
+        }else{
+            Util.setToast(this, getString(R.string.toast_offline),0);
+        }
     }
     /*
      CALLBACK METHODS
@@ -687,12 +699,12 @@ public class Activity_Main extends AppCompatActivity implements
     @Override
     public void onItemSelected_Fragment_LocationList(int id,int year) {
 
-        detailItemChosen(id, year, Fragment_LocationList.TAG);
+        detailItemChosen(id, year);
     }
     @Override
     public void onItemSelected_Fragment_LocationFavorits(int id,int year) {
 
-        detailItemChosen(id, year, Fragment_LocationList.TAG);
+        detailItemChosen(id, year);
     }
     @Override
     public void onDownloadCompleted() {
