@@ -19,4 +19,5 @@ It should contain some variables like:
 noefinderlein_gmapsapikey=INSERT YOUR GOOGLE MAPS API KEY HERE
 noefinderlein_apipath=https://noecard.reitschmied.at/api/
 noefinderlein_apipath_debug=http://127.0.0.1:58468/api/
+noefinderlein_gmapsapikey=<your google maps api key>
 ```
