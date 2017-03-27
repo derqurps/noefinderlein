@@ -119,9 +119,10 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 int changeid = jsonObj.getInt("changeid");
                 int daysChangeId = jsonObj.getInt("daysChngId");
+                int daysChangeCount = jsonObj.getInt("daysChangeCount");
                 Log.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(daysChangeId) + " " + String.valueOf(year) );
                 int updateneeded = db.updateForYearNeeded(year, changeid);
-                int currentChangeIdInDB = db.updateForOpenDaysNeeded(year, daysChangeId);
+                int currentChangeIdInDB = db.getCurrentLastChangeId(year);
                 Log.d("Update neeeded?: ", String.valueOf(updateneeded));
                 if(updateneeded == 1 ){
                     mBuilder = new NotificationCompat.Builder(mContext);
@@ -171,14 +172,14 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                 }
                 Log.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
                 if(loadOpenData && currentChangeIdInDB < daysChangeId) {
-                    int downloadChangeAnz = daysChangeId - currentChangeIdInDB;
+                    int downloadChangeAnz = daysChangeCount;
                     int anzPackages = (downloadChangeAnz / dayPkgCount) + 1;
                     Log.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " +String.valueOf(anzPackages)  );
                     progress.setMax(downloadChangeAnz);
                     progress.setProgress(Integer.valueOf(0));
 
                     publishProgress("Updating opening days  ...");
-                    downloadSegment(year, currentChangeIdInDB, daysChangeId, anzPackages, 0, 0);
+                    downloadSegment(year, daysChangeId, anzPackages, 0, 0);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -209,17 +210,18 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
         mCallbacks.onDownloadCompleted();
     }
 
-    protected void downloadSegment(int year, int beginsegment, int completeEndChangeId, int pkgCount, int progressC, int counter) {
+    protected void downloadSegment(int year, int completeEndChangeId, int pkgCount, int progressC, int counter) {
+        int beginsegment = db.getCurrentLastChangeId(year);
         if(counter < (pkgCount+20) && beginsegment < completeEndChangeId) {
             ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
             try {
-                int endSegment = (beginsegment + dayPkgCount);
-                String jsonDays = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Days/getChangeSegment?year=" + String.valueOf(year) + "&changeStart=" + String.valueOf(beginsegment) + "&changeEnd=" + String.valueOf(endSegment), ServiceHandler_GETPOSTPUT.GET);
+                String jsonDays = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Days/getChangeSegmentCount?year=" + String.valueOf(year) + "&changeStart=" + String.valueOf(beginsegment) + "&count=" + String.valueOf(dayPkgCount), ServiceHandler_GETPOSTPUT.GET);
                 JSONArray jsonDay = new JSONArray(jsonDays);
+                Log.d(TAG, " got anz changes " + String.valueOf(jsonDay.length()) );
                 int inserted = updateOrInsertJsondata(jsonDay, year, progressC);
                 progress.setProgress(Integer.valueOf((progressC+inserted)));
-                Log.d(TAG, String.valueOf(year) + " " + String.valueOf(endSegment) + " " +String.valueOf(completeEndChangeId) + " " +String.valueOf(pkgCount) + " " +String.valueOf((progressC+inserted)) + " " + String.valueOf((counter+1)) );
-                downloadSegment(year, endSegment, completeEndChangeId, pkgCount, (progressC+inserted), (counter+1));
+                Log.d(TAG, String.valueOf(year) + " " +String.valueOf(completeEndChangeId) + " " +String.valueOf(pkgCount) + " " +String.valueOf((progressC+inserted)) + " " + String.valueOf((counter+1)) );
+                downloadSegment(year, completeEndChangeId, pkgCount, (progressC+inserted), (counter+1));
             } catch (JSONException e) {
                 Log.e("Exception1", String.valueOf(e));
                 e.printStackTrace();

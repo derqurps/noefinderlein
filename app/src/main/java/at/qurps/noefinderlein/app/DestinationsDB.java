@@ -707,12 +707,11 @@ public class DestinationsDB {
         return returnInt;
 
     }
-    public int updateForOpenDaysNeeded(int year, int changedcount) {
+    public int getCurrentLastChangeId(int year) {
         String Query = "SELECT " + DB_Days.KEY_CHANGE + " FROM " + DB_Days.TABLE_NAME + " WHERE " + DB_Days.KEY_YEAR + " = " + year + " ORDER BY " + DB_Days.KEY_CHANGE + " DESC LIMIT 1";
         Log.d("DDBQU: ",Query);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
-        Log.d("WEB_Count: ",  String.valueOf(changedcount) );
         int returnInt = 0;
         if (cursor != null && cursor.moveToFirst()) {
             Log.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Days.KEY_CHANGE))));
@@ -840,7 +839,7 @@ public class DestinationsDB {
             mCursor.close();
         }
         db.close();
-        Log.d("isOpen: ", String.valueOf(locId) + " " + day + " " + String.valueOf(returnVal));
+        //Log.d("isOpen: ", String.valueOf(locId) + " " + day + " " + String.valueOf(returnVal));
         return returnVal;
     }
 }

@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -111,6 +111,8 @@ public class Database_Destinations extends SQLiteOpenHelper {
             case 4:
                 db.execSQL("DELETE FROM " + DB_Days.TABLE_NAME + " WHERE year=2016");
             case 5:
+                db.execSQL("DELETE FROM " + DB_Days.TABLE_NAME + " WHERE year=2016");
+            case 6:
         }
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {

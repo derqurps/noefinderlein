@@ -67,6 +67,8 @@
     <string name="filter_all_OnOf">Activate\ndeactivate all destinations</string>
     <string name="filter_open_OnOf">Show only open today</string>
     <string name="filter_all_OnOf_Sett">Activate\ndeactivate all properties</string>
+    <string name="setting_title_deleteOpenData">Delete open-data</string>
+    <string name="setting_summary_deleteOpenData">Delete data for specific year - to reset and re-download</string>
 
 
     <string name="preferences_file_key">at.derqurps.noecard.PREFERENCES_G</string>

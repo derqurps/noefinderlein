@@ -34,6 +34,14 @@
         android:title="@string/pref_title_load_open_data"
         android:summary="@string/pref_open_data"
         android:defaultValue="true" />
+    <!--<ListPreference
+        android:dependency="pref_load_open_data"
+        android:key="delete_dayData_year_chosen_2"
+        android:title="@string/setting_title_deleteOpenData"
+        android:summary="@string/setting_summary_deleteOpenData"
+        android:dialogTitle="@string/str_dialog_jahr_waehlen"
+        android:entries="@array/pref_year"
+        android:entryValues="@array/pref_year_val" />-->
 
     <CheckBoxPreference
         android:key="pref_filter_visited"
