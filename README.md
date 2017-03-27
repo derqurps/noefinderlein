@@ -13,7 +13,7 @@ If you want to help, pull requests are welcome.
 
 This is a [Android Studio](http://developer.android.com/sdk/index.html) Project
 
-A file called "Noefinderlein_Keystore.txt" is needed in the main directory of the Project
+A file called "Noefinderlein_Keystore.txt" is needed in the main directory (and - and i don't know why - in one direcory above the main directory) of the Project
 It should contain some variables like:
 ```
 noefinderlein_gmapsapikey=INSERT YOUR GOOGLE MAPS API KEY HERE
