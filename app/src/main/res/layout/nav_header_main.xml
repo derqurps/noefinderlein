@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/text_noecardyear_before"
             android:text="@string/str_chosen_year"
-            android:textColor="@android:color/black"
+            android:textColor="@color/noecard_logo_blue"
             android:layout_marginRight="3dp"
             />
         <TextView
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/text_noecardyear"
             android:text=""
-            android:textColor="@android:color/black"
+            android:textColor="@color/noecard_logo_blue"
             android:layout_toRightOf="@+id/text_noecardyear_before"/>
     </RelativeLayout>
 </RelativeLayout>

@@ -1,32 +1,43 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.location.Location;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import at.qurps.noefinderlein.app.Util;
 
-public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
+public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
 
     //private final List<Location> list;
-    private List<Location_NoeC> originalData = null;
-    private List<Location_NoeC> filteredData = null;
+    private List<DB_Location_NoeC> originalData = null;
+    private List<DB_Location_NoeC> filteredData = null;
     private final Context context;
     private static final String TAG = "Distancelist-ArrayAdapter";
     private Location actuallocation;
+    private static SharedPreferences prefs;
+    private DestinationsDB db;
+    private String fDate;
 
-    public ArrayAdapter_Near(Context context, List<Location_NoeC> list,Location lastlocation) {
+    public ArrayAdapter_Near(Context context, List<DB_Location_NoeC> list,Location lastlocation) {
         super(context, R.layout.listitem_near, list);
         this.context = context;
         this.originalData = list;
@@ -36,6 +47,10 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         {
             refreshlist(lastlocation);
         }
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.db= new DestinationsDB(this.context);
+        Date cDate = new Date();
+        this.fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
     }
 
     static class ViewHolder {
@@ -45,11 +60,21 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         protected TextView distance_to_destination;
         protected ImageView destinationarrow;
         protected ImageView burgstiftusw;
+        protected LinearLayout greyout;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = null;
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+
+        ColorMatrix matrixColor = new ColorMatrix();
+        matrixColor.setSaturation(1);
+
+        ColorMatrixColorFilter colorFilterGrey = new ColorMatrixColorFilter(matrix);
+        ColorMatrixColorFilter colorFilterColor = new ColorMatrixColorFilter(matrixColor);
+
         if (convertView == null) {
             LayoutInflater inflator = LayoutInflater.from(context);
             view = inflator.inflate(R.layout.listitem_near, null);
@@ -60,6 +85,7 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
             viewHolder.distance_to_destination = (TextView) view.findViewById(R.id.distancetodestination);
             viewHolder.destinationarrow = (ImageView) view.findViewById(R.id.compastodest);
             viewHolder.burgstiftusw = (ImageView) view.findViewById(R.id.burgschloessusw);
+            viewHolder.greyout = (LinearLayout) view.findViewById(R.id.greyout);
 
             view.setTag(viewHolder);
             //viewHolder.checkbox.setTag(list.get(position));
@@ -69,6 +95,24 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         }
         ViewHolder holder = (ViewHolder) view.getTag();
         //Log.d(TAG,String.valueOf(list.get(position).getSort()));
+
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        if(useOpenData) {
+            if(filteredData.get(position).getTodayActive()) {
+                holder.greyout.setVisibility(View.GONE);
+                holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
+                holder.burgstiftusw.setColorFilter(colorFilterColor);
+
+
+            } else {
+                /*holder.greyout.setVisibility(View.VISIBLE);*/
+                holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.name.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.ort.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.burgstiftusw.setColorFilter(colorFilterGrey);
+            }
+        }
+
         int nummer = filteredData.get(position).getNummer();
         if(nummer!= 0) {
             holder.sortnumber.setVisibility(View.VISIBLE);
@@ -135,20 +179,22 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
     }
 
     public void sort() {
-        Collections.sort(filteredData, new Comparator<Location_NoeC>() {
+        Collections.sort(filteredData, new Comparator<DB_Location_NoeC>() {
             @Override
-            public int compare(Location_NoeC item1, Location_NoeC item2) {
+            public int compare(DB_Location_NoeC item1, DB_Location_NoeC item2) {
                 return Double.valueOf(item2.getDistance()).compareTo(item1.getDistance()) * (-1);
             }
         });
     }
-
+    public String getactiveDay() {
+        return this.fDate;
+    }
     @Override
     public int getCount() {
         return filteredData!=null ? filteredData.size() : 0;
     }
 
-    public Location_NoeC getLocationtoPosition(int position) {
+    public DB_Location_NoeC getLocationtoPosition(int position) {
         return filteredData.get(position);
     }
     public int getNumbertoPosition(int position) {
@@ -161,7 +207,7 @@ public class ArrayAdapter_Near extends ArrayAdapter<Location_NoeC> {
         return filteredData.get(position).getJahr();
     }
     public void refreshlist(Location actuallocation) {
-        List<Location_NoeC> list=originalData;
+        List<DB_Location_NoeC> list=originalData;
         if (actuallocation!=null)
         {
             for (int i=0;i<list.size();i++)

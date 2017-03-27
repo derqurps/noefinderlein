@@ -9,6 +9,44 @@
         android:orientation="vertical"
         android:padding="5dp"
         android:baselineAligned="false" >
+        <LinearLayout
+            android:id="@+id/rel_toggleopen_over"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RelativeLayout
+                android:id="@+id/rel_toggleopen"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="34dp" >
+
+                <ImageView
+                    android:id="@+id/toggleopen"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:src="@mipmap/ic_hakerl_active" />
+
+                <TextView
+                    android:id="@+id/text_toggleopen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/toggleopen"
+                    android:text="@string/filter_open_OnOf" />
+            </RelativeLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginStart="20dp"
+                android:background="@color/noecard_text_grey"
+                />
+        </LinearLayout>
         <RelativeLayout
             android:id="@+id/rel_toggleall"
             android:layout_width="wrap_content"

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -67,7 +69,7 @@ public class Activity_Detail extends AppCompatActivity {
     public DestinationsDB db;
     public Location mCurrentLocation;
 
-    private Location_NoeC ziel;
+    private DB_Location_NoeC ziel;
     private boolean mTwoPane=false;
     private boolean isRegion=false;
     private Menu mMenu;
@@ -79,6 +81,8 @@ public class Activity_Detail extends AppCompatActivity {
     private int aktjahr;
     private int aktID;
     Util.dataholder dataToSend = new Util.dataholder();
+    private SharedPreferences prefs;
+    private String fDate;
 
 
     @Override
@@ -102,7 +106,6 @@ public class Activity_Detail extends AppCompatActivity {
         setupActionBar();
         this.db = new DestinationsDB(this);
         changeView(getIntent().getExtras());
-
 
 
 
@@ -289,6 +292,10 @@ public class Activity_Detail extends AppCompatActivity {
     }
 
     private void updateView(){
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        Date cDate = new Date();
+        this.fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
 
         beschreibung=((TextView) rootView.findViewById(R.id.detail_text_beschreibung));
         String ausgabeuntertitel="";
@@ -313,6 +320,19 @@ public class Activity_Detail extends AppCompatActivity {
             title = title + ziel.getName().toString();
             setSupportActionBar(toolbar);
             getSupportActionBar().setTitle(title);
+
+            RelativeLayout notOpenWarning=((RelativeLayout) rootView.findViewById(R.id.detail_notopenToday));
+            boolean useOpenData = prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+            int locationId = ziel.getId();
+            if(useOpenData) {
+                if(this.db.isOpenToday(locationId, this.fDate)) {
+                    notOpenWarning.setVisibility(View.GONE);
+
+
+                } else {
+                    notOpenWarning.setVisibility(View.VISIBLE);
+                }
+            }
 
             TextView name=((TextView) rootView.findViewById(R.id.detail_text_title));
             name.setText(String.valueOf(ziel.getName().toString()));

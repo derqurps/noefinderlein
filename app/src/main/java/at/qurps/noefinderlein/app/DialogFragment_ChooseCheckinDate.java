@@ -5,12 +5,10 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -101,7 +99,7 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
             String format = "yyyy-MM-dd";
             SimpleDateFormat sdf = new SimpleDateFormat(format);
             String date = sdf.format(checkDate);
-            Visited_Locations visited = new Visited_Locations(this.id,this.year,date);
+            DB_Visited_Locations visited = new DB_Visited_Locations(this.id,this.year,date);
             if(db.insertVisitedData(visited)){
                 Util.setToast(mContext, mContext.getResources().getString(R.string.visitedChecked),0);
             }else{

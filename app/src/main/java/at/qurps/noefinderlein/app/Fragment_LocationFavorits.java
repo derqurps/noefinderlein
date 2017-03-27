@@ -27,7 +27,7 @@ public class Fragment_LocationFavorits extends ListFragment {
     private Callbacks mCallbacks = sDummyCallbacks;
     private DestinationsDB db;
     private Context mContext;
-    List<Location_NoeC> listItems=new ArrayList<Location_NoeC>();
+    List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
     ArrayAdapter_Mainlist adapter;
     private boolean mTwoPane;
     private int mActivatedPosition = ListView.INVALID_POSITION;

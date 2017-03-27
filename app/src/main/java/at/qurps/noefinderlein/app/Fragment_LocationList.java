@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
@@ -29,7 +30,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -75,7 +78,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	public boolean mIsRegion=false;
     private int mRegion;
 	private String mRegionName="";
-	List<Location_NoeC> listItems=new ArrayList<Location_NoeC>();
+	List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
     ArrayAdapter_Mainlist adapter;
 	private boolean mTwoPane;
     public ViewGroup mcontainer;
@@ -83,6 +86,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
     public int mRegionItemJahr;
 	private Bundle msavedInstanceState;
 	private View rootView;
+	private boolean useOpenData;
 
 	private final BroadcastReceiver myBRDataUpd=new DataUpdate();
 
@@ -123,9 +127,12 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		mContext=getActivity();
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
 		this.db= new DestinationsDB(mContext);
+        SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        this.useOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
 		//getListView().
 		//TODO Fastscroll enable
 	}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -208,6 +215,15 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	public void onResume() {
 		super.onResume();
 		mContext.registerReceiver(myBRDataUpd, new IntentFilter("dataupdate"));
+		Date cDate = new Date();
+		String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+		SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+		boolean compUseOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+		if(!fDate.equals(this.adapter.getactiveDay()) || compUseOpenData != this.useOpenData){
+			// daychange - reload adapter
+			dbContentChanged();
+            this.useOpenData = compUseOpenData;
+		}
 		//dbContentChanged();
 		//adapter.notifyDataSetChanged();
 	}
@@ -280,7 +296,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         int sortByWhat = sharedPref.getInt(PREF_SORT_STRING,0);
 		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
-		onDialogPositiveClick(getFilterliste());
+		onDialogPositiveClick(getFilterliste(), getOpenFilter());
         sortBy(sortByWhat);
 		setListAdapter(adapter);
 	}
@@ -406,10 +422,10 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		
 	}
 	@Override
-    public void onDialogPositiveClick(boolean[] filterlist) {
+    public void onDialogPositiveClick(boolean[] filterlist, boolean openFilter) {
         // User touched the dialog's positive button
 		ActivityCompat.invalidateOptionsMenu(getActivity());
-		adapter.filterwithtyp(filterlist);
+		adapter.filterwithtyp(filterlist, openFilter);
     }
     private void sortBy(int what){
         adapter.sortBy(what);
@@ -430,6 +446,12 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
                 noneset = false;
             }
 		}
+        boolean filterOpen = sharedPref.getBoolean(getResources().getString(R.string.filter_open_sett), false);
+        SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        this.useOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+        if(filterOpen && this.useOpenData) {
+            noneset = false;
+        }
         if(noneset){
             returnval=false;
         }
@@ -466,4 +488,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		}
 		return returnbool;
 	}
+    private boolean getOpenFilter(){
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(getResources().getString(R.string.filter_open_sett), false);
+    }
 }

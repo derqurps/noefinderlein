@@ -1,9 +1,13 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,10 +40,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Activity_Map extends FragmentActivity implements OnMapReadyCallback,
-        ClusterManager.OnClusterClickListener<Location_NoeC>,
-        ClusterManager.OnClusterInfoWindowClickListener<Location_NoeC>,
-        ClusterManager.OnClusterItemClickListener<Location_NoeC>,
-        ClusterManager.OnClusterItemInfoWindowClickListener<Location_NoeC> {
+        ClusterManager.OnClusterClickListener<DB_Location_NoeC>,
+        ClusterManager.OnClusterInfoWindowClickListener<DB_Location_NoeC>,
+        ClusterManager.OnClusterItemClickListener<DB_Location_NoeC>,
+        ClusterManager.OnClusterItemInfoWindowClickListener<DB_Location_NoeC> {
 
     private GoogleMap mMap;
 
@@ -53,18 +56,20 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
     static final LatLng NOEMITTE = new LatLng(48.193557, 15.646935);
     private DestinationsDB db;
     private boolean onlyOne = false;
-    private Location_NoeC ziel;
+    private DB_Location_NoeC ziel;
     private Context mContext;
-    ArrayList<Location_NoeC> inputPoints;
-    private ClusterManager<Location_NoeC> mClusterManager;
+    ArrayList<DB_Location_NoeC> inputPoints;
+    private ClusterManager<DB_Location_NoeC> mClusterManager;
     private String mItemIds;
     private int mYear;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext=this;
         this.db= new DestinationsDB(mContext);
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         Bundle bundle = getIntent().getExtras();
 
         if (bundle!=null) {
@@ -104,6 +109,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        final Context nc = this.mContext;
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
@@ -134,7 +140,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             }else {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(NOEMITTE, 8));
             }
-            mClusterManager = new ClusterManager<Location_NoeC>(mContext, mMap);
+            mClusterManager = new ClusterManager<DB_Location_NoeC>(mContext, mMap);
             mClusterManager.setRenderer(new LocationRenderer());
             mMap.setOnCameraChangeListener(mClusterManager);
             mMap.setOnMarkerClickListener(mClusterManager);
@@ -147,22 +153,55 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             addItems();
             mClusterManager.cluster();
 
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.getUiSettings().setCompassEnabled(true);
+
+            /*if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Show rationale and request permission.
+            }
+            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    mMap.getMyLocation();
+                    Toast.makeText(
+                            nc,
+                            "Example de Message for Android",
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });*/
+
         }
     }
 
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_LOCATION_REQUEST_CODE) {
+            if (permissions.length == 1 &&
+                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                // Permission was denied. Display an error message.
+            }
+        }
+    }*/
     @Override
-    public boolean onClusterClick(Cluster<Location_NoeC> cluster) {
+    public boolean onClusterClick(Cluster<DB_Location_NoeC> cluster) {
         return false;
         //String firstName = cluster.getItems().iterator().next().getName();
         //Toast.makeText(this, cluster.getSize() + " (including " + firstName + ")", Toast.LENGTH_SHORT).show();
         //return true;
     }
     @Override
-    public void onClusterInfoWindowClick(Cluster<Location_NoeC> cluster) {
+    public void onClusterInfoWindowClick(Cluster<DB_Location_NoeC> cluster) {
         // Does nothing, but you could go to a list of the users.
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Location_NoeC marker : cluster.getItems()) {
+        for (DB_Location_NoeC marker : cluster.getItems()) {
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
@@ -172,40 +211,43 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public boolean onClusterItemClick(Location_NoeC item) {
+    public boolean onClusterItemClick(DB_Location_NoeC item) {
         // Does nothing, but you could go into the user's profile page, for example.
         return false;
     }
 
     @Override
-    public void onClusterItemInfoWindowClick(Location_NoeC item) {
+    public void onClusterItemInfoWindowClick(DB_Location_NoeC item) {
         Activity_Main.detailItemChosen(item.getId(), item.getJahr(), this);
 
         // Does nothing, but you could go into the user's profile page, for example.
     }
 
     private void addItems(){
-        List<Location_NoeC> ziele;
+        List<DB_Location_NoeC> ziele;
 
         ziele=this.db.getAllLocations_toDestIDs(mItemIds, mYear);
 
         for(int i=0;i<ziele.size();i++)
         {
-            mClusterManager.addItem((Location_NoeC)ziele.get(i));
+            mClusterManager.addItem((DB_Location_NoeC)ziele.get(i));
         }
         //mClusterManager.addItems(this.inputPoints);
     }
 
-    private class LocationRenderer extends DefaultClusterRenderer<Location_NoeC> {
+    private class LocationRenderer extends DefaultClusterRenderer<DB_Location_NoeC> {
         /*private final IconGenerator mIconGenerator = new IconGenerator(getApplicationContext());
         private final IconGenerator mClusterIconGenerator = new IconGenerator(getApplicationContext());
         private final ImageView mImageView;
         private final ImageView mClusterImageView;
         private final int mDimension;*/
+        private SharedPreferences prefs;
+
         public LocationRenderer() {
             super(getApplicationContext(), mMap, mClusterManager);
 
             View multiProfile = getLayoutInflater().inflate(R.layout.map_item, null);
+            this.prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
             /*mClusterIconGenerator.setContentView(multiProfile);
             mClusterImageView = (ImageView) multiProfile.findViewById(R.id.image);
 
@@ -218,17 +260,22 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
 
         }
         @Override
-        protected void onBeforeClusterItemRendered(Location_NoeC location, MarkerOptions markerOptions) {
+        protected void onBeforeClusterItemRendered(DB_Location_NoeC location, MarkerOptions markerOptions) {
             // Draw a single person.
             // Set the info window to show their name.
             /*mImageView.setImageResource(person.profilePhoto);
             Bitmap icon = mIconGenerator.makeIcon();*/
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_marker));
+            boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+            if(!useOpenData || location.getTodayActive()) {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_marker));
+            } else {
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_marker_inactive));
+            }
             markerOptions.snippet(String.valueOf(location.getId()));
         }
 
         @Override
-        protected void onBeforeClusterRendered(Cluster<Location_NoeC> cluster, MarkerOptions markerOptions) {
+        protected void onBeforeClusterRendered(Cluster<DB_Location_NoeC> cluster, MarkerOptions markerOptions) {
             // Draw multiple people.
             // Note: this method runs on the UI thread. Don't spend too much time in here (like in this example).
             /*List<Drawable> profilePhotos = new ArrayList<Drawable>(Math.min(4, cluster.getSize()));
@@ -247,17 +294,33 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
 
             mClusterImageView.setImageDrawable(multiDrawable);
             Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));*/
+            boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
             String idstring = "";
             int iterator = 0;
-            for (Location_NoeC loc : cluster.getItems()) {
+            int active = 0;
+            int notactive = 0;
+            for (DB_Location_NoeC loc : cluster.getItems()) {
                 idstring += String.valueOf(loc.getId());
                 if(iterator<cluster.getSize()-1) {
                     idstring += ";";
                 }
+                if(loc.getTodayActive()) {
+                    active ++;
+                } else {
+                    notactive ++;
+                }
                 iterator++;
             }
-
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_multimarker));
+            if(iterator == active && useOpenData) {
+                // all active
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_multimarker_active));
+            } else if(iterator == notactive && useOpenData) {
+                // all not active
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_multimarker_inactive));
+            } else {
+                // mixed
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_noe_multimarker_mixed));
+            }
             markerOptions.snippet(idstring);
 
         }
@@ -265,7 +328,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected boolean shouldRenderAsCluster(Cluster cluster) {
             // Always render clusters.
-            return cluster.getSize() > 3;
+            return cluster.getSize() > 5;
         }
     }
 
@@ -281,7 +344,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             if(locationIDs_split.length==1) {
                 view = getLayoutInflater().inflate(R.layout.map_info_item, null);
                 int id = Integer.parseInt(marker.getSnippet());
-                Location_NoeC loc = db.getLocationToId(id);
+                DB_Location_NoeC loc = db.getLocationToId(id);
 
                 TextView name = (TextView) view.findViewById(R.id.minfoV_name);
                 TextView strasse = (TextView) view.findViewById(R.id.minfoV_strasse);
@@ -298,7 +361,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
                 TextView howmany = (TextView) view.findViewById(R.id.minfoV_howmanydest);
                 howmany.setText(getResources().getQuantityString(R.plurals.mapinfo_clusterdest, locationIDs_split.length, locationIDs_split.length));
                 for(int i=0;i<locationIDs_split.length;i++) {
-                    Location_NoeC loc = db.getLocationToId(Integer.parseInt(locationIDs_split[i]));
+                    DB_Location_NoeC loc = db.getLocationToId(Integer.parseInt(locationIDs_split[i]));
                     TextView tv = new TextView(mContext);
                     tv.setText(loc.getName());
                     LinearLayout lv = (LinearLayout) view.findViewById(R.id.minfoV_linlay);

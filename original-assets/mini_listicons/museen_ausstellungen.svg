@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="437.33334"
+   height="437.33334"
+   id="svg3754"
+   version="1.1"
+   inkscape:version="0.92.1 r"
+   sodipodi:docname="museen_ausstellungen.svg"
+   inkscape:export-filename="/home/roman/androiddev/werke/getnoecarddata/museen_ausstellungen.png"
+   inkscape:export-xdpi="219.50999"
+   inkscape:export-ydpi="219.50999">
+  <defs
+     id="defs3756" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#6b3469"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.3603516"
+     inkscape:cx="66.939963"
+     inkscape:cy="117.6811"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-left="10"
+     fit-margin-bottom="10"
+     fit-margin-top="10"
+     fit-margin-right="10"
+     inkscape:window-width="3840"
+     inkscape:window-height="2096"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3759">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(243.98896,-328.13333)">
+    <rect
+       style="opacity:1;fill:#6b3469;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.38666666;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4135"
+       width="437.33334"
+       height="437.33334"
+       x="-243.98897"
+       y="328.13333" />
+    <g
+       transform="matrix(1.0480206,0,0,0.80247329,0.38134266,45.348761)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:246.19104004px;line-height:125%;font-family:'Linux Biolinum';-inkscape-font-specification:'Linux Biolinum';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none"
+       id="text4286">
+      <path
+         style="font-weight:bold;font-family:Arial;-inkscape-font-specification:'Arial Bold';fill:#ffffff;fill-opacity:1;stroke-width:1.16313076"
+         d="m -24.080601,387.20031 c -0.428806,0 -13.69909,7.73259 -29.51596,17.19684 -15.81688,9.46426 -35.487679,21.16835 -43.701431,26.04448 -68.861228,40.87973 -105.533448,63.10345 -106.136588,64.34274 -0.84446,1.73511 -1.01557,37.56834 -0.19084,40.37518 0.20837,0.70917 3.61654,1.14725 17.65233,1.4123 l -0.25445,137.07621 c -0.11243,43.44796 -0.0472,116.83065 0.12722,138.94544 h -17.14343 v 25.00602 24.96449 H -24.048795 155.17796 V 837.59952 812.5935 H 137.90731 V 674.85267 536.53031 l 17.74774,-0.0415 0.25445,-17.98606 c 0.14218,-9.9163 -0.13978,-18.88704 -0.57251,-19.89689 -0.80721,-1.88375 -177.191223,-111.40558 -179.417591,-111.40558 z m 0.03176,52.37973 c 1.148791,0 18.1195317,9.52932 37.690099,21.18451 19.570557,11.6552 37.605286,22.17021 40.043742,23.34449 2.438456,1.17429 4.421033,2.8654 4.421033,3.77998 0,1.39191 -13.40164,1.70307 -82.154874,1.70307 -70.398617,0 -82.123069,-0.3 -82.123069,-1.78614 0,-0.95367 1.57355,-2.38613 3.49865,-3.19845 4.082841,-1.72277 13.247454,-7.06439 49.808191,-28.99369 14.702459,-8.81862 27.667426,-16.03377 28.816228,-16.03377 z m 123.693548,96.99181 -0.254448,137.07621 c -0.107051,41.37268 -0.06076,112.30695 0.09537,138.94544 H -24.048846 -147.71054 V 674.85267 536.86262 c 26.77277,0.0658 65.738771,0.0585 124.01156,-0.0415 z m -215.008487,42.86747 v 187.96057 h 35.241028 V 619.44065 l 37.213009,147.95924 H -6.3964705 L 30.943762,619.44065 V 767.39989 H 66.1848 V 579.43932 H 9.2520769 L -24.462273,707.66789 -58.558295,579.43932 Z"
+         id="path4291"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>

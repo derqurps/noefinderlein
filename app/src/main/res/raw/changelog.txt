@@ -17,6 +17,16 @@
     </style>
   </head>
   <body>
+$ 1.0.6
+  % Version 1.0.6
+  _ 2017-03-25
+    * neue min Android version >=4.0
+    * Offene Tage für die Ziele hinzugefügt (kann über die Einstellungen deaktiviert werden)
+    * Switch in den Einstellungen um die besuchten Ziele auszublenden
+$ 1.0.5
+  % Version 1.0.5
+  _ 2016-05-05
+    * Behebung des Favoriten Bugs
 $ 1.0.4
   % Version 1.0.4
   _ 2016-04-23

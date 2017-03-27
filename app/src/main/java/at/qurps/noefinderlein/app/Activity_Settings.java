@@ -48,6 +48,8 @@ public class Activity_Settings extends Activity_AppCompatPreference {
     public static final String KEY_PREF_OVERWRITE_YEAR = "pref_overwrite_year_man";
     public static final String KEY_PREF_OVERWRITE_YEAR_MAN = "year_chosen_2";
     public static final String KEY_PREF_OFFLINE_MODE = "pref_offline_mode";
+    public static final String KEY_PREF_FILTER_VISITED = "pref_filter_visited";
+    public static final String KEY_PREF_LOAD_OPEN_DATA = "pref_load_open_data";
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.

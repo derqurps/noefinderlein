@@ -65,6 +65,7 @@
     <string name="filter_typ_schiffahrt">Shipping</string>
     <string name="filter_typ_lokalbahn">Local railway</string>
     <string name="filter_all_OnOf">Activate\ndeactivate all destinations</string>
+    <string name="filter_open_OnOf">Show only open today</string>
     <string name="filter_all_OnOf_Sett">Activate\ndeactivate all properties</string>
 
 
@@ -97,6 +98,8 @@
     <string name="str_navdraw_destinations">Destinations</string>
     <string name="str_navdraw_favorites">Favourites</string>
     <string name="str_navdraw_nahe_ziele">Near</string>
+    <string name="str_navdraw_open_ziele">Open</string>
+    <string name="str_navdraw_other">other</string>
     <string name="str_navdraw_besichtigte_ziele">Visited</string>
 
 
@@ -151,8 +154,12 @@
     <string name="title_activity_activity__about">About</string>
 
     <string name="pref_offline">Offline mode</string>
-    <string name="pref_offline_desc">Don´t try to update on each App open</string>
-
+    <string name="pref_offline_desc">Don\'t try to update on each App open</string>
+    <string name="pref_title_filter_visited">Filter visited</string>
+    <string name="pref_filter_visited">Filter visited locations from lists</string>
+    <string name="pref_title_load_open_data">Use and update open days</string>
+    <string name="pref_open_data">Also use and download opening days of locations</string>
     <string name="toast_offline">Updates disabled - see settings</string>
+    <string name="not_open_today">Not open today</string>
 
 </resources>
