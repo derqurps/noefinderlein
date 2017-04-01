@@ -36,8 +36,8 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 52
-        versionName "1.0.7"
+        versionCode 54
+        versionName "1.0.9"
         multiDexEnabled true
     }
     signingConfigs {

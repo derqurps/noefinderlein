@@ -322,14 +322,21 @@ public class Activity_Detail extends AppCompatActivity {
             getSupportActionBar().setTitle(title);
 
             RelativeLayout notOpenWarning=((RelativeLayout) rootView.findViewById(R.id.detail_notopenToday));
+            TextView notOpenWarningText=((TextView) rootView.findViewById(R.id.detail_not_open_warning_text));
             boolean useOpenData = prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
             int locationId = ziel.getId();
             if(useOpenData) {
-                if(this.db.isOpenToday(locationId, this.fDate)) {
+
+                if(this.db.isOpenToday(locationId)) {
                     notOpenWarning.setVisibility(View.GONE);
-
-
                 } else {
+
+                    if(Util.isTodaySet(this)) {
+                        notOpenWarningText.setText(getResources().getString(R.string.not_open_today));
+                    } else {
+                        notOpenWarningText.setText(getResources().getString(R.string.not_open_on) + " " + Util.getDisplayDateString(this));
+                    }
+
                     notOpenWarning.setVisibility(View.VISIBLE);
                 }
             }

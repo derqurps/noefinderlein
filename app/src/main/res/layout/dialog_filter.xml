@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
@@ -13,31 +14,76 @@
             android:id="@+id/rel_toggleopen_over"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <RelativeLayout
-                android:id="@+id/rel_toggleopen"
-                android:layout_width="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginTop="10dp"
-                android:layout_height="34dp" >
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical" >
+                    <RelativeLayout
+                        android:id="@+id/rel_filterOpen"
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="15dp"
+                        android:layout_height="match_parent"
+                        >
 
-                <ImageView
-                    android:id="@+id/toggleopen"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:src="@mipmap/ic_hakerl_active" />
+                        <ImageView
+                            android:id="@+id/img_filterOpen"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/ic_date_range" />
 
-                <TextView
-                    android:id="@+id/text_toggleopen"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toRightOf="@+id/toggleopen"
-                    android:text="@string/filter_open_OnOf" />
-            </RelativeLayout>
+                        <TextView
+                            android:id="@+id/text_filterOpen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/img_filterOpen"
+                            android:text="01.04.2017"
+                            android:textSize="20sp" />
+                    </RelativeLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical" >
+                    <RelativeLayout
+                        android:id="@+id/rel_toggleopen"
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_height="wrap_content" >
+
+                        <ImageView
+                            android:id="@+id/toggleopen"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"
+                            android:src="@mipmap/ic_hakerl_active" />
+
+                        <TextView
+                            android:id="@+id/text_toggleopen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="10dp"
+                            android:layout_toEndOf="@+id/toggleopen"
+                            android:text="@string/filter_open_OnOf" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dp"

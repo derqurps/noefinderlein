@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -36,21 +38,27 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
     private static SharedPreferences prefs;
     private DestinationsDB db;
     private String fDate;
+    private String filterstring;
+    private boolean[] filtertyp;
+    private boolean filterOpen = Boolean.FALSE;
+    private Location lastLocation = null;
+    private int anz;
 
     public ArrayAdapter_Near(Context context, List<DB_Location_NoeC> list,Location lastlocation) {
         super(context, R.layout.listitem_near, list);
         this.context = context;
         this.originalData = list;
         this.filteredData = list;
+        this.anz = DialogFragment_FilterList.anz;
 
-        if(lastlocation!=null)
-        {
-            refreshlist(lastlocation);
-        }
         this.prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
         this.db= new DestinationsDB(this.context);
         Date cDate = new Date();
         this.fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        if(lastlocation!=null)
+        {
+            refreshlist(lastlocation);
+        }
     }
 
     static class ViewHolder {
@@ -101,6 +109,8 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
             if(filteredData.get(position).getTodayActive()) {
                 holder.greyout.setVisibility(View.GONE);
                 holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
+                holder.name.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
+                holder.ort.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_menu_subtext));
                 holder.burgstiftusw.setColorFilter(colorFilterColor);
 
 
@@ -197,6 +207,35 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
     public DB_Location_NoeC getLocationtoPosition(int position) {
         return filteredData.get(position);
     }
+    public String getItemsString()
+    {
+        String returnstring="";
+        for (int i = 0; i < filteredData.size(); i++) {
+            returnstring=returnstring+String.valueOf(filteredData.get(i).getId())+";";
+        }
+        return returnstring;
+    }
+    public void filterwithtyp(boolean[] filtertyploc)
+    {
+        filterwithtyp(filtertyploc, false);
+    }
+    public void filterwithtyp(boolean[] filtertyploc, boolean openfilter){
+        filtertyp = filtertyploc;
+        filterOpen = openfilter;
+        executefilter();
+        refreshlist(lastLocation);
+    }
+    public void filterwithstring(String filterstr)
+    {
+        filterstring=filterstr;
+        if(filtertyp==null)
+        {
+            filtertyp=new boolean[10];
+            Arrays.fill(filtertyp, Boolean.TRUE);
+        }
+        executefilter();
+        refreshlist(lastLocation);
+    }
     public int getNumbertoPosition(int position) {
         return filteredData.get(position).getNummer();
     }
@@ -207,9 +246,10 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
         return filteredData.get(position).getJahr();
     }
     public void refreshlist(Location actuallocation) {
-        List<DB_Location_NoeC> list=originalData;
+        List<DB_Location_NoeC> list=filteredData;
         if (actuallocation!=null)
         {
+            lastLocation=actuallocation;
             for (int i=0;i<list.size();i++)
             {
                 Location zwischenloc=new Location ("");
@@ -224,11 +264,177 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
             Toast.makeText(context, R.string.hint_no_network_location, Toast.LENGTH_LONG).show();
         }
         this.filteredData = list ;
-        this.originalData = list ;
         notifyDataSetChanged();
 
     }
 
+    private void executefilter()
+    {
+        boolean[] filterbool= filtertyp;
 
+        boolean filterVisited = this.prefs.getBoolean(Activity_Settings.KEY_PREF_FILTER_VISITED, false);
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+        List<DB_Location_NoeC> firstlist;
+        DB_Location_NoeC filterableLocation ;
+
+        if(filterVisited) {
+            final List<DB_Location_NoeC> zwlist = originalData;
+            int countZw = zwlist.size();
+            final ArrayList<DB_Location_NoeC> zwzwlist = new ArrayList<DB_Location_NoeC>(countZw);
+            for (int i = 0; i < countZw; i++) {
+                filterableLocation = zwlist.get(i);
+                if (!this.db.isVisited(filterableLocation.getId())) {
+                    zwzwlist.add(filterableLocation);
+                }
+            }
+            firstlist = zwzwlist;
+        } else {
+            firstlist = originalData;
+        }
+        if(filterOpen && useOpenData) {
+            final List<DB_Location_NoeC> zwlistTwo = firstlist;
+            int countZw = zwlistTwo.size();
+            final ArrayList<DB_Location_NoeC> zwzwlistTwo = new ArrayList<DB_Location_NoeC>(countZw);
+            for (int i = 0; i < countZw; i++) {
+                filterableLocation = zwlistTwo.get(i);
+                if (filterableLocation.getTodayActive()) {
+                    zwzwlistTwo.add(filterableLocation);
+                }
+            }
+            firstlist = zwzwlistTwo;
+        }
+
+        int count = firstlist.size();
+        final ArrayList<DB_Location_NoeC> firstnlist = new ArrayList<DB_Location_NoeC>(count);
+        boolean zusfilt = true;
+        boolean zusfiltTop = true;
+        for (boolean t:filterbool) {
+            if(t){
+                zusfilt = false;
+                break;
+            }
+        }
+        if(filterbool.length>anz-1) {
+            for (int i = 0; i < anz; i++) {
+                if(filterbool[i]){
+                    zusfiltTop = false;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < count; i++) {
+
+            filterableLocation = firstlist.get(i);
+            int[] bla = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+            if(zusfilt){
+                firstnlist.add(filterableLocation);
+                continue;
+            }
+
+
+            if(filterbool.length>8 && filterbool[8]) {
+                if (filterableLocation.getHund()) {
+                    bla[8]=1;
+                }else {
+                    bla[8]=2;
+                }
+            }
+            if(filterbool.length>9 && filterbool[9]) {
+                if (filterableLocation.getRollstuhl()) {
+                    bla[9]=1;
+                }else {
+                    bla[9]=2;
+                }
+            }
+            if(filterbool.length>10 && filterbool[10]) {
+                if (filterableLocation.getKinderwagen()) {
+                    bla[10]=1;
+                }else {
+                    bla[10]=2;
+                }
+            }
+            if(filterbool.length>11 && filterbool[11]) {
+                if (filterableLocation.getGruppe()) {
+                    bla[11]=1;
+                }else {
+                    bla[11]=2;
+                }
+            }
+            if(filterbool.length>12 && filterbool[12]) {
+                if (filterableLocation.getTop_ausflugsziel()) {
+                    bla[12]=1;
+                }else {
+                    bla[12]=2;
+                }
+            }
+            boolean minZusFilter = true;
+            for (int j = 8; j < bla.length; j++) {
+                if(bla[j]==2){
+                    minZusFilter = false;
+                    break;
+                }
+            }
+            if(!minZusFilter){
+                continue;
+            }
+            if(zusfiltTop){
+                firstnlist.add(filterableLocation);
+            }else {
+                int category = filterableLocation.getKat();
+                for (int j = 1; j < filterbool.length; j++) {
+                    if (filterbool[j - 1] && category == j) {
+                        firstnlist.add(filterableLocation);
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        int nummer;
+        String filterString = filterstring;
+        final List<DB_Location_NoeC> list = firstnlist;
+        if(filterString != null && filterString.length() > 0)
+        {
+            count = list.size();
+            final ArrayList<DB_Location_NoeC> nlist = new ArrayList<DB_Location_NoeC>(count);
+
+            try
+            {
+                nummer = Integer.valueOf(filterstring);
+                for (int i = 0; i < count; i++) {
+                    filterableLocation = list.get(i);
+
+                    if (filterableLocation.getNummer()==nummer) {
+                        nlist.add(filterableLocation);
+                    }
+                }
+            }
+            catch  (Exception e)
+            {
+                for (int i = 0; i < count; i++) {
+                    filterableLocation = list.get(i);
+
+                    if (filterableLocation.getName().toLowerCase().contains(filterString)) {
+                        nlist.add(filterableLocation);
+                    }
+                }
+            }
+
+
+            filteredData = nlist;
+        }
+        else
+        {
+            filteredData = list;
+        }
+
+        if (filteredData.size() > 0) {
+            notifyDataSetChanged();
+        } else {
+            notifyDataSetInvalidated();
+        }
+    }
 }
 

@@ -2,6 +2,7 @@ package at.qurps.noefinderlein.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -13,6 +14,7 @@ import android.os.Environment;
 import android.os.Parcel;
 import android.os.ParcelFileDescriptor;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -27,6 +29,8 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class Util {
 
@@ -388,5 +392,68 @@ public class Util {
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, cId));
         menu.findItem(rId).setIcon(drawable);
+    }
+    public final static void setDatePreferences(Context mContext, int year, int month, int day) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt(DialogFragment_ChooseDates.YEAR, year);
+        editor.putInt(DialogFragment_ChooseDates.MONTH, month);
+        editor.putInt(DialogFragment_ChooseDates.DAY, day);
+
+        editor.apply();
+    }
+    public final static int getDatePreferencesYear(Context mContext) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return preferences.getInt(DialogFragment_ChooseDates.YEAR, 0);
+    }
+    public final static int getDatePreferencesMonth(Context mContext) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return preferences.getInt(DialogFragment_ChooseDates.MONTH, 0);
+    }
+    public final static int getDatePreferencesDay(Context mContext) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        return preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
+    }
+    private static Calendar getChosenDayAsCalendar(Context mContext){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Calendar cNow = Calendar.getInstance();
+
+        int year = preferences.getInt(DialogFragment_ChooseDates.YEAR, 0);
+        int month = preferences.getInt(DialogFragment_ChooseDates.MONTH, 0);
+        int day = preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
+        if(year == 0 || day == 0) {
+            year = cNow.get(Calendar.YEAR);
+            month = cNow.get(Calendar.MONTH);
+            day = cNow.get(Calendar.DAY_OF_MONTH);
+        } else {
+            Calendar compare = Calendar.getInstance();
+            compare.set(year, month, day);
+            if(compare.before(cNow)) {
+                year = cNow.get(Calendar.YEAR);
+                month = cNow.get(Calendar.MONTH);
+                day = cNow.get(Calendar.DAY_OF_MONTH);
+            }
+        }
+        cNow.set(year, month, day);
+        return cNow;
+    }
+    public final static String getDBDateString(Context mContext) {
+
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
+        return format1.format(getChosenDayAsCalendar(mContext).getTime());
+    }
+    public final static String getDisplayDateString(Context mContext) {
+        SimpleDateFormat format1 = new SimpleDateFormat("dd.MM.yyyy");
+        return format1.format(getChosenDayAsCalendar(mContext).getTime());
+    }
+    public final static boolean isTodaySet(Context mContext) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mContext);
+        Calendar cNow = Calendar.getInstance();
+
+        int year = preferences.getInt(DialogFragment_ChooseDates.YEAR, 0);
+        int month = preferences.getInt(DialogFragment_ChooseDates.MONTH, 0);
+        int day = preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
+        return ((year == (int)cNow.get(Calendar.YEAR)) && (month == (int)cNow.get(Calendar.MONTH)) && (day == (int)cNow.get(Calendar.DAY_OF_MONTH)));
     }
 }

@@ -297,7 +297,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 		boolean[] filterbool= filtertyp;
 
         boolean filterVisited = this.prefs.getBoolean(Activity_Settings.KEY_PREF_FILTER_VISITED, false);
-        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
         List<DB_Location_NoeC> firstlist;
         DB_Location_NoeC filterableLocation ;
 

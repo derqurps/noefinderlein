@@ -2,22 +2,33 @@ package at.qurps.noefinderlein.app;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,7 +39,7 @@ import java.util.List;
 /**
  * Created by roman on 02.04.16.
  */
-public class Fragment_LocationNear extends ListFragment {
+public class Fragment_LocationNear extends ListFragment implements DialogFragment_FilterList.NoticeDialogListener{
 
     public static final String TAG = "Fragment_LocationNear";
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
@@ -79,6 +90,7 @@ public class Fragment_LocationNear extends ListFragment {
     public int mRegionItemJahr;
     private boolean useOpenData;
     private Location zwloc;
+    private View rootView;
 
     private final BroadcastReceiver myBRLocaupd=new LocationUpdate();
 
@@ -98,20 +110,28 @@ public class Fragment_LocationNear extends ListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
         //container.removeAllViews();
 
         parseArguments(getArguments());
 
-        dbContentChanged();
+        ChangeView(getArguments());
 
         return rootView;
+    }
+    public void ChangeView(Bundle arguments) {
+        dbContentChanged();
     }
     public void dbContentChanged() {
         listItems = db.getAllMenuDistanceLocations(mRegionItemJahr);
         adapter=new ArrayAdapter_Near(mContext,listItems,null);
+        filterWithNewData(getFilterliste(), getOpenFilter());
+
+        updateListwithnewLocation(this.zwloc);
+
         setListAdapter(adapter);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -236,5 +256,152 @@ public class Fragment_LocationNear extends ListFragment {
 
         mActivatedPosition = position;
     }
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.list_options_near, menu);
 
+        Util.colorMenuItems(mContext, menu,R.id.actionb_filter_list, R.color.noecard_white);
+        Util.colorMenuItems(mContext, menu,R.id.actionb_show_current_in_map, R.color.noecard_white);
+
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionb_filter_list:
+                DialogFragment_FilterList newFragment = new DialogFragment_FilterList();
+                newFragment.setListener(Fragment_LocationNear.this);
+                newFragment.show(Fragment_LocationNear.this.getActivity().getSupportFragmentManager(), "filter");
+                return true;
+
+            case R.id.actionb_show_current_in_map:
+
+                mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
+
+                Bundle arguments = new Bundle();
+                arguments.putString(Activity_Map.ARG_ITEM_IDS, adapter.getItemsString());
+                arguments.putInt(Activity_Map.ARG_ITEM_YEAR, mRegionItemJahr);
+                arguments.putBoolean(Activity_Map.ARG_MTWOPANE, mTwoPane);
+
+                Intent intent = new Intent(mContext, Activity_Map.class);
+                intent.putExtras(arguments);
+                startActivity(intent);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+    @Override
+    public void onDialogPositiveClick(boolean[] filterlist, boolean openFilter) {
+        // User touched the dialog's positive button
+        dbContentChanged();
+        filterWithNewData(filterlist, openFilter);
+    }
+    public void filterWithNewData(boolean[] filterlist, boolean openFilter) {
+        // User touched the dialog's positive button
+        //dbContentChanged();
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+        adapter.filterwithtyp(filterlist, openFilter);
+    }
+    private boolean[] getFilterliste(){
+        String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
+        boolean[] returnbool=new boolean[dest_typ_list.length];
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+
+        for(int i=0;i<dest_typ_list.length;i++)
+        {
+            returnbool[i]=sharedPref.getBoolean(dest_typ_list[i], false);
+        }
+        return returnbool;
+    }
+    private boolean getOpenFilter(){
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(getResources().getString(R.string.filter_open_sett), false);
+    }
+    private void showFilterActive(boolean filtered, String dayString){
+        final TextView txt = (TextView)rootView.findViewById(R.id.mainlist_filtertext);
+        txt.setText(getResources().getString(R.string.filteractive) + dayString);
+        if(filtered && txt.getVisibility()==View.GONE){
+            txt.setVisibility(View.VISIBLE);
+            final Animation animLinearDown = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_top);
+            txt.startAnimation(animLinearDown);
+        }else if(!filtered && txt.getVisibility()==View.VISIBLE){
+            final Animation animLinearUp = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_top);
+            animLinearUp.setAnimationListener(new Animation.AnimationListener() {
+                public void onAnimationStart(Animation animation) {}
+                public void onAnimationRepeat(Animation animation) {}
+                public void onAnimationEnd(Animation animation) {
+                    txt.setVisibility(View.GONE);
+                }
+            });
+            txt.startAnimation(animLinearUp);
+
+        }
+    }
+    private boolean isFilterSet(){
+        boolean returnval=true;
+        SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
+        boolean noneset = true;
+        for(int i=0;i<dest_typ_list.length;i++)
+        {
+			/*if(!sharedPref.getBoolean(dest_typ_list[i], true))
+			{
+				returnval=true;
+			}
+            else {*/
+            if(sharedPref.getBoolean(dest_typ_list[i], false)){
+                noneset = false;
+            }
+        }
+        boolean filterOpen = sharedPref.getBoolean(getResources().getString(R.string.filter_open_sett), false);
+        SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        this.useOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+        if(filterOpen && this.useOpenData) {
+            noneset = false;
+        }
+
+        String dayString = "";
+        int year = Util.getDatePreferencesYear(getActivity());
+        int month = Util.getDatePreferencesMonth(getActivity());
+        int day = Util.getDatePreferencesDay(getActivity());
+
+        Calendar currentDay = Calendar.getInstance();
+        Calendar setDay = Calendar.getInstance();
+        setDay.set(year, month, day);
+        if((year == 0 && month == 0 && day == 0) || (year != 0 && month != 0 && day != 0 && (setDay.before(currentDay) || setDay.equals(currentDay)))) {
+            year = currentDay.get(Calendar.YEAR);
+            month = currentDay.get(Calendar.MONTH);
+            day = currentDay.get(Calendar.DAY_OF_MONTH);
+        }
+
+        setDay.set(year, month, day);
+        if(setDay.after(currentDay)) {
+            noneset = false;
+            dayString = " " + String.valueOf(day) + "." + String.valueOf(month + 1) + "." + String.valueOf(year);
+        }
+        if(noneset){
+            returnval=false;
+        }
+        showFilterActive(returnval, dayString);
+        return returnval;
+    }
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem filtericon=menu.findItem(R.id.actionb_filter_list);
+        Drawable drawable;
+        if(isFilterSet())
+        {
+            drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_filter_full);
+        }
+        else
+        {
+            drawable = ContextCompat.getDrawable(mContext, R.drawable.ic_filter);
+        }
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
+        filtericon.setIcon(drawable);
+    }
 }
