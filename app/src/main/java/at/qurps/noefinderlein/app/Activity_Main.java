@@ -42,7 +42,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.google.android.gms.location.LocationServices;
 
 import org.joda.time.DateTime;
@@ -54,6 +53,7 @@ public class Activity_Main extends AppCompatActivity implements
             NavigationView.OnNavigationItemSelectedListener,
             Fragment_LocationList.Callbacks,
             Fragment_LocationNear.Callbacks,
+            Fragment_LocationOpen.Callbacks,
             Fragment_LocationFavorits.Callbacks,
             Fragment_Regions.Callbacks,
             Downloader_Destination.Callbacks{
@@ -82,7 +82,7 @@ public class Activity_Main extends AppCompatActivity implements
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
 
-    public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v2";
+    public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
 
 
     @Override
@@ -139,6 +139,10 @@ public class Activity_Main extends AppCompatActivity implements
         // Get a SharedPreferences editor
         mEditor = mPrefs.edit();
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+
+        Boolean opendata = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+        mEditor.putBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, opendata);
+        mEditor.commit();
 
         initYear();
 
@@ -309,6 +313,8 @@ public class Activity_Main extends AppCompatActivity implements
             startVisitedScreen();
         } else if (id == R.id.nav_near) {
             startNearScreen();
+        } else if (id == R.id.nav_open) {
+            startOpenScreen();
         } else if (id == R.id.nav_money) {
             String url = String.valueOf("https://noecard.reitschmied.at/donate");
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -389,6 +395,7 @@ public class Activity_Main extends AppCompatActivity implements
     private void startDefaultScreen(){
         startDefaultScreen(false,0,"", true);
     }
+
     private void startDefaultScreen(boolean isRegion, int regionId, String name, boolean forcereplace){
         Fragment_LocationList testfrag = (Fragment_LocationList) getSupportFragmentManager().findFragmentByTag(Fragment_LocationList.TAG);
         Fragment_Regions testReg = (Fragment_Regions) getSupportFragmentManager().findFragmentByTag(Fragment_Regions.TAG);
@@ -419,6 +426,35 @@ public class Activity_Main extends AppCompatActivity implements
                 transABla.addToBackStack(Fragment_Regions.TAG);
             }
             transABla.commit();
+                /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
+                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
+                    Log.d(TAG," lalala----");
+                    onItemSelected(0);
+                }*/
+        }
+    }
+    private void startOpenScreen(){
+        Fragment_LocationOpen testfrag = (Fragment_LocationOpen) getSupportFragmentManager().findFragmentByTag(Fragment_LocationOpen.TAG);
+        if(testfrag==null || !testfrag.isVisible()) {
+            Bundle arguments = new Bundle();
+            arguments.putInt(Fragment_LocationOpen.ARG_ITEM_JAHR, mActiveyear);
+            arguments.putBoolean(Fragment_LocationOpen.ARG_MTWOPANE, mTwoPane);
+
+            Fragment_LocationOpen fragment = new Fragment_LocationOpen();
+            fragment.setArguments(arguments);
+            FragmentManager man = getSupportFragmentManager();
+            if ( man.getBackStackEntryCount() > 0) {
+                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+            }
+            man.beginTransaction().remove(fragment).commit();
+            man.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
+                    .replace(R.id.region_list_container, fragment, Fragment_LocationOpen.TAG)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
                 Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){

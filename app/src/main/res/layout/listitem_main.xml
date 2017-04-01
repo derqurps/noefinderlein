@@ -1,101 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="54dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
-
-    <TextView
-        android:id="@+id/menuitem_sortnumber"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:background="@color/noecard_orange_dark"
-        android:gravity="center_vertical|center_horizontal"
-        android:textColor="#FFFFFF"
-        android:text="T380"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-
-    <RelativeLayout
-        android:id="@+id/allbutnr"
-        android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <FrameLayout
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/menuitem_sortnumber"
-        android:layout_marginLeft="10dp">
-
-        <TextView
-            android:id="@+id/menuitem_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TSchloss Artstetten test test test test test test test"
-            android:textColor="@color/noecard_orange_dark"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:singleLine="true" />
-
-        <TextView
-            android:id="@+id/menuitem_ort"
+        android:layout_width="match_parent">
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/menuitem_name"
-            android:text="TArtstetten"
-            android:textColor="#343434"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif"/>
+            android:minHeight="54dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/menuitem_ort"
-            android:paddingBottom="8dp">
-            <ImageView
-                android:id="@+id/menuitem_hund"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_toLeftOf="@+id/menuitem_rollstuhl"
-                android:layout_marginLeft="2dp"
-                android:src="@mipmap/ic_hund" />
-            <ImageView
-                android:id="@+id/menuitem_rollstuhl"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_toLeftOf="@+id/menuitem_kinderwagen"
-                android:layout_marginLeft="2dp"
-                android:src="@mipmap/ic_rollstuhl" />
-            <ImageView
-                android:id="@+id/menuitem_kinderwagen"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_toLeftOf="@+id/menuitem_gruppe"
-                android:layout_marginLeft="2dp"
-                android:src="@mipmap/ic_kinderwagen" />
-            <ImageView
-                android:id="@+id/menuitem_gruppe"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_toLeftOf="@+id/topausflug"
-                android:layout_marginLeft="2dp"
-                android:src="@mipmap/ic_gruppe"/>
-            <ImageView
-                android:id="@+id/topausflug"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_toLeftOf="@+id/burgschloessusw"
-                android:src="@mipmap/ic_top_ausflugsziel"
-                android:layout_marginLeft="3dp"
-                />
+            <TextView
+                android:id="@+id/menuitem_sortnumber"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="@color/noecard_orange_dark"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#FFFFFF"
+                android:text="T380"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-            <ImageView
-                android:id="@+id/burgschloessusw"
-                android:layout_width="16dip"
-                android:layout_height="16dip"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_noe_marker"
-                android:layout_marginLeft="3dp"/>
+            <RelativeLayout
+                android:id="@+id/allbutnr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/menuitem_sortnumber"
+                android:layout_marginLeft="10dp">
+
+                <TextView
+                    android:id="@+id/menuitem_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TSchloss Artstetten test test test test test test test"
+                    android:textColor="@color/noecard_orange_dark"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:singleLine="true" />
+
+                <TextView
+                    android:id="@+id/menuitem_ort"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menuitem_name"
+                    android:text="TArtstetten"
+                    android:textColor="@color/noecard_menu_subtext"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/menuitem_ort"
+                    android:paddingBottom="8dp">
+                    <ImageView
+                        android:id="@+id/menuitem_hund"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_toLeftOf="@+id/menuitem_rollstuhl"
+                        android:layout_marginLeft="2dp"
+                        android:src="@mipmap/ic_hund" />
+                    <ImageView
+                        android:id="@+id/menuitem_rollstuhl"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_toLeftOf="@+id/menuitem_kinderwagen"
+                        android:layout_marginLeft="2dp"
+                        android:src="@mipmap/ic_rollstuhl" />
+                    <ImageView
+                        android:id="@+id/menuitem_kinderwagen"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_toLeftOf="@+id/menuitem_gruppe"
+                        android:layout_marginLeft="2dp"
+                        android:src="@mipmap/ic_kinderwagen" />
+                    <ImageView
+                        android:id="@+id/menuitem_gruppe"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_toLeftOf="@+id/topausflug"
+                        android:layout_marginLeft="2dp"
+                        android:src="@mipmap/ic_gruppe"/>
+                    <ImageView
+                        android:id="@+id/topausflug"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_toLeftOf="@+id/burgschloessusw"
+                        android:src="@mipmap/ic_top_ausflugsziel"
+                        android:layout_marginLeft="3dp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/burgschloessusw"
+                        android:layout_width="16dip"
+                        android:layout_height="16dip"
+                        android:layout_alignParentRight="true"
+                        android:src="@mipmap/ic_noe_marker"
+                        android:layout_marginLeft="3dp"/>
+                </RelativeLayout>
+            </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
-</RelativeLayout>
+
+        <include layout="@layout/menuitemoverlay" />
+    </FrameLayout>
+</LinearLayout>

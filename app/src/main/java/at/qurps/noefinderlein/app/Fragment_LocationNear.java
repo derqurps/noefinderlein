@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.ListFragment;
 import android.support.v4.view.MenuItemCompat;
@@ -18,8 +19,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -65,7 +68,7 @@ public class Fragment_LocationNear extends ListFragment {
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
     private SearchView searchView;
-    List<Location_NoeC> listItems=new ArrayList<Location_NoeC>();
+    List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
     ArrayAdapter_Near adapter;
     private DestinationsDB db;
     private Context mContext;
@@ -74,6 +77,8 @@ public class Fragment_LocationNear extends ListFragment {
     private boolean allowlocationupdates=false;
 
     public int mRegionItemJahr;
+    private boolean useOpenData;
+    private Location zwloc;
 
     private final BroadcastReceiver myBRLocaupd=new LocationUpdate();
 
@@ -84,6 +89,8 @@ public class Fragment_LocationNear extends ListFragment {
         mContext=getActivity();
         mTwoPane = getResources().getBoolean(R.bool.has_two_panes);
         this.db= new DestinationsDB(mContext);
+        SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        this.useOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
         //getListView().
         //TODO Fastscroll enable
     }
@@ -96,13 +103,15 @@ public class Fragment_LocationNear extends ListFragment {
 
         parseArguments(getArguments());
 
-        listItems = db.getAllMenuDistanceLocations(mRegionItemJahr);
-        adapter=new ArrayAdapter_Near(mContext,listItems,null);
-        setListAdapter(adapter);
+        dbContentChanged();
 
         return rootView;
     }
-
+    public void dbContentChanged() {
+        listItems = db.getAllMenuDistanceLocations(mRegionItemJahr);
+        adapter=new ArrayAdapter_Near(mContext,listItems,null);
+        setListAdapter(adapter);
+    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -116,9 +125,9 @@ public class Fragment_LocationNear extends ListFragment {
         }
 
         if (((Activity_Main)this.getActivity()).mLastLocation!=null) {
-            Location zwloc=((Activity_Main)this.getActivity()).mLastLocation;
+            this.zwloc=((Activity_Main)this.getActivity()).mLastLocation;
 
-            updateListwithnewLocation(zwloc);
+            updateListwithnewLocation(this.zwloc);
 
         }
     }
@@ -168,6 +177,17 @@ public class Fragment_LocationNear extends ListFragment {
         super.onResume();
         allowlocationupdates=true;
         mContext.registerReceiver(myBRLocaupd, new IntentFilter("locationupdate"));
+
+        Date cDate = new Date();
+        String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        SharedPreferences sharedPrefAct = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        boolean compUseOpenData = sharedPrefAct.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
+        if(!fDate.equals(this.adapter.getactiveDay()) || compUseOpenData != this.useOpenData){
+            // daychange - reload adapter
+            dbContentChanged();
+            updateListwithnewLocation(this.zwloc);
+            this.useOpenData = compUseOpenData;
+        }
     }
     @Override
     public void onPause() {

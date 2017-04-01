@@ -1,39 +1,59 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.LightingColorFilter;
+import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
-public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*implements SectionIndexer*/ {
+public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*implements SectionIndexer*/ {
 
 	//private final List<Location> list;
-	private List<Location_NoeC> originalData = null;
-	private List<Location_NoeC> filteredData = null;
+	private List<DB_Location_NoeC> originalData = null;
+	private List<DB_Location_NoeC> filteredData = null;
 	private final Context context;
 	private String filterstring;
 	private boolean[] filtertyp;
+    private boolean filterOpen = Boolean.FALSE;
 	private static final String TAG = "Mainlist-ArrayAdapter";
     //private static String sections = "abcdefghijklmnopqrstuvwxyz";
 	private int anz;
+	private static SharedPreferences prefs;
+    private DestinationsDB db;
+    private String fDate;
 
-	public ArrayAdapter_Mainlist(Context context, List<Location_NoeC> list) {
+	public ArrayAdapter_Mainlist(Context context, List<DB_Location_NoeC> list) {
 		super(context, R.layout.listitem_main, list);
 		this.context = context;
 		//this.list = list;
+
 		this.filteredData = list ;
 		this.originalData = list ;
 		this.anz = DialogFragment_FilterList.anz;
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.db= new DestinationsDB(this.context);
+        Date cDate = new Date();
+        this.fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
 	}
 
 	static class ViewHolder {
@@ -46,14 +66,26 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
         protected ImageView rollstuhl;
         protected ImageView kinderwagen;
         protected ImageView gruppe;
+        protected LinearLayout greyout;
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = null;
-		if (convertView == null) {
-			LayoutInflater inflator = LayoutInflater.from(context);
-			view = inflator.inflate(R.layout.listitem_main, null);
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.setSaturation(0);
+
+        ColorMatrix matrixColor = new ColorMatrix();
+        matrixColor.setSaturation(1);
+
+        ColorMatrixColorFilter colorFilterGrey = new ColorMatrixColorFilter(matrix);
+        ColorMatrixColorFilter colorFilterColor = new ColorMatrixColorFilter(matrixColor);
+
+        if (convertView == null) {
+
+            LayoutInflater inflator = LayoutInflater.from(context);
+            view = inflator.inflate(R.layout.listitem_main, null);
+
 			final ViewHolder viewHolder = new ViewHolder();
 			viewHolder.sortnumber = (TextView) view.findViewById(R.id.menuitem_sortnumber);
 			viewHolder.name = (TextView) view.findViewById(R.id.menuitem_name);
@@ -64,6 +96,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
             viewHolder.rollstuhl = (ImageView) view.findViewById(R.id.menuitem_rollstuhl);
             viewHolder.kinderwagen = (ImageView) view.findViewById(R.id.menuitem_kinderwagen);
             viewHolder.gruppe = (ImageView) view.findViewById(R.id.menuitem_gruppe);
+            viewHolder.greyout = (LinearLayout) view.findViewById(R.id.greyout);
 
 			view.setTag(viewHolder);
 			//viewHolder.checkbox.setTag(list.get(position));
@@ -73,6 +106,34 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		}
 		ViewHolder holder = (ViewHolder) view.getTag();
 		//Log.d(TAG,String.valueOf(list.get(position).getSort()));
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        if(useOpenData) {
+            if(filteredData.get(position).getTodayActive()) {
+                holder.greyout.setVisibility(View.GONE);
+                holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
+                holder.name.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
+                holder.ort.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_menu_subtext));
+                holder.burgstiftusw.setColorFilter(colorFilterColor);
+                holder.topausflug.setColorFilter(colorFilterColor);
+				holder.hund.setColorFilter(ContextCompat.getColor(this.context, R.color.black));
+				holder.rollstuhl.setColorFilter(ContextCompat.getColor(this.context, R.color.black));
+				holder.kinderwagen.setColorFilter(ContextCompat.getColor(this.context, R.color.black));
+				holder.gruppe.setColorFilter(ContextCompat.getColor(this.context, R.color.black));
+
+            } else {
+                /*holder.greyout.setVisibility(View.VISIBLE);*/
+                holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.name.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.ort.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.burgstiftusw.setColorFilter(colorFilterGrey);
+                holder.topausflug.setColorFilter(colorFilterGrey);
+                holder.hund.setColorFilter(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.rollstuhl.setColorFilter(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.kinderwagen.setColorFilter(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+                holder.gruppe.setColorFilter(ContextCompat.getColor(this.context, R.color.noecard_text_grey));
+            }
+        }
+
 		int nummer = filteredData.get(position).getNummer();
 		if(nummer!= 0) {
 			holder.sortnumber.setVisibility(View.VISIBLE);
@@ -172,7 +233,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 	public int getCount() {
 		return filteredData!=null ? filteredData.size() : 0;
 	}
-	public Location_NoeC getLocationtoPosition(int position) {
+	public DB_Location_NoeC getLocationtoPosition(int position) {
 		return filteredData.get(position);
 	}
 	public int getNumbertoPosition(int position) {
@@ -186,9 +247,13 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
     }
 	public void filterwithtyp(boolean[] filtertyploc)
 	{
-		filtertyp=filtertyploc;
-		executefilter();
+        filterwithtyp(filtertyploc, false);
 	}
+    public void filterwithtyp(boolean[] filtertyploc, boolean openfilter){
+        filtertyp = filtertyploc;
+        filterOpen = openfilter;
+        executefilter();
+    }
 	public void filterwithstring(String filterstr)
 	{
 		filterstring=filterstr;
@@ -198,6 +263,9 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 			Arrays.fill(filtertyp, Boolean.TRUE);
 		}
 		executefilter();
+	}
+	public String getactiveDay() {
+		return this.fDate;
 	}
 	public String getItemsString()
 	{
@@ -228,9 +296,40 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 	{
 		boolean[] filterbool= filtertyp;
 
-		final List<Location_NoeC> firstlist = originalData;
+        boolean filterVisited = this.prefs.getBoolean(Activity_Settings.KEY_PREF_FILTER_VISITED, false);
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        List<DB_Location_NoeC> firstlist;
+        DB_Location_NoeC filterableLocation ;
+
+        if(filterVisited) {
+            final List<DB_Location_NoeC> zwlist = originalData;
+            int countZw = zwlist.size();
+            final ArrayList<DB_Location_NoeC> zwzwlist = new ArrayList<DB_Location_NoeC>(countZw);
+            for (int i = 0; i < countZw; i++) {
+                filterableLocation = zwlist.get(i);
+                if (!this.db.isVisited(filterableLocation.getId())) {
+                    zwzwlist.add(filterableLocation);
+                }
+            }
+            firstlist = zwzwlist;
+        } else {
+            firstlist = originalData;
+        }
+        if(filterOpen && useOpenData) {
+            final List<DB_Location_NoeC> zwlistTwo = firstlist;
+            int countZw = zwlistTwo.size();
+            final ArrayList<DB_Location_NoeC> zwzwlistTwo = new ArrayList<DB_Location_NoeC>(countZw);
+            for (int i = 0; i < countZw; i++) {
+                filterableLocation = zwlistTwo.get(i);
+                if (filterableLocation.getTodayActive()) {
+                    zwzwlistTwo.add(filterableLocation);
+                }
+            }
+            firstlist = zwzwlistTwo;
+        }
+
 		int count = firstlist.size();
-		final ArrayList<Location_NoeC> firstnlist = new ArrayList<Location_NoeC>(count);
+		final ArrayList<DB_Location_NoeC> firstnlist = new ArrayList<DB_Location_NoeC>(count);
 		boolean zusfilt = true;
 		boolean zusfiltTop = true;
 		for (boolean t:filterbool) {
@@ -247,7 +346,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 				}
 			}
 		}
-		Location_NoeC filterableLocation ;
+
 		for (int i = 0; i < count; i++) {
 			
 			filterableLocation = firstlist.get(i);
@@ -319,11 +418,11 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 
 		int nummer;
 		String filterString = filterstring;
-		final List<Location_NoeC> list = firstnlist;
+		final List<DB_Location_NoeC> list = firstnlist;
 		if(filterString != null && filterString.length() > 0)
 		{
 			count = list.size();
-			final ArrayList<Location_NoeC> nlist = new ArrayList<Location_NoeC>(count);
+			final ArrayList<DB_Location_NoeC> nlist = new ArrayList<DB_Location_NoeC>(count);
 
 			try
 			{
@@ -362,9 +461,9 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<Location_NoeC> /*impleme
 		}
 	}
 	public void sortBy(final int what){
-		Collections.sort(filteredData, new Comparator<Location_NoeC>() {
+		Collections.sort(filteredData, new Comparator<DB_Location_NoeC>() {
 			@Override
-			public int compare(Location_NoeC item1, Location_NoeC item2) {
+			public int compare(DB_Location_NoeC item1, DB_Location_NoeC item2) {
 				switch (what){
 					case Fragment_LocationList.SORT_BY_NAME:
 						return item1.getName().compareTo(item2.getName());

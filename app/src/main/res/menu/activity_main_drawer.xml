@@ -22,9 +22,14 @@
             android:id="@+id/nav_near"
             android:icon="@drawable/ic_near"
             android:title="@string/str_navdraw_nahe_ziele"/>
+        <item
+            android:id="@+id/nav_open"
+            android:icon="@drawable/ic_access_time"
+            android:title="@string/str_navdraw_open_ziele"
+            android:visible="false"/>
     </group>
 
-    <item android:title="Anderes">
+    <item android:title="@string/str_navdraw_other">
         <menu>
 
             <item

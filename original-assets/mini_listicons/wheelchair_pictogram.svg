@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="160"
+   height="160"
+   id="svg5753"
+   version="1.1"
+   inkscape:version="0.92.1 r"
+   sodipodi:docname="wheelchair_pictogram.svg"
+   inkscape:export-filename="/home/roman/androiddev/werke/getnoecarddata/wheelchair_pictogram.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600">
+  <title
+     id="title6642">Wheelchair Pictogram</title>
+  <defs
+     id="defs5755">
+    <inkscape:path-effect
+       effect="spiro"
+       id="path-effect314436"
+       is_visible="true" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.1841138"
+     inkscape:cx="96.707421"
+     inkscape:cy="73.062067"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="3840"
+     inkscape:window-height="2096"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <g
+     inkscape:label="レイヤー 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-288.30723,-498.32506)">
+    <g
+       id="g3003"
+       transform="matrix(1.0559581,0,0,1.0559581,-8.6664566,-36.838633)">
+      <circle
+         id="path314358"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:2.45944047"
+         cx="342.13162"
+         cy="523.12543"
+         r="16.321531" />
+      <rect
+         ry="8.1607656"
+         rx="8.1607656"
+         y="543.1095"
+         x="333.97086"
+         height="61.273808"
+         width="16.321531"
+         id="rect314360"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+      <rect
+         transform="rotate(90)"
+         ry="10.767466"
+         rx="7.2445965"
+         y="-401.13263"
+         x="591.86096"
+         height="66.408119"
+         width="13.057225"
+         id="rect314360-1"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+      <rect
+         transform="rotate(90)"
+         ry="7.9428835"
+         rx="5.6988177"
+         y="-387.85941"
+         x="558.65582"
+         height="48.987564"
+         width="13.057225"
+         id="rect314360-1-6-0"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+      <path
+         sodipodi:nodetypes="cssssc"
+         inkscape:connector-curvature="0"
+         d="m 323.90327,566.38493 c -7.95578,2.85622 -15.0502,8.06603 -20.15675,14.80217 -5.23705,6.90829 -8.36035,15.39792 -8.84401,24.0534 -0.48365,8.65548 1.67503,17.44165 6.11896,24.88495 6.0944,10.20772 16.48918,17.71486 28.0577,20.45506 11.98569,2.83901 24.97152,0.5907 35.65748,-5.53522 8.56529,-4.91021 15.71833,-12.2528 20.40289,-20.94356"
+         id="path314434"
+         inkscape:original-d="m 323.90327,566.38493 c -10.35078,3.3671 -13.53936,5.51546 -20.15675,14.80217 -10.07088,14.13332 -10.60296,33.83555 -2.72505,48.93835 5.56075,10.66062 16.50956,17.55205 28.0577,20.45506 11.9751,3.01035 25.50842,2.13786 35.65748,-5.53522 10.17941,-7.69547 13.40765,-9.57886 20.40289,-20.94356"
+         inkscape:path-effect="#path-effect314436"
+         style="fill:none;stroke:#000000;stroke-width:13.05722523;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <rect
+         transform="rotate(165)"
+         ry="6.8329687"
+         rx="5.6988177"
+         y="-717.86597"
+         x="-233.34999"
+         height="42.142197"
+         width="13.057225"
+         id="rect314360-1-6-0-5"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+      <rect
+         transform="rotate(-105)"
+         ry="8.2163248"
+         rx="6.5286126"
+         y="220.8821"
+         x="-718.82904"
+         height="27.897409"
+         width="13.057225"
+         id="rect314360-1-6-0-5-8"
+         style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.06666672" />
+    </g>
+  </g>
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Wheelchair Pictogram</dc:title>
+        <dc:date>2012-12-09T15:18:29</dc:date>
+        <dc:description>A simple wheelchair pictogram.</dc:description>
+        <dc:source>http://openclipart.org/detail/173655/wheelchair-pictogram-by-libberry-173655</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>libberry</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>disability</rdf:li>
+            <rdf:li>pictogram</rdf:li>
+            <rdf:li>symbol</rdf:li>
+            <rdf:li>wheelchair</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

@@ -1,88 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <FrameLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="64dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 
-    <TextView
-        android:id="@+id/menuitem_sortnumber"
-        android:layout_width="40dip"
-        android:layout_height="40dip"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dip"
-        android:background="@color/noecard_orange_dark"
-        android:gravity="center_vertical|center_horizontal"
-        android:padding="3dip"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp"
-        android:textStyle="bold" />
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/menuitem_sortnumber"
-        android:layout_marginLeft="10dp">
-        <TextView
-            android:id="@+id/menuitem_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Schloss Artstetten"
-            android:textColor="@color/noecard_orange_dark"
-            android:textSize="16sp"
-            android:fontFamily="sans-serif"
-            android:singleLine="true"/>
+            <TextView
+                android:id="@+id/menuitem_sortnumber"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dip"
+                android:background="@color/noecard_orange_dark"
+                android:gravity="center_vertical|center_horizontal"
+                android:padding="3dip"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/menuitem_sortnumber"
+                android:layout_marginLeft="10dp">
+                <TextView
+                    android:id="@+id/menuitem_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Schloss Artstetten"
+                    android:textColor="@color/noecard_orange_dark"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif"
+                    android:singleLine="true"/>
 
-        <ImageView
-            android:id="@+id/burgschloessusw"
-            android:layout_width="16dip"
-            android:layout_height="16dip"
-            android:layout_below="@+id/menuitem_name"
-            android:layout_marginTop="1dip"
-            android:paddingLeft="2dp"
-            android:src="@mipmap/ic_noe_marker" />
+                <ImageView
+                    android:id="@+id/burgschloessusw"
+                    android:layout_width="16dip"
+                    android:layout_height="16dip"
+                    android:layout_below="@+id/menuitem_name"
+                    android:layout_marginTop="1dip"
+                    android:paddingLeft="2dp"
+                    android:src="@mipmap/ic_noe_marker" />
 
-        <TextView
-            android:id="@+id/menuitem_untertitel"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/menuitem_name"
-            android:layout_marginLeft="4dip"
-            android:layout_marginTop="1dip"
-            android:paddingRight="80dp"
-            android:layout_toRightOf="@+id/burgschloessusw"
-            android:text="TArtstetten"
-            android:textColor="#343434"
-            android:textSize="14sp"
-            android:fontFamily="sans-serif"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:paddingBottom="8dp" >
+                <TextView
+                    android:id="@+id/menuitem_untertitel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/menuitem_name"
+                    android:layout_marginLeft="4dip"
+                    android:layout_marginTop="1dip"
+                    android:paddingRight="80dp"
+                    android:layout_toRightOf="@+id/burgschloessusw"
+                    android:text="TArtstetten"
+                    android:textColor="#343434"
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="64dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:paddingBottom="8dp" >
 
-        <TextView
-            android:id="@+id/distancetodestination"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/compastodest"
-            android:text="~20km"
-            android:textColor="#000000"
-            android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/distancetodestination"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/compastodest"
+                    android:text="~20km"
+                    android:textColor="#000000"
+                    android:textSize="14sp" />
 
-        <ImageView
-            android:id="@+id/compastodest"
-            android:layout_width="16dip"
-            android:layout_height="16dip"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingLeft="2dp"
-            android:src="@mipmap/ic_launcher"
-            android:visibility="gone"/>
-    </RelativeLayout>
+                <ImageView
+                    android:id="@+id/compastodest"
+                    android:layout_width="16dip"
+                    android:layout_height="16dip"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="2dp"
+                    android:src="@mipmap/ic_launcher"
+                    android:visibility="gone"/>
+            </RelativeLayout>
 
-</RelativeLayout>
+        </RelativeLayout>
+        <include layout="@layout/menuitemoverlay" />
+    </FrameLayout>
+</LinearLayout>

@@ -13,17 +13,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
+public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
 
     //private final List<Location> list;
-    private List<Location_NoeC> originalData = null;
-    private List<Location_NoeC> filteredData = null;
+    private List<DB_Location_NoeC> originalData = null;
+    private List<DB_Location_NoeC> filteredData = null;
     private final Context context;
     private String filterstring;
     private boolean[] filtertyp;
     private static final String TAG = "VisitedArrayAdapter";
 
-    public ArrayAdapter_Visited(Context context, List<Location_NoeC> list) {
+    public ArrayAdapter_Visited(Context context, List<DB_Location_NoeC> list) {
         super(context, R.layout.listitem_visited, list);
         this.context = context;
         //this.list = list;
@@ -82,7 +82,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
     public int getCount() {
         return filteredData!=null ? filteredData.size() : 0;
     }
-    public Location_NoeC getLocationtoPosition(int position) {
+    public DB_Location_NoeC getLocationtoPosition(int position) {
         return filteredData.get(position);
     }
     public int getNumbertoPosition(int position) {
@@ -165,11 +165,11 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
     {
         boolean[] filterbool= filtertyp;
 
-        final List<Location_NoeC> firstlist = originalData;
+        final List<DB_Location_NoeC> firstlist = originalData;
         int count = firstlist.size();
-        final ArrayList<Location_NoeC> firstnlist = new ArrayList<Location_NoeC>(count);
+        final ArrayList<DB_Location_NoeC> firstnlist = new ArrayList<DB_Location_NoeC>(count);
 
-        Location_NoeC filterableLocation ;
+        DB_Location_NoeC filterableLocation ;
         for (int i = 0; i < count; i++) {
             filterableLocation = firstlist.get(i);
 
@@ -191,11 +191,11 @@ public class ArrayAdapter_Visited extends ArrayAdapter<Location_NoeC> {
 
         int nummer;
         String filterString = filterstring;
-        final List<Location_NoeC> list = firstnlist;
+        final List<DB_Location_NoeC> list = firstnlist;
         if(filterString != null && filterString.length() > 0)
         {
             count = list.size();
-            final ArrayList<Location_NoeC> nlist = new ArrayList<Location_NoeC>(count);
+            final ArrayList<DB_Location_NoeC> nlist = new ArrayList<DB_Location_NoeC>(count);
 
             try
             {

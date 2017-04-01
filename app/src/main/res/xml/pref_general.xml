@@ -12,6 +12,7 @@
         android:title="@string/overwrite_year_title"
         android:summary="@string/overwrite_year_summary"
         android:defaultValue="false" />
+
     <ListPreference
         android:dependency="pref_overwrite_year_man"
         android:key="year_chosen_2"
@@ -21,11 +22,33 @@
         android:entries="@array/pref_year"
         android:entryValues="@array/pref_year_val"
         android:defaultValue="2016" />
+
     <CheckBoxPreference
         android:key="pref_offline_mode"
         android:title="@string/pref_offline"
         android:summary="@string/pref_offline_desc"
         android:defaultValue="false" />
+
+    <CheckBoxPreference
+        android:key="pref_load_open_data"
+        android:title="@string/pref_title_load_open_data"
+        android:summary="@string/pref_open_data"
+        android:defaultValue="true" />
+    <!--<ListPreference
+        android:dependency="pref_load_open_data"
+        android:key="delete_dayData_year_chosen_2"
+        android:title="@string/setting_title_deleteOpenData"
+        android:summary="@string/setting_summary_deleteOpenData"
+        android:dialogTitle="@string/str_dialog_jahr_waehlen"
+        android:entries="@array/pref_year"
+        android:entryValues="@array/pref_year_val" />-->
+
+    <CheckBoxPreference
+        android:key="pref_filter_visited"
+        android:title="@string/pref_title_filter_visited"
+        android:summary="@string/pref_filter_visited"
+        android:defaultValue="false" />
+
     <!--<SwitchPreference
         android:defaultValue="true"
         android:key="example_switch"

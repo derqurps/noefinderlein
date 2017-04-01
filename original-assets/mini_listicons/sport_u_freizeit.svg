@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="320"
+   height="320"
+   id="svg5204"
+   version="1.1"
+   inkscape:version="0.92.1 r"
+   sodipodi:docname="sport_u_freizeit.svg"
+   inkscape:export-filename="/home/roman/androiddev/werke/getnoecarddata/sport_u_freizeit.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs5206" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#32b0e1"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="2.7207031"
+     inkscape:cx="125.72617"
+     inkscape:cy="142.2653"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="3840"
+     inkscape:window-height="2096"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5209">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-269.85422,-453.85317)">
+    <rect
+       style="opacity:1;fill:#32b0e1;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.38666666;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4136"
+       width="320"
+       height="320"
+       x="269.85422"
+       y="453.85318" />
+    <path
+       style="fill:#eeeeee;fill-opacity:1;stroke:none;stroke-width:1.06666672"
+       d="m 424.46082,502.17539 -44.44844,32.70153 c -2.78042,2.63606 -3.04065,7.10859 -0.56203,10.03027 l 5.36101,6.31215 c 2.47859,2.92167 6.6878,3.15489 9.46822,0.5188 l 32.89664,-24.15056 19.38507,15.76507 -63.59709,66.14788 c -0.88607,0.34934 -1.70803,0.90085 -2.4211,1.68613 l -10.80848,11.88933 c -0.41132,0.45297 -0.75724,0.98563 -1.03762,1.51317 -0.088,0.0841 -0.17405,0.16933 -0.25939,0.25942 l -78.7722,83.13881 c -2.63559,2.78182 -2.68118,7.25353 -0.0865,10.07351 l 10.11674,10.9814 c 2.5947,2.81997 6.83265,2.86827 9.46823,0.0865 l 75.27024,-79.42069 28.31821,31.38782 -51.44969,25.55882 c -3.9406,1.72673 -5.59079,3.09843 -4.47586,6.35275 l 5.91448,12.1055 c 1.53077,4.50183 3.29594,4.68677 6.5435,3.65311 l 58.3947,-24.24255 c 3.802,-0.47921 17.50484,-7.75327 18.21061,-16.25035 0.70578,-8.49711 -9.43762,-22.3042 -12.06311,-25.40027 l -15.58392,-20.12549 61.47862,-63.94296 c 12.63826,14.86256 25.08424,29.81402 38.72182,43.5581 2.69849,2.7211 6.51083,1.77715 9.46823,-0.25939 l 43.05139,-30.22117 c 3.02668,-2.3831 2.02325,-6.72867 -0.2594,-10.07351 l -3.87058,-5.71578 c -2.28265,-2.7904 -6.16431,-1.84647 -9.46822,0.2594 l -31.9403,21.38263 c -37.16273,-41.33887 -53.99783,-67.44842 -91.45222,-95.04047 -3.23706,-2.60338 -6.33809,-3.48475 -9.51155,-0.51892 z m 78.99629,-4.56422 c -13.6314,0 -24.68656,11.78793 -24.68656,26.32945 0,14.54152 11.05516,26.32946 24.68656,26.32946 13.63143,10e-6 24.68656,-11.78794 24.68657,-26.32946 0,-14.54151 -11.05514,-26.32944 -24.68657,-26.32945 z"
+       id="rect3704"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cccccccccccsccccccccccczccccccccccccsssss" />
+  </g>
+</svg>

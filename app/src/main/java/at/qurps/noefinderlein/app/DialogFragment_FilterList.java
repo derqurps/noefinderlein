@@ -9,11 +9,13 @@ import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,6 +33,9 @@ public class DialogFragment_FilterList extends DialogFragment {
 	RelativeLayout RelativeLayoutfilter_all_Sett;
 	ImageView imgviewfilter_all_Sett;
 	TextView textviewfilter_all_Sett;
+	RelativeLayout RelativeLayoutfilter_open;
+	ImageView imgviewfilter_open;
+	TextView textviewfilter_open;
 	boolean[] filterlist=new boolean[13];
     public static final String TAG = "FilterListDialogFragment";
 
@@ -48,6 +53,7 @@ public class DialogFragment_FilterList extends DialogFragment {
     ColorFilter colorFilter = new ColorMatrixColorFilter(colorMatrix);
 	public static final int anz=8;
 	public static final int anzSett=5;
+    private boolean anzOpen=Boolean.FALSE;
 
 	public DialogFragment_FilterList() {
 		
@@ -57,13 +63,15 @@ public class DialogFragment_FilterList extends DialogFragment {
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
 		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
 		for(int i=0;i<filterlist.length;i++)
 		{
 			filterlist[i]=sharedPref.getBoolean(dest_typ_list[i], false);
 		}
-		
+
+        anzOpen = sharedPref.getBoolean(getResources().getString(R.string.filter_open_sett), false);
 	}
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -72,6 +80,15 @@ public class DialogFragment_FilterList extends DialogFragment {
 		// Get the layout inflater
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View View_kompl =inflater.inflate(R.layout.dialog_filter, null);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        boolean useOpenData = sharedPref.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        LinearLayout folterOpen = (LinearLayout) View_kompl.findViewById(R.id.rel_toggleopen_over);
+        if(!useOpenData) {
+            folterOpen.setVisibility(View.GONE);
+        } else {
+            folterOpen.setVisibility(View.VISIBLE);
+        }
+
 		// Inflate and set the layout for the dialog
 		// Pass null as the parent view because its going in the dialog layout
 
@@ -130,6 +147,10 @@ public class DialogFragment_FilterList extends DialogFragment {
 		imgviewfilter_all_Sett = (ImageView)View_kompl.findViewById(R.id.togglesett);
 		textviewfilter_all_Sett =(TextView)View_kompl.findViewById(R.id.text_togglesett);
 
+		RelativeLayoutfilter_open= (RelativeLayout)View_kompl.findViewById(R.id.rel_toggleopen);
+		imgviewfilter_open= (ImageView)View_kompl.findViewById(R.id.toggleopen);
+		textviewfilter_open=(TextView)View_kompl.findViewById(R.id.text_toggleopen);
+
 
 		for (int i = 0; i < filterlist.length; i++) {
 			if (!filterlist[i]) {
@@ -152,6 +173,9 @@ public class DialogFragment_FilterList extends DialogFragment {
 				SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = sharedPref.edit();
 				String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
+                boolean openFilterBool = anzOpen;
+                editor.putBoolean(getResources().getString(R.string.filter_open_sett), openFilterBool);
+
                 boolean[] neueliste = filterlistForPositive(filterlist);
 				for(int i=0;i<neueliste.length;i++)
 				{
@@ -159,7 +183,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 				}
 				editor.commit();
 
-				mListener.onDialogPositiveClick(neueliste);
+				mListener.onDialogPositiveClick(neueliste, openFilterBool);
 			}
 		})
 		.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -194,6 +218,14 @@ public class DialogFragment_FilterList extends DialogFragment {
 				setAllOnOffFilter();
 			}
 		});
+        RelativeLayoutfilter_open.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                anzOpen = !anzOpen;
+
+                setAllOnOffFilter();
+            }
+        });
 		RelativeLayoutfilter_all_Sett.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -281,7 +313,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 		RelativeLayoutlist[i].setBackgroundColor(Color.TRANSPARENT);
 	}
 	public interface NoticeDialogListener {
-        public void onDialogPositiveClick(boolean[] filterlist);
+        public void onDialogPositiveClick(boolean[] filterlist, boolean anzOpen);
     }
 	
 	public void setListener(NoticeDialogListener listener) {
@@ -354,6 +386,14 @@ public class DialogFragment_FilterList extends DialogFragment {
 			RelativeLayoutfilter_all_Sett.setBackgroundColor(Color.TRANSPARENT);
 			imgviewfilter_all_Sett.setImageResource(R.mipmap.ic_hakerl_half_active);
 		}
+
+        if (anzOpen) {
+            RelativeLayoutfilter_open.setBackgroundColor(Color.TRANSPARENT);
+            imgviewfilter_open.setImageResource(R.mipmap.ic_hakerl_active);
+        } else {
+            RelativeLayoutfilter_open.setBackgroundColor(bgcolor_notactive);
+            imgviewfilter_open.setImageResource(R.mipmap.ic_hakerl_not_active);
+        }
 	}
 
 }

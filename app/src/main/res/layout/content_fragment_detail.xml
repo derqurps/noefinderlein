@@ -11,9 +11,39 @@
     android:background="@android:color/white"
     android:id="@+id/item_details">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:id="@+id/detail_notopenToday"
+            android:layout_width="match_parent"
+            android:layout_height="40sp"
+            android:background="@color/grey_not_open_background"
+            android:gravity="center_vertical|center_horizontal">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/detail_not_open_warning_symbol"
+                    android:layout_width="@dimen/mini_hund_rollst_usw"
+                    android:layout_height="@dimen/mini_hund_rollst_usw"
+                    android:contentDescription="@string/desc_icon_hunde"
+                    android:src="@drawable/ic_warning"
+                    android:tint="@color/white"
+                    />
+                <TextView
+                    android:id="@+id/detail_not_open_warning_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFF"
+                    android:text="@string/not_open_today"
+                    android:textSize="20sp"
+                    android:layout_toEndOf="@+id/detail_not_open_warning_symbol"
+                    android:paddingStart="10sp"/>
+
+            </RelativeLayout>
+        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="fill_parent"
@@ -475,19 +505,6 @@
 
             </RelativeLayout>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
             <RelativeLayout
                 android:id="@+id/detail_wrapper_mitdercard"
                 android:layout_width="match_parent"
@@ -588,6 +605,6 @@
                 </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

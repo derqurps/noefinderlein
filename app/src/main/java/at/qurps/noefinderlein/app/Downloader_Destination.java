@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -17,11 +19,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
  * Created by roman on 12.04.14.
  */
-public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
+public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
 
     // JSON Node names
     private static final String TAG_JQUERY = "jquery";
@@ -43,6 +46,8 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder = null;
     private int notifyID = 2;
+    private int dayPkgCount = 500;
+    private static SharedPreferences prefs;
 
     private Callbacks mCallbacks = sDummyCallbacks;
 
@@ -50,6 +55,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         super();
         this.mContext = context;
         this.db= new DestinationsDB(this.mContext);
+        this.prefs = PreferenceManager.getDefaultSharedPreferences(this.mContext);
         progress = new ProgressDialog(acti);
         if (!(acti instanceof Callbacks)) {
             throw new IllegalStateException(
@@ -78,7 +84,7 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         super.onPreExecute();
 
         progress.setCancelable(true);
-        progress.setMessage("Updating Data ...");
+        progress.setMessage("Updating Location Data ...");
         progress.setTitle("Data Download");
         progress.setIcon(ContextCompat.getDrawable(mContext, R.drawable.ic_cloud_download));
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
@@ -104,15 +110,19 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         JSONObject destinations= null;
         // Creating service handler class instance
         ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
+        boolean loadOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
 
 
-        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Changevals/"+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
+        String jsonStr = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Changevals/getCurrentIds?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
         if (jsonStr != null) {
             try {
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 int changeid = jsonObj.getInt("changeid");
-                Log.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(year) );
+                int daysChangeId = jsonObj.getInt("daysChngId");
+                int daysChangeCount = jsonObj.getInt("daysChangeCount");
+                Log.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(daysChangeId) + " " + String.valueOf(year) );
                 int updateneeded = db.updateForYearNeeded(year, changeid);
+                int currentChangeIdInDB = db.getCurrentLastChangeId(year);
                 Log.d("Update neeeded?: ", String.valueOf(updateneeded));
                 if(updateneeded == 1 ){
                     mBuilder = new NotificationCompat.Builder(mContext);
@@ -135,9 +145,6 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                     mNotifyManager.notify(2, mBuilder.build());
 
 
-
-                }
-                if (updateneeded == 1) {
                     String jsonStrakt;
                     ServiceHandler_GETPOSTPUT shput = new ServiceHandler_GETPOSTPUT();
                     if(year==2016 && !db.areNumbersAvailable(year)){
@@ -163,6 +170,17 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                     }
 
                 }
+                Log.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
+                if(loadOpenData && currentChangeIdInDB < daysChangeId) {
+                    int downloadChangeAnz = daysChangeCount;
+                    int anzPackages = (downloadChangeAnz / dayPkgCount) + 1;
+                    Log.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " +String.valueOf(anzPackages)  );
+                    progress.setMax(downloadChangeAnz);
+                    progress.setProgress(Integer.valueOf(0));
+
+                    publishProgress("Updating opening days  ...");
+                    downloadSegment(year, daysChangeId, anzPackages, 0, 0);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -173,8 +191,8 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
     }
 
     @Override
-    protected void onProgressUpdate(Integer... progress) {
-        //setProgressPercent(progress[0]);
+    protected void onProgressUpdate(String... values) {
+        progress.setMessage(values[0]);
     }
 
     @Override
@@ -192,6 +210,36 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
         mCallbacks.onDownloadCompleted();
     }
 
+    protected void downloadSegment(int year, int completeEndChangeId, int pkgCount, int progressC, int counter) {
+        int beginsegment = db.getCurrentLastChangeId(year);
+        if(counter < (pkgCount+20) && beginsegment < completeEndChangeId) {
+            ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
+            try {
+                String jsonDays = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Days/getChangeSegmentCount?year=" + String.valueOf(year) + "&changeStart=" + String.valueOf(beginsegment) + "&count=" + String.valueOf(dayPkgCount), ServiceHandler_GETPOSTPUT.GET);
+                JSONArray jsonDay = new JSONArray(jsonDays);
+                Log.d(TAG, " got anz changes " + String.valueOf(jsonDay.length()) );
+                int inserted = updateOrInsertJsondata(jsonDay, year, progressC);
+                progress.setProgress(Integer.valueOf((progressC+inserted)));
+                Log.d(TAG, String.valueOf(year) + " " +String.valueOf(completeEndChangeId) + " " +String.valueOf(pkgCount) + " " +String.valueOf((progressC+inserted)) + " " + String.valueOf((counter+1)) );
+                downloadSegment(year, completeEndChangeId, pkgCount, (progressC+inserted), (counter+1));
+            } catch (JSONException e) {
+                Log.e("Exception1", String.valueOf(e));
+                e.printStackTrace();
+            } catch (Exception e) {
+                Log.e("DaySaveException", String.valueOf(e));
+                e.printStackTrace();
+            }
+        }
+    }
+    protected int updateOrInsertJsondata(JSONArray jsonDay, int year, int start) throws Exception {
+        String currentDay = "";
+        try{
+            currentDay = jsonDay.getJSONObject(0).getString("d");
+        } catch (Exception e){}
+        publishProgress("Updating opening days ...\n"+currentDay);
+        db.insertOrReplaceDays(jsonDay, year);
+        return jsonDay.length();
+    }
     protected void updatewiththisJsondata(JSONArray nummern){
         ServiceHandler_GETPOSTPUT sh = new ServiceHandler_GETPOSTPUT();
         Integer anzahlakt = nummern.length();
@@ -209,6 +257,11 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
                 mBuilder.setProgress(anzahlakt, zael, false);
                 mNotifyManager.notify(2, mBuilder.build());
                 progress.setProgress(Integer.valueOf(zael));
+                String currentLocationName = "";
+                try{
+                    currentLocationName = jsonLoc.getString(DB_Location_NoeC.KEY_NAME);
+                } catch (Exception e){}
+                publishProgress("Updating Location Data ...\n"+currentLocationName);
                 updatewiththisJsonobj(jsonLoc);
                 zael++;
             }catch (JSONException e) {
@@ -220,19 +273,19 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
 
     protected void updatewiththisJsonobj(JSONObject destination) {
         try {
-            int id = destination.getInt(Location_NoeC.KEY_ID);
+            int id = destination.getInt(DB_Location_NoeC.KEY_ID);
             boolean updateornew=db.updateornewForItemNeeded(id);
             if(!updateornew){
 
-                    Location_NoeC newloc = new Location_NoeC();
+                    DB_Location_NoeC newloc = new DB_Location_NoeC();
                     newloc.setId(id);
-                    newloc.setNummer(destination.getInt(Location_NoeC.KEY_NUMMER));
-                    newloc.setJahr(destination.getInt(Location_NoeC.KEY_JAHR));
-                    newloc.setKat(destination.getInt(Location_NoeC.KEY_KAT));
-                    newloc.setReg(destination.getInt(Location_NoeC.KEY_REG));
-                    newloc.setName(destination.getString(Location_NoeC.KEY_NAME));
-                    newloc.setLatitude(destination.getDouble(Location_NoeC.KEY_LAT));
-                    newloc.setLongitude(destination.getDouble(Location_NoeC.KEY_LON));
+                    newloc.setNummer(destination.getInt(DB_Location_NoeC.KEY_NUMMER));
+                    newloc.setJahr(destination.getInt(DB_Location_NoeC.KEY_JAHR));
+                    newloc.setKat(destination.getInt(DB_Location_NoeC.KEY_KAT));
+                    newloc.setReg(destination.getInt(DB_Location_NoeC.KEY_REG));
+                    newloc.setName(destination.getString(DB_Location_NoeC.KEY_NAME));
+                    newloc.setLatitude(destination.getDouble(DB_Location_NoeC.KEY_LAT));
+                    newloc.setLongitude(destination.getDouble(DB_Location_NoeC.KEY_LON));
                     newloc.setChanged_date("2000.01.01");
                     newloc.setChange_index(-1);
                     db.addMinimalLocation(newloc);
@@ -247,37 +300,37 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
 
     protected void updatewiththisdata(JSONObject destinations,int id) {
         try {
-            Location_NoeC newloc = db.getLocationToId(id);
-            newloc.setId(destinations.getInt(Location_NoeC.KEY_ID));
-            newloc.setNummer(destinations.getInt(Location_NoeC.KEY_NUMMER));
-            newloc.setJahr(destinations.getInt(Location_NoeC.KEY_JAHR));
-            newloc.setKat(destinations.getInt(Location_NoeC.KEY_KAT));
-            newloc.setReg(destinations.getInt(Location_NoeC.KEY_REG));
-            newloc.setName(destinations.getString(Location_NoeC.KEY_NAME));
-            newloc.setEmail(destinations.getString(Location_NoeC.KEY_EMAIL));
-            newloc.setLatitude(destinations.getDouble(Location_NoeC.KEY_LAT));
-            newloc.setLongitude(destinations.getDouble(Location_NoeC.KEY_LON));
-            newloc.setAdr_plz(destinations.getString(Location_NoeC.KEY_ADR_PLZ));
-            newloc.setTel(destinations.getString(Location_NoeC.KEY_TEL));
-            newloc.setFax(destinations.getString(Location_NoeC.KEY_FAX));
-            newloc.setAnreise(destinations.getString(Location_NoeC.KEY_ANREISE));
-            newloc.setGeoeffnet(destinations.getString(Location_NoeC.KEY_GEOEFFNET));
-            newloc.setAdr_ort(destinations.getString(Location_NoeC.KEY_ADR_ORT));
-            newloc.setAdr_street(destinations.getString(Location_NoeC.KEY_ADR_STREET));
-            newloc.setTipp(destinations.getString(Location_NoeC.KEY_TIPP));
-            newloc.setRollstuhl(destinations.getBoolean(Location_NoeC.KEY_ROLLSTUHL));
-            newloc.setKinderwagen(destinations.getBoolean(Location_NoeC.KEY_KINDERWAGEN));
-            newloc.setHund(destinations.getBoolean(Location_NoeC.KEY_HUND));
-            newloc.setGruppe(destinations.getBoolean(Location_NoeC.KEY_GRUPPE));
-            newloc.setWebseite(destinations.getString(Location_NoeC.KEY_WEBSEITE));
-            newloc.setBeschreibung(destinations.getString(Location_NoeC.KEY_BESCHREIBUNG));
-            newloc.setAussersonder(destinations.getString(Location_NoeC.KEY_AUSSERSONDER));
-            newloc.setEintritt(destinations.getString(Location_NoeC.KEY_EINTRITT));
-            newloc.setErsparnis(destinations.getString(Location_NoeC.KEY_ERSPARNIS));
-            newloc.setTop_ausflugsziel(destinations.getBoolean(Location_NoeC.KEY_TOP_AUSFLUGSZIEL));
+            DB_Location_NoeC newloc = db.getLocationToId(id);
+            newloc.setId(destinations.getInt(DB_Location_NoeC.KEY_ID));
+            newloc.setNummer(destinations.getInt(DB_Location_NoeC.KEY_NUMMER));
+            newloc.setJahr(destinations.getInt(DB_Location_NoeC.KEY_JAHR));
+            newloc.setKat(destinations.getInt(DB_Location_NoeC.KEY_KAT));
+            newloc.setReg(destinations.getInt(DB_Location_NoeC.KEY_REG));
+            newloc.setName(destinations.getString(DB_Location_NoeC.KEY_NAME));
+            newloc.setEmail(destinations.getString(DB_Location_NoeC.KEY_EMAIL));
+            newloc.setLatitude(destinations.getDouble(DB_Location_NoeC.KEY_LAT));
+            newloc.setLongitude(destinations.getDouble(DB_Location_NoeC.KEY_LON));
+            newloc.setAdr_plz(destinations.getString(DB_Location_NoeC.KEY_ADR_PLZ));
+            newloc.setTel(destinations.getString(DB_Location_NoeC.KEY_TEL));
+            newloc.setFax(destinations.getString(DB_Location_NoeC.KEY_FAX));
+            newloc.setAnreise(destinations.getString(DB_Location_NoeC.KEY_ANREISE));
+            newloc.setGeoeffnet(destinations.getString(DB_Location_NoeC.KEY_GEOEFFNET));
+            newloc.setAdr_ort(destinations.getString(DB_Location_NoeC.KEY_ADR_ORT));
+            newloc.setAdr_street(destinations.getString(DB_Location_NoeC.KEY_ADR_STREET));
+            newloc.setTipp(destinations.getString(DB_Location_NoeC.KEY_TIPP));
+            newloc.setRollstuhl(destinations.getBoolean(DB_Location_NoeC.KEY_ROLLSTUHL));
+            newloc.setKinderwagen(destinations.getBoolean(DB_Location_NoeC.KEY_KINDERWAGEN));
+            newloc.setHund(destinations.getBoolean(DB_Location_NoeC.KEY_HUND));
+            newloc.setGruppe(destinations.getBoolean(DB_Location_NoeC.KEY_GRUPPE));
+            newloc.setWebseite(destinations.getString(DB_Location_NoeC.KEY_WEBSEITE));
+            newloc.setBeschreibung(destinations.getString(DB_Location_NoeC.KEY_BESCHREIBUNG));
+            newloc.setAussersonder(destinations.getString(DB_Location_NoeC.KEY_AUSSERSONDER));
+            newloc.setEintritt(destinations.getString(DB_Location_NoeC.KEY_EINTRITT));
+            newloc.setErsparnis(destinations.getString(DB_Location_NoeC.KEY_ERSPARNIS));
+            newloc.setTop_ausflugsziel(destinations.getBoolean(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL));
 
-            newloc.setChanged_date(destinations.getString(Location_NoeC.KEY_CHANGED_DATE));
-            newloc.setChange_index(destinations.getInt(Location_NoeC.KEY_CHANGE_INDEX));
+            newloc.setChanged_date(destinations.getString(DB_Location_NoeC.KEY_CHANGED_DATE));
+            newloc.setChange_index(destinations.getInt(DB_Location_NoeC.KEY_CHANGE_INDEX));
             db.updateLocation(newloc);
             mCallbacks.onDownloadCompleted(id);
 
@@ -286,6 +339,5 @@ public class Downloader_Destination extends AsyncTask<Integer, Integer, Void> {
             e.printStackTrace();
         }
     }
-
 
 }

@@ -17,6 +17,20 @@
     </style>
   </head>
   <body>
+$ 1.0.7
+  % Version 1.0.7
+  _ 2017-04-01
+    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich diese jedes Jahr halb automatisch generieren.<br />Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese diese Jahr im blauen Kreis neben dem Namen zu finden.<br />Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter<br><b><a href="https://docs.google.com/spreadsheets/d/1CUaxBYbVEqhiBAAiuLPkhGerfVHgzBIegHNrzLaA9Ek/edit?usp=sharing">diesem Google Calc Link</a></b>.<br \><br /> Danke schon im voraus! :)
+$ 1.0.6
+  % Version 1.0.6
+  _ 2017-03-25
+    * neue min Android version >=4.0
+    * Offene Tage für die Ziele hinzugefügt (kann über die Einstellungen deaktiviert werden)
+    * Switch in den Einstellungen um die besuchten Ziele auszublenden
+$ 1.0.5
+  % Version 1.0.5
+  _ 2016-05-05
+    * Behebung des Favoriten Bugs
 $ 1.0.4
   % Version 1.0.4
   _ 2016-04-23

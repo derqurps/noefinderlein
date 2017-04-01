@@ -94,7 +94,11 @@
     <string name="filter_typ_schiffahrt">Schifffahrt</string>
     <string name="filter_typ_lokalbahn">Lokalbahn</string>
     <string name="filter_all_OnOf">Alle Ziele aktivieren\ndeaktivieren</string>
+    <string name="filter_open_OnOf">Nur die heute offenen Ziele anzeigen</string>
+    <string name="filter_open_sett">openboolsv</string>
     <string name="filter_all_OnOf_Sett">Alle Eigenschaften aktivieren\ndeaktivieren</string>
+    <string name="setting_title_deleteOpenData">Öffnungstage löschen</string>
+    <string name="setting_summary_deleteOpenData">Daten für ein spezifisches Jahr löschen - zum Rücksetzen und neu Downloaden</string>
 
     <string-array name="filter_typ_list">
         <item>@string/filter_typ_stifte</item>
@@ -142,6 +146,9 @@
     <string name="str_navdraw_destinations">Ziele</string>
     <string name="str_navdraw_favorites">Favoriten</string>
     <string name="str_navdraw_nahe_ziele">Nahe</string>
+
+    <string name="str_navdraw_open_ziele">Geöffnete</string>
+    <string name="str_navdraw_other">Anderes</string>
     <string name="str_navdraw_besichtigte_ziele">Besichtigte</string>
 
 
@@ -159,6 +166,10 @@
     <string name="str_2017_val">2017</string>
     <string name="str_2018_val">2018</string>
     <string name="str_2019_val">2019</string>
+    <string name="str_2020_val">2020</string>
+    <string name="str_2021_val">2021</string>
+    <string name="str_2022_val">2022</string>
+    <string name="str_2023_val">2023</string>
 
     <string-array name="pref_year_val">
         <item>@string/str_2014_val</item>
@@ -167,6 +178,10 @@
         <item>@string/str_2017_val</item>
         <item>@string/str_2018_val</item>
         <item>@string/str_2019_val</item>
+        <item>@string/str_2020_val</item>
+        <item>@string/str_2021_val</item>
+        <item>@string/str_2022_val</item>
+        <item>@string/str_2023_val</item>
     </string-array>
 
     <string name="str_2014">2014/2015</string>
@@ -175,6 +190,10 @@
     <string name="str_2017">2017/2018</string>
     <string name="str_2018">2018/2019</string>
     <string name="str_2019">2019/2020</string>
+    <string name="str_2020">2020/2021</string>
+    <string name="str_2021">2021/2022</string>
+    <string name="str_2022">2022/2023</string>
+    <string name="str_2023">2023/2024</string>
     <string name="title_menu_favorit">Ziel zu Favoriten hinzufügen</string>
     <string name="title_menu_visited">Ziel als besichtigt markieren</string>
     <string name="desc_koordinaten">Koordinaten</string>
@@ -232,6 +251,11 @@
 
     <string name="pref_offline">Offline Modus</string>
     <string name="pref_offline_desc">Nicht bei jedem Öffnen der App ein Update versuchen</string>
+    <string name="pref_title_filter_visited">Filter besuchte</string>
+    <string name="pref_filter_visited">Besuchte Ziele aus den Listen entfernen</string>
+    <string name="pref_title_load_open_data">Offene Tage anzeigen/updaten</string>
+    <string name="pref_open_data">Bei einem Update auch die offenen Tage der Ziele mit herunterladen und anzeigen</string>
     <string name="toast_offline">Updates deaktiviert - Siehe Einstellungen</string>
+    <string name="not_open_today">Heute nicht offen</string>
 
 </resources>

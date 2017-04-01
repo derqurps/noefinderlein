@@ -9,6 +9,7 @@
     <color name="noecard_white">#FFFFFFFF</color>
     <color name="noecard_yellow">#FFFFDE10</color>
     <color name="noecard_blue">#FF003672</color>
+    <color name="noecard_logo_blue">#02346d</color>
     <color name="noecard_mild_blue">#FF005ebe</color>
 
     <color name="noecard_text_grey">#757575</color>
@@ -25,4 +26,9 @@
     <color name="background_selected">#ffe1dddf</color>
     <color name="black">#ff000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="overlay_grey">#3b060606</color>
+    <color name="grey_not_open_background">#78909C</color>
+
+    <color name="noecard_menu_subtext">#343434</color>
+
 </resources>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="341.33334"
+   height="341.33334"
+   viewBox="0 0 2520 2520"
+   id="svg2"
+   inkscape:version="0.92.1 r"
+   sodipodi:docname="burgen_schloesser.svg"
+   inkscape:export-filename="/home/roman/androiddev/werke/getnoecarddata/burgen_schloesser.png"
+   inkscape:export-xdpi="281.25"
+   inkscape:export-ydpi="281.25">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     pagecolor="#f8b334"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:window-width="3840"
+     inkscape:window-height="2096"
+     id="namedview8"
+     showgrid="false"
+     fit-margin-top="10"
+     fit-margin-right="10"
+     fit-margin-bottom="10"
+     fit-margin-left="10"
+     inkscape:zoom="0.63340307"
+     inkscape:cx="457.40806"
+     inkscape:cy="11.643248"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <metadata
+     id="metadata6">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Open Clip Art Library</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>échec tour blanche</dc:title>
+        <dc:date>2010-09-28T13:39:24</dc:date>
+        <dc:description>Pièce de jeu d'échec</dc:description>
+        <dc:source>http://openclipart.org/detail/87679/échec-tour-blanche-by-oymoye</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>oymoye</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>blanc</rdf:li>
+            <rdf:li>blanche</rdf:li>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>echec</rdf:li>
+            <rdf:li>tour</rdf:li>
+            <rdf:li>tower</rdf:li>
+            <rdf:li>white</rdf:li>
+            <rdf:li>échec</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <rect
+     style="opacity:1;fill:#f8b334;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.29999995;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect4133"
+     width="2519.9998"
+     height="2519.9998"
+     x="2.2737368e-13"
+     y="-8.3372004e-05" />
+  <path
+     style="fill:#ffffff;fill-opacity:1"
+     d="m 609.32248,259.02531 c -60.88752,0.11545 -90.04958,1.58485 -97.8027,4.79629 -28.33136,11.73526 -29.19483,17.71141 -29.19483,212.07962 0,103.31569 1.98384,181.59183 4.7963,186.84694 2.66029,4.97085 58.57725,49.66048 124.07804,99.47097 l 119.07321,90.71252 -0.20853,359.30495 -0.20853,359.0965 -96.13442,101.3478 c -52.96297,55.66 -100.77015,108.0132 -106.14408,116.3623 -8.71514,13.5399 -9.78595,24.7815 -9.80112,104.8928 v 89.8784 h -47.75441 c -43.20774,0 -49.09824,1.0623 -61.93475,12.095 l -14.18035,12.3035 -1.66828,104.8929 c -1.69494,113.9417 0.8227,128.8701 23.77294,141.3864 11.30814,6.1664 133.50462,6.9778 846.65013,6.0475 l 833.5126,-1.0426 11.4694,-11.4694 c 11.3091,-11.3094 11.6779,-13.6831 11.6779,-125.1208 0,-141.4139 2.9074,-135.6213 -73.6127,-138.2583 l -50.4654,-1.8769 v -85.082 c 0,-46.8691 -1.9096,-90.6818 -4.3792,-97.1771 -2.4695,-6.4954 -50.3886,-60.5425 -106.3526,-120.3245 l -101.7649,-108.855 v -359.0965 l 0.2086,-359.30495 116.7793,-88.62718 c 64.32,-48.70249 120.3473,-93.33642 124.2866,-99.26243 5.9188,-8.90378 6.8262,-43.00835 5.6305,-196.02246 -1.4458,-185.00499 -1.4206,-185.13782 -12.9292,-196.64806 -11.4148,-11.41632 -13.0651,-11.46346 -166.8276,-12.92914 -110.977,-1.05789 -159.2012,0.0973 -169.5386,4.37922 -23.401,9.69299 -29.1948,27.48861 -29.1948,90.29546 v 56.09578 h -85.4992 -85.7077 l -1.6682,-63.18596 c -2.5,-94.06115 17.6644,-85.8137 -212.7053,-87.5845 -138.3885,-1.06381 -192.0484,0.0911 -202.9041,4.58777 -21.9522,9.09291 -28.7777,30.92454 -28.7777,92.79786 v 53.38483 h -85.70771 -85.49915 l -1.66829,-63.18596 c -2.4709,-92.96895 12.16921,-85.75309 -179.96529,-87.5845 -27.74424,-0.26447 -51.44004,-0.45555 -71.73588,-0.41707 z M 1261.827,1704.5866 c 84.5059,1.9 168.6813,46.2215 168.0789,132.4195 -0.092,219.1305 0,339.2857 0,339.2857 l -336.9918,0.8341 c 0,0 0.8358,-112.0756 -0.8342,-350.9636 0.3812,-83.0561 85.2412,-123.4756 169.7471,-121.5757 z"
+     id="path4"
+     inkscape:connector-curvature="0" />
+</svg>
