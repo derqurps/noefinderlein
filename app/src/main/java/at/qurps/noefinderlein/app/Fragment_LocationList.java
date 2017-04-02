@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -283,6 +284,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		}
 	}
 	public void dbContentChanged(){
+
 		if (mIsRegion)
 		{
 			listItems = db.getAllMenuLocationstoRegion(mRegion,mRegionItemJahr);
@@ -296,7 +298,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         int sortByWhat = sharedPref.getInt(PREF_SORT_STRING,0);
 		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
-		onDialogPositiveClick(getFilterliste(), getOpenFilter());
+        filterWithNewData(getFilterliste(), getOpenFilter());
         sortBy(sortByWhat);
 		setListAdapter(adapter);
 	}
@@ -424,8 +426,14 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	@Override
     public void onDialogPositiveClick(boolean[] filterlist, boolean openFilter) {
         // User touched the dialog's positive button
-		ActivityCompat.invalidateOptionsMenu(getActivity());
-		adapter.filterwithtyp(filterlist, openFilter);
+        dbContentChanged();
+        filterWithNewData(filterlist, openFilter);
+    }
+    public void filterWithNewData(boolean[] filterlist, boolean openFilter) {
+        // User touched the dialog's positive button
+        //dbContentChanged();
+        ActivityCompat.invalidateOptionsMenu(getActivity());
+        adapter.filterwithtyp(filterlist, openFilter);
     }
     private void sortBy(int what){
         adapter.sortBy(what);
@@ -452,14 +460,36 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
         if(filterOpen && this.useOpenData) {
             noneset = false;
         }
+        String dayString = "";
+        int year = Util.getDatePreferencesYear(getActivity());
+        int month = Util.getDatePreferencesMonth(getActivity());
+        int day = Util.getDatePreferencesDay(getActivity());
+
+        Calendar currentDay = Calendar.getInstance();
+        Calendar setDay = Calendar.getInstance();
+        setDay.set(year, month, day);
+        if((year == 0 && day == 0) || (year != 0 && day != 0 && (setDay.before(currentDay) || setDay.equals(currentDay)))) {
+            year = currentDay.get(Calendar.YEAR);
+            month = currentDay.get(Calendar.MONTH);
+            day = currentDay.get(Calendar.DAY_OF_MONTH);
+        }
+
+        setDay.set(year, month, day);
+        if(setDay.after(currentDay)) {
+            noneset = false;
+            dayString = " " + String.valueOf(day) + "." + String.valueOf(month + 1) + "." + String.valueOf(year);
+        }
+
+
         if(noneset){
             returnval=false;
         }
-        showFilterActive(returnval);
+        showFilterActive(returnval, dayString);
 		return returnval;
 	}
-	private void showFilterActive(boolean filtered){
+	private void showFilterActive(boolean filtered, String dayString){
 		final TextView txt = (TextView)rootView.findViewById(R.id.mainlist_filtertext);
+        txt.setText(getResources().getString(R.string.filteractive) + dayString);
 		if(filtered && txt.getVisibility()==View.GONE){
             txt.setVisibility(View.VISIBLE);
 			final Animation animLinearDown = AnimationUtils.loadAnimation(mContext, R.anim.slide_in_top);

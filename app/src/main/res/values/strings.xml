@@ -94,7 +94,8 @@
     <string name="filter_typ_schiffahrt">Schifffahrt</string>
     <string name="filter_typ_lokalbahn">Lokalbahn</string>
     <string name="filter_all_OnOf">Alle Ziele aktivieren\ndeaktivieren</string>
-    <string name="filter_open_OnOf">Nur die heute offenen Ziele anzeigen</string>
+    <string name="filter_open_OnOf">Nur die Ziele\nanzeigen die am\ngewählten Tage\noffen haben</string>
+
     <string name="filter_open_sett">openboolsv</string>
     <string name="filter_all_OnOf_Sett">Alle Eigenschaften aktivieren\ndeaktivieren</string>
     <string name="setting_title_deleteOpenData">Öffnungstage löschen</string>
@@ -257,5 +258,6 @@
     <string name="pref_open_data">Bei einem Update auch die offenen Tage der Ziele mit herunterladen und anzeigen</string>
     <string name="toast_offline">Updates deaktiviert - Siehe Einstellungen</string>
     <string name="not_open_today">Heute nicht offen</string>
+    <string name="not_open_on">Nicht offen am:</string>
 
 </resources>

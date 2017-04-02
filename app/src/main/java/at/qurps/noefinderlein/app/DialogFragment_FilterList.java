@@ -20,9 +20,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.StringTokenizer;
 
 
-public class DialogFragment_FilterList extends DialogFragment {
+public class DialogFragment_FilterList extends DialogFragment implements DialogFragment_ChooseDates.NoticeDialogListener {
 
 	ImageView[] imgviewlist=new ImageView[13];
 	RelativeLayout[] RelativeLayoutlist=new RelativeLayout[13];
@@ -36,6 +38,8 @@ public class DialogFragment_FilterList extends DialogFragment {
 	RelativeLayout RelativeLayoutfilter_open;
 	ImageView imgviewfilter_open;
 	TextView textviewfilter_open;
+    RelativeLayout RelativeLayoutfilter_datechoose;
+	TextView textviewfilter_datechoose;
 	boolean[] filterlist=new boolean[13];
     public static final String TAG = "FilterListDialogFragment";
 
@@ -54,6 +58,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 	public static final int anz=8;
 	public static final int anzSett=5;
     private boolean anzOpen=Boolean.FALSE;
+    private SharedPreferences sharedPref;
 
 	public DialogFragment_FilterList() {
 		
@@ -64,7 +69,7 @@ public class DialogFragment_FilterList extends DialogFragment {
 	{
 		super.onCreate(savedInstanceState);
 
-		SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+		sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
 		String[] dest_typ_list = getResources().getStringArray(R.array.filter_typ_list);
 		for(int i=0;i<filterlist.length;i++)
 		{
@@ -151,6 +156,9 @@ public class DialogFragment_FilterList extends DialogFragment {
 		imgviewfilter_open= (ImageView)View_kompl.findViewById(R.id.toggleopen);
 		textviewfilter_open=(TextView)View_kompl.findViewById(R.id.text_toggleopen);
 
+        RelativeLayoutfilter_datechoose = (RelativeLayout)View_kompl.findViewById(R.id.rel_filterOpen);
+        textviewfilter_datechoose = (TextView)View_kompl.findViewById(R.id.text_filterOpen);
+
 
 		for (int i = 0; i < filterlist.length; i++) {
 			if (!filterlist[i]) {
@@ -159,7 +167,36 @@ public class DialogFragment_FilterList extends DialogFragment {
 				setActive(i);
 			}
 		}
+        RelativeLayoutfilter_datechoose.setOnClickListener(new OnClickListener() {
+        @Override
+            public void onClick(View v) {
 
+                DialogFragment_ChooseDates datesDialog = new DialogFragment_ChooseDates();
+                datesDialog.setListener(DialogFragment_FilterList.this);
+                datesDialog.show(getActivity().getSupportFragmentManager(), "DialogFragment_ChooseDates");
+
+            }
+        });
+        int year = Util.getDatePreferencesYear(getActivity());
+        int month = Util.getDatePreferencesMonth(getActivity());
+        int day = Util.getDatePreferencesDay(getActivity());
+
+        Calendar currentDay = Calendar.getInstance();
+
+        if(year == 0 && month == 0 && day == 0) {
+            year = currentDay.get(Calendar.YEAR);
+            month = currentDay.get(Calendar.MONTH);
+            day = currentDay.get(Calendar.DAY_OF_MONTH);
+        } else {
+            Calendar setDay = Calendar.getInstance();
+            setDay.set(year, month, day);
+            if(currentDay.after(setDay)) {
+                year = currentDay.get(Calendar.YEAR);
+                month = currentDay.get(Calendar.MONTH);
+                day = currentDay.get(Calendar.DAY_OF_MONTH);
+            }
+        }
+        onDialogPositiveClick(year, month, day);
 		setAllOnOffFilter();
 		Dialog builder = new AlertDialog.Builder(getActivity())
 		.setIcon(R.drawable.ic_filter_full)
@@ -395,5 +432,15 @@ public class DialogFragment_FilterList extends DialogFragment {
             imgviewfilter_open.setImageResource(R.mipmap.ic_hakerl_not_active);
         }
 	}
+    @Override
+    public void onDialogPositiveClick(int year, int month, int day) {
+        // User touched the dialog's positive button
+        textviewfilter_datechoose.setText(String.valueOf(day) + "." + String.valueOf(month+1) + "." + String.valueOf(year));
+        Util.setDatePreferences(getActivity(), year, month, day);
+    }
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
 
+    }
 }

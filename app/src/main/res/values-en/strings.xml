@@ -65,7 +65,7 @@
     <string name="filter_typ_schiffahrt">Shipping</string>
     <string name="filter_typ_lokalbahn">Local railway</string>
     <string name="filter_all_OnOf">Activate\ndeactivate all destinations</string>
-    <string name="filter_open_OnOf">Show only open today</string>
+    <string name="filter_open_OnOf">Show only open\non all chosen\ndate</string>
     <string name="filter_all_OnOf_Sett">Activate\ndeactivate all properties</string>
     <string name="setting_title_deleteOpenData">Delete open-data</string>
     <string name="setting_summary_deleteOpenData">Delete data for specific year - to reset and re-download</string>
@@ -163,5 +163,6 @@
     <string name="pref_open_data">Also use and download opening days of locations</string>
     <string name="toast_offline">Updates disabled - see settings</string>
     <string name="not_open_today">Not open today</string>
+    <string name="not_open_on">Not open on:</string>
 
 </resources>

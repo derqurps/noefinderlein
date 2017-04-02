@@ -23,9 +23,11 @@ public class DestinationsDB {
 
 
     private Database_Destinations mDbHelper;
+    private Context mContext;
 
 
     public DestinationsDB(Context context) {
+        mContext = context;
         mDbHelper = new Database_Destinations(context);
     }
 
@@ -208,7 +210,7 @@ public class DestinationsDB {
     public List<DB_Location_NoeC> getAllFavoritLocations(int year) {
         List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE "+ DB_Location_NoeC.KEY_FAVORIT +"=1 AND "+DB_Location_NoeC.KEY_JAHR+"="+String.valueOf(year)+" ORDER BY "+DB_Location_NoeC.KEY_NUMMER;
+        String selectQuery = "SELECT  * FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE "+ DB_Location_NoeC.KEY_FAVORIT +"=1 AND "+DB_Location_NoeC.KEY_JAHR+"="+String.valueOf(year)+" ORDER BY "+DB_Location_NoeC.KEY_NUMMER + "," + DB_Location_NoeC.KEY_NAME;
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -298,8 +300,8 @@ public class DestinationsDB {
     // Getting All Menu locations
     public List<DB_Location_NoeC> getAllMenuLocations(int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
-        Date cDate = new Date();
-        String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+
+        String fDate = Util.getDBDateString(mContext);
 
     	SQLiteDatabase db = mDbHelper.getWritableDatabase();
     	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[]{
@@ -387,8 +389,10 @@ public class DestinationsDB {
     // Getting All Menu locations to a region
     public List<DB_Location_NoeC> getAllMenuLocationstoRegion(int regionnumber,int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
-        Date cDate = new Date();
-        String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+
+
+        String fDate = Util.getDBDateString(mContext);
+
         Log.d("nummer + jahr : ", String.valueOf(regionnumber)+" "+String.valueOf(jahr));
     	SQLiteDatabase db = mDbHelper.getWritableDatabase();
     	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[] {
@@ -438,8 +442,7 @@ public class DestinationsDB {
  // Getting All Menu locations incl latlong
     public List<DB_Location_NoeC> getAllMenuDistanceLocations(int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
-        Date cDate = new Date();
-        String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        String fDate = Util.getDBDateString(mContext);
     	SQLiteDatabase db = mDbHelper.getWritableDatabase();
     	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[] {
                     DB_Location_NoeC.KEY_ID,
@@ -609,8 +612,8 @@ public class DestinationsDB {
         values.put(DB_Location_NoeC.KEY_FAVORIT,location.getFavorit());
         int updateInt =db.update(DB_Location_NoeC.TABLE_NAME,
                 values,
-                DB_Location_NoeC.KEY_NUMMER + " = ? AND " + DB_Location_NoeC.KEY_JAHR + " = ?",
-                new String[] { String.valueOf(location.getNummer()),String.valueOf(location.getJahr()) } );
+                DB_Location_NoeC.KEY_ID + " = ? AND " + DB_Location_NoeC.KEY_JAHR + " = ?",
+                new String[] { String.valueOf(location.getId()),String.valueOf(location.getJahr()) } );
         db.close();
         return updateInt;
     }
@@ -823,8 +826,7 @@ public class DestinationsDB {
     	return x == 1;
     }
     public boolean isOpenToday(int locId) {
-        Date cDate = new Date();
-        String fDate = new SimpleDateFormat("yyyy-MM-dd").format(cDate);
+        String fDate = Util.getDBDateString(mContext);
         return isOpenToday(locId, fDate);
     }
     public boolean isOpenToday(int locId, String day) {

@@ -41,6 +41,8 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 	private static SharedPreferences prefs;
     private DestinationsDB db;
     private String fDate;
+	private String callingFragment;
+
 
 	public ArrayAdapter_Mainlist(Context context, List<DB_Location_NoeC> list) {
 		super(context, R.layout.listitem_main, list);
@@ -67,6 +69,9 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
         protected ImageView kinderwagen;
         protected ImageView gruppe;
         protected LinearLayout greyout;
+	}
+	public void setCallingFragment(String callingFragment) {
+		this.callingFragment = callingFragment;
 	}
 
 	@Override
@@ -108,7 +113,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 		//Log.d(TAG,String.valueOf(list.get(position).getSort()));
         boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
         if(useOpenData) {
-            if(filteredData.get(position).getTodayActive()) {
+            if(filteredData.get(position).getTodayActive() || this.callingFragment == Fragment_LocationFavorits.TAG) {
                 holder.greyout.setVisibility(View.GONE);
                 holder.sortnumber.setBackgroundColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
                 holder.name.setTextColor(ContextCompat.getColor(this.context, R.color.noecard_orange_dark));
@@ -297,7 +302,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 		boolean[] filterbool= filtertyp;
 
         boolean filterVisited = this.prefs.getBoolean(Activity_Settings.KEY_PREF_FILTER_VISITED, false);
-        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
+        boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
         List<DB_Location_NoeC> firstlist;
         DB_Location_NoeC filterableLocation ;
 

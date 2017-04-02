@@ -184,7 +184,7 @@ public class Activity_Detail extends AppCompatActivity {
                 drawable = DrawableCompat.wrap(drawable);
                 DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
                 mMenu.findItem(R.id.actionb_favorit_star).setIcon(drawable);
-                //db.updateFavorit(ziel);
+                db.updateFavorit(ziel);
                 return true;
             case R.id.actionb_destination_visited:
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -322,14 +322,21 @@ public class Activity_Detail extends AppCompatActivity {
             getSupportActionBar().setTitle(title);
 
             RelativeLayout notOpenWarning=((RelativeLayout) rootView.findViewById(R.id.detail_notopenToday));
+            TextView notOpenWarningText=((TextView) rootView.findViewById(R.id.detail_not_open_warning_text));
             boolean useOpenData = prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
             int locationId = ziel.getId();
             if(useOpenData) {
-                if(this.db.isOpenToday(locationId, this.fDate)) {
+
+                if(this.db.isOpenToday(locationId)) {
                     notOpenWarning.setVisibility(View.GONE);
-
-
                 } else {
+
+                    if(Util.isTodaySet(this)) {
+                        notOpenWarningText.setText(getResources().getString(R.string.not_open_today));
+                    } else {
+                        notOpenWarningText.setText(getResources().getString(R.string.not_open_on) + " " + Util.getDisplayDateString(this));
+                    }
+
                     notOpenWarning.setVisibility(View.VISIBLE);
                 }
             }
@@ -492,8 +499,11 @@ public class Activity_Detail extends AppCompatActivity {
 
                 ((TextView) rootView.findViewById(R.id.detail_coordinates_longitude)).setText(String.valueOf(Location.convert(loc.getLongitude(),Location.FORMAT_DEGREES)));
 
-
-
+                ((ImageView) rootView.findViewById(R.id.detail_navigatetopicture)).setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v) {
+                        startNavigate();
+                    }
+                });
                 ((RelativeLayout) rootView.findViewById(R.id.detail_location)).setOnClickListener(new View.OnClickListener(){
                     Integer format=0;
                     public void onClick(View v) {

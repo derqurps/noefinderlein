@@ -15,32 +15,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/detail_notopenToday"
             android:layout_width="match_parent"
-            android:layout_height="40sp"
+            android:layout_height="50sp"
             android:background="@color/grey_not_open_background"
-            android:gravity="center_vertical|center_horizontal">
+            android:gravity="bottom|center_horizontal">
+
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
                 <ImageView
                     android:id="@+id/detail_not_open_warning_symbol"
                     android:layout_width="@dimen/mini_hund_rollst_usw"
                     android:layout_height="@dimen/mini_hund_rollst_usw"
                     android:contentDescription="@string/desc_icon_hunde"
                     android:src="@drawable/ic_warning"
-                    android:tint="@color/white"
-                    />
+                    android:tint="@color/white" />
+
                 <TextView
                     android:id="@+id/detail_not_open_warning_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#FFF"
-                    android:text="@string/not_open_today"
-                    android:textSize="20sp"
                     android:layout_toEndOf="@+id/detail_not_open_warning_symbol"
-                    android:paddingStart="10sp"/>
+                    android:paddingStart="10sp"
+                    android:text="@string/not_open_today"
+                    android:textColor="#FFF"
+                    android:textSize="20sp" />
 
             </RelativeLayout>
         </RelativeLayout>
