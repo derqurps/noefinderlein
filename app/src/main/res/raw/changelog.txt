@@ -17,11 +17,16 @@
     </style>
   </head>
   <body>
+$ 1.0.10
+  % Version 1.0.10
+  _ 2017-04-03
+    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich diese jedes Jahr halb automatisch generieren.<br />Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese diese Jahr im blauen Kreis neben dem Namen zu finden.<br />Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter<br><b><a href="https://docs.google.com/spreadsheets/d/1CUaxBYbVEqhiBAAiuLPkhGerfVHgzBIegHNrzLaA9Ek/edit?usp=sharing">diesem Google Calc Link</a></b>.<br \><br /> Danke schon im Voraus! :)
+    * In der Detailseite das zweite Navigationssymbol mit Google Maps verknüpft
 $ 1.0.9
   % Version 1.0.9
   _ 2017-04-02
-    * <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich diese jedes Jahr halb automatisch generieren.<br />Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese diese Jahr im blauen Kreis neben dem Namen zu finden.<br />Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich um die Mithilfe unter<br><b><a href="https://docs.google.com/spreadsheets/d/1CUaxBYbVEqhiBAAiuLPkhGerfVHgzBIegHNrzLaA9Ek/edit?usp=sharing">diesem Google Calc Link</a></b>.<br \><br /> Danke schon im Voraus! :)
     * Filter mit Datumsauswahl erweitert
+    * Bugfix Favoriten
 $ 1.0.8
   % Version 1.0.8
   _ 2017-04-01

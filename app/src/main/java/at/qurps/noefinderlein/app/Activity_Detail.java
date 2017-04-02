@@ -184,7 +184,7 @@ public class Activity_Detail extends AppCompatActivity {
                 drawable = DrawableCompat.wrap(drawable);
                 DrawableCompat.setTint(drawable, ContextCompat.getColor(mContext, R.color.noecard_white));
                 mMenu.findItem(R.id.actionb_favorit_star).setIcon(drawable);
-                //db.updateFavorit(ziel);
+                db.updateFavorit(ziel);
                 return true;
             case R.id.actionb_destination_visited:
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -499,8 +499,11 @@ public class Activity_Detail extends AppCompatActivity {
 
                 ((TextView) rootView.findViewById(R.id.detail_coordinates_longitude)).setText(String.valueOf(Location.convert(loc.getLongitude(),Location.FORMAT_DEGREES)));
 
-
-
+                ((ImageView) rootView.findViewById(R.id.detail_navigatetopicture)).setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v) {
+                        startNavigate();
+                    }
+                });
                 ((RelativeLayout) rootView.findViewById(R.id.detail_location)).setOnClickListener(new View.OnClickListener(){
                     Integer format=0;
                     public void onClick(View v) {

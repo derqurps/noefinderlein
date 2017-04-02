@@ -210,7 +210,7 @@ public class DestinationsDB {
     public List<DB_Location_NoeC> getAllFavoritLocations(int year) {
         List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE "+ DB_Location_NoeC.KEY_FAVORIT +"=1 AND "+DB_Location_NoeC.KEY_JAHR+"="+String.valueOf(year)+" ORDER BY "+DB_Location_NoeC.KEY_NUMMER;
+        String selectQuery = "SELECT  * FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE "+ DB_Location_NoeC.KEY_FAVORIT +"=1 AND "+DB_Location_NoeC.KEY_JAHR+"="+String.valueOf(year)+" ORDER BY "+DB_Location_NoeC.KEY_NUMMER + "," + DB_Location_NoeC.KEY_NAME;
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -612,8 +612,8 @@ public class DestinationsDB {
         values.put(DB_Location_NoeC.KEY_FAVORIT,location.getFavorit());
         int updateInt =db.update(DB_Location_NoeC.TABLE_NAME,
                 values,
-                DB_Location_NoeC.KEY_NUMMER + " = ? AND " + DB_Location_NoeC.KEY_JAHR + " = ?",
-                new String[] { String.valueOf(location.getNummer()),String.valueOf(location.getJahr()) } );
+                DB_Location_NoeC.KEY_ID + " = ? AND " + DB_Location_NoeC.KEY_JAHR + " = ?",
+                new String[] { String.valueOf(location.getId()),String.valueOf(location.getJahr()) } );
         db.close();
         return updateInt;
     }

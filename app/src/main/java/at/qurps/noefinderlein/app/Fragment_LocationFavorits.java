@@ -79,12 +79,14 @@ public class Fragment_LocationFavorits extends ListFragment {
 
         parseArguments(getArguments());
 
+        dbContentChanged();
+        return rootView;
+    }
+    private void dbContentChanged(){
         listItems = db.getAllFavoritLocations(mRegionItemJahr);
         adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+        adapter.setCallingFragment(TAG);
         setListAdapter(adapter);
-
-
-        return rootView;
     }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -109,11 +111,11 @@ public class Fragment_LocationFavorits extends ListFragment {
 
         mCallbacks = (Callbacks) context;
     }
-    /*@Override
+    @Override
     public void onResume() {
         super.onResume();
-        listItems = db.getAllFavoritLocations(mRegionItemJahr);
-    }*/
+        dbContentChanged();
+    }
     @Override
     public void onDetach() {
         super.onDetach();
