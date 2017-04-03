@@ -147,15 +147,13 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
 
                     String jsonStrakt;
                     ServiceHandler_GETPOSTPUT shput = new ServiceHandler_GETPOSTPUT();
-                    if(year==2016 && !db.areNumbersAvailable(year)){
-                        jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
-                    }else {
-                        String putBody = db.getStringAktDates(year);
-                        Log.d(TAG, putBody);
 
-                        jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
-                        Log.d(TAG, String.valueOf(jsonStrakt));
-                    }
+                    String putBody = db.getStringAktDates(year);
+                    Log.d(TAG, putBody);
+
+                    jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
+                    Log.d(TAG, String.valueOf(jsonStrakt));
+
                     if (jsonStrakt != null) {
                         try {
                             JSONArray nummern = new JSONArray(jsonStrakt);
@@ -168,7 +166,22 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                     } else {
                         Log.e("ServiceHandler", "Couldn't get any data from the url");
                     }
+                    String jsonStrDel;
+                    ServiceHandler_GETPOSTPUT shgetdel = new ServiceHandler_GETPOSTPUT();
+                    jsonStrDel = shgetdel.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
+                    if (jsonStrDel != null) {
+                        try {
+                            JSONArray nummern = new JSONArray(jsonStrDel);
+                            if(nummern.length()>3) {
+                                db.delItemsNotInArray(year, nummern);
+                            }
 
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Log.e("ServiceHandler", "Couldn't get any data from the url");
+                    }
                 }
                 Log.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
                 if(loadOpenData && currentChangeIdInDB < daysChangeId) {
