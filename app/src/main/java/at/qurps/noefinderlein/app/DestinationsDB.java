@@ -626,6 +626,45 @@ public class DestinationsDB {
                 new String[] { String.valueOf(location.getNummer()),String.valueOf(location.getJahr()) });
     	db.close();
     }
+    public void deleteLocationToId(int locationId) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(DB_Location_NoeC.TABLE_NAME,
+                DB_Location_NoeC.KEY_ID + " = ?",
+                new String[] { String.valueOf(locationId) });
+        db.close();
+    }
+
+    // Deleting single location
+    public void delItemsNotInArray(int year, JSONArray numbers) {
+        List<Integer> serverList = new ArrayList<Integer>();
+        if (numbers != null) {
+            int len = numbers.length();
+            for (int i = 0; i < len; i++) {
+                try {
+                    serverList.add(numbers.getInt(i));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        String Query = "SELECT " + DB_Location_NoeC.KEY_ID + " FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + " = " + year + " ORDER BY " + DB_Location_NoeC.KEY_ID + "";
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        Cursor cursor = db.rawQuery(Query, null);
+
+        // looping through all rows and adding to list
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                int id = Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)));
+                if(!serverList.contains(id)) {
+                    deleteLocationToId(id);
+                }
+            } while (cursor.moveToNext());
+        }
+        if(cursor != null) {
+            cursor.close();
+        }
+        db.close(); // Closing database connection
+    }
     
     // Delete all location but location in list
     public void deleteAllButArrayLocations(ArrayList<Integer> locationlist) {

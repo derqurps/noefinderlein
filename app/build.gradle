@@ -36,7 +36,7 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 56
+        versionCode 57
         versionName "1.0.10"
         multiDexEnabled true
     }
