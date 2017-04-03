@@ -22,16 +22,27 @@
             android:id="@+id/nav_near"
             android:icon="@drawable/ic_near"
             android:title="@string/str_navdraw_nahe_ziele"/>
-        <item
-            android:id="@+id/nav_open"
-            android:icon="@drawable/ic_access_time"
-            android:title="@string/str_navdraw_open_ziele"
-            android:visible="false"/>
     </group>
 
     <item android:title="@string/str_navdraw_other">
         <menu>
-
+            <item
+                android:id="@+id/game_login"
+                android:icon="@drawable/google_gamepad"
+                android:title="Login"/>
+            <item
+                android:id="@+id/game_logout"
+                android:icon="@drawable/google_gamepad"
+                android:title="Logout"
+                android:visible="true"/>
+            <item
+                android:id="@+id/game_achievements"
+                android:icon="@drawable/game_achievements"
+                android:title="Achievements"/>
+            <item
+                android:id="@+id/game_leaderboard"
+                android:icon="@drawable/game_leaderboards"
+                android:title="Highscores"/>
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings"

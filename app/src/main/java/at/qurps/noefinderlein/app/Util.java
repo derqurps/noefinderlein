@@ -1,7 +1,9 @@
 package at.qurps.noefinderlein.app;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -18,11 +20,16 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -455,5 +462,41 @@ public class Util {
         int month = preferences.getInt(DialogFragment_ChooseDates.MONTH, 0);
         int day = preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
         return ((year == (int)cNow.get(Calendar.YEAR)) && (month == (int)cNow.get(Calendar.MONTH)) && (day == (int)cNow.get(Calendar.DAY_OF_MONTH)));
+    }
+    public static Dialog makeSimpleDialog(Activity activity, String text) {
+        return (new AlertDialog.Builder(activity)).setMessage(text)
+                .setNeutralButton(android.R.string.ok, null).create();
+    }
+    public static boolean resolveConnectionFailure(Activity activity,
+                                                   GoogleApiClient client, ConnectionResult result, int requestCode,
+                                                   String fallbackErrorMessage) {
+
+        if (result.hasResolution()) {
+            try {
+                result.startResolutionForResult(activity, requestCode);
+                return true;
+            } catch (IntentSender.SendIntentException e) {
+                // The intent was canceled before it was sent.  Return to the default
+                // state and attempt to connect to get an updated ConnectionResult.
+                client.connect();
+                return false;
+            }
+        } else {
+            // not resolvable... so show an error message
+            int errorCode = result.getErrorCode();
+            Dialog dialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
+                    activity, requestCode);
+            if (dialog != null) {
+                dialog.show();
+            } else {
+                // no built-in dialog: show the fallback error message
+                showAlert(activity, fallbackErrorMessage);
+            }
+            return false;
+        }
+    }
+    public static void showAlert(Activity activity, String message) {
+        (new AlertDialog.Builder(activity)).setMessage(message)
+                .setNeutralButton(android.R.string.ok, null).create().show();
     }
 }

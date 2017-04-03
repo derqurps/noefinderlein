@@ -48,6 +48,9 @@
                 android:value=".Activity_Main"/>
         </activity>
 
+        <meta-data android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
+
         <!-- Google Play Services -->
         <meta-data
             android:name="com.google.android.gms.version"

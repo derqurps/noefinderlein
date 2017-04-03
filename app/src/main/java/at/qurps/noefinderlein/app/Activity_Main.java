@@ -4,9 +4,11 @@ import android.*;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -39,10 +41,28 @@ import android.widget.Toast;
 
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+import com.google.android.gms.games.Player;
 import com.google.android.gms.location.LocationServices;
+
+
+import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.multiplayer.Invitation;
+import com.google.android.gms.games.multiplayer.Multiplayer;
+import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.Room;
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
+import com.google.android.gms.plus.Plus;
 
 import org.joda.time.DateTime;
 
@@ -53,10 +73,10 @@ public class Activity_Main extends AppCompatActivity implements
             NavigationView.OnNavigationItemSelectedListener,
             Fragment_LocationList.Callbacks,
             Fragment_LocationNear.Callbacks,
-            Fragment_LocationOpen.Callbacks,
             Fragment_LocationFavorits.Callbacks,
             Fragment_Regions.Callbacks,
-            Downloader_Destination.Callbacks{
+            Downloader_Destination.Callbacks,
+        RealTimeMessageReceivedListener{
 
     private static final String TAG = "Activity_Main";
     private SharedPreferences mPrefs;
@@ -71,7 +91,19 @@ public class Activity_Main extends AppCompatActivity implements
     private static final int LAST_LOCATION_REQUEST = 2;
 
     protected LocationManager locationManager;
-    private GoogleApiClient mGoogleApiClient;
+    private GoogleApiClient mGoogleApiClient = null;
+    // Has the user clicked the sign-in button?
+    private boolean mGameSignInClicked = false;
+    // Set to true to automatically start the sign in flow when the Activity starts.
+    // Set to false to require the user to click the button in order to sign in.
+    private boolean mAutoStartSignInFlow = true;
+    // Are we currently resolving a connection failure?
+    private boolean mResolvingConnectionFailure = false;
+
+    // request codes we use when invoking an external activity
+    private static final int RC_RESOLVE = 5000;
+    private static final int RC_UNUSED = 5001;
+    private static final int RC_SIGN_IN = 9001;
 
     private TextView yeartext;
     /**
@@ -83,6 +115,8 @@ public class Activity_Main extends AppCompatActivity implements
 
 
     public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
+
+    AccomplishmentsOutbox mOutbox = new AccomplishmentsOutbox();
 
 
     @Override
@@ -101,13 +135,11 @@ public class Activity_Main extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         if (mGoogleApiClient == null) {
-            mGoogleApiClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+            buildGoogleApiClient();
         }
+
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -185,6 +217,16 @@ public class Activity_Main extends AppCompatActivity implements
 
 
     }
+    private void buildGoogleApiClient(){
+        GoogleApiClient.Builder mGoogleApiClientBUilder = new GoogleApiClient.Builder(this);
+        mGoogleApiClientBUilder.addConnectionCallbacks(this);
+        mGoogleApiClientBUilder.addOnConnectionFailedListener(this);
+
+        mGoogleApiClientBUilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
+
+        mGoogleApiClientBUilder.addApi(LocationServices.API);
+        mGoogleApiClient = mGoogleApiClientBUilder.build();
+    }
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
@@ -193,13 +235,15 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     protected void onStart() {
-        mGoogleApiClient.connect();
         super.onStart();
+        mGoogleApiClient.connect();
     }
     @Override
     protected void onStop() {
-        mGoogleApiClient.disconnect();
         super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
     protected final LocationListener listener = new LocationListener() {
         @Override
@@ -313,9 +357,20 @@ public class Activity_Main extends AppCompatActivity implements
             startVisitedScreen();
         } else if (id == R.id.nav_near) {
             startNearScreen();
-        } else if (id == R.id.nav_open) {
-            startOpenScreen();
-        } else if (id == R.id.nav_money) {
+        } else if (id == R.id.game_achievements) {
+            onShowAchievementsRequested();
+        } else if (id == R.id.game_leaderboard) {
+            onShowLeaderboardsRequested();
+        } else if (id == R.id.game_login) {
+            mGameSignInClicked = true;
+            mGoogleApiClient.connect();
+
+        } else if (id == R.id.game_logout) {
+
+            mGameSignInClicked = false;
+            Games.signOut(mGoogleApiClient);
+
+        }else if (id == R.id.nav_money) {
             String url = String.valueOf("https://noecard.reitschmied.at/donate");
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
@@ -434,35 +489,7 @@ public class Activity_Main extends AppCompatActivity implements
                 }*/
         }
     }
-    private void startOpenScreen(){
-        Fragment_LocationOpen testfrag = (Fragment_LocationOpen) getSupportFragmentManager().findFragmentByTag(Fragment_LocationOpen.TAG);
-        if(testfrag==null || !testfrag.isVisible()) {
-            Bundle arguments = new Bundle();
-            arguments.putInt(Fragment_LocationOpen.ARG_ITEM_JAHR, mActiveyear);
-            arguments.putBoolean(Fragment_LocationOpen.ARG_MTWOPANE, mTwoPane);
 
-            Fragment_LocationOpen fragment = new Fragment_LocationOpen();
-            fragment.setArguments(arguments);
-            FragmentManager man = getSupportFragmentManager();
-            if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
-                man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            }
-            man.beginTransaction().remove(fragment).commit();
-            man.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_left)
-                    .replace(R.id.region_list_container, fragment, Fragment_LocationOpen.TAG)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
-                /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
-                if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
-                    onItemSelected(0);
-                }*/
-        }
-    }
     private void startRegionsScreen(){
         Fragment_Regions testfrag = (Fragment_Regions) getSupportFragmentManager().findFragmentByTag(Fragment_Regions.TAG);
         if(testfrag==null || !testfrag.isVisible()) {
@@ -785,23 +812,156 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
     }
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    // Shows the "sign in" bar (explanation and button).
+    private void showSignInBar() {
+        Log.d(TAG, "Showing sign in bar");
+        try {
+            findViewById(R.id.game_login).setVisibility(View.VISIBLE);
 
+            findViewById(R.id.game_logout).setVisibility(View.GONE);
+        } catch(Exception e) {
+
+        }
     }
 
+    // Shows the "sign out" bar (explanation and button).
+    private void showSignOutBar() {
+        Log.d(TAG, "Showing sign out bar");
+        try {
+        findViewById(R.id.game_login).setVisibility(View.GONE);
+        findViewById(R.id.game_logout).setVisibility(View.VISIBLE);
+        } catch(Exception e) {
+
+        }
+    }
+
+
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
+
+        if (mResolvingConnectionFailure) {
+            Log.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
+            return;
+        }
+
+        if (mGameSignInClicked || mAutoStartSignInFlow) {
+            mAutoStartSignInFlow = false;
+            mGameSignInClicked = false;
+            mResolvingConnectionFailure = true;
+            if (!Util.resolveConnectionFailure(this, mGoogleApiClient, connectionResult,
+                    RC_SIGN_IN, getString(R.string.signin_other_error))) {
+                mResolvingConnectionFailure = false;
+            }
+
+        }
+        showSignInBar();
+    }
+    private boolean isSignedIn() {
+        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
+    }
+    void unlockAchievement(int achievementId, String fallbackString) {
+        if (isSignedIn()) {
+            Games.Achievements.unlock(mGoogleApiClient, getString(achievementId));
+        } else {
+            Toast.makeText(this, getString(R.string.achievement) + ": " + fallbackString,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    void achievementToast(String achievement) {
+        // Only show toast if not signed in. If signed in, the standard Google Play
+        // toasts will appear, so we don't need to show our own.
+        if (!isSignedIn()) {
+            Toast.makeText(this, getString(R.string.achievement) + ": " + achievement,
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+    //@Override
+    public void onShowAchievementsRequested() {
+        if (isSignedIn()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
+                    RC_UNUSED);
+        } else {
+            Util.makeSimpleDialog(this, getString(R.string.achievements_not_available)).show();
+        }
+    }
+
+    //@Override
+    public void onShowLeaderboardsRequested() {
+        if (isSignedIn()) {
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient),
+                    RC_UNUSED);
+        } else {
+            Util.makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
+        }
+    }
+    @Override
+    public void onConnected(Bundle bundle) {
+        Log.d(TAG, "onConnected() called. Sign in successful!");
+        if(mGoogleApiClient.hasConnectedApi(Games.API)){
+            Log.d(TAG, "onConnected() called. GameApi enabled");
+            showSignOutBar();
+            Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
+            String displayName;
+            if (p == null) {
+                Log.w(TAG, "mGamesClient.getCurrentPlayer() is NULL!");
+                displayName = "???";
+            } else {
+                displayName = p.getDisplayName();
+            }
+            Toast.makeText(this, "Hello, " + displayName, Toast.LENGTH_LONG).show();
+            if (!mOutbox.isEmpty()) {
+                //pushAccomplishments();
+                Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
 
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
+        mGoogleApiClient.connect();
     }
 
     @Override
     public void onRegionSelected(int i, String name) {
         startDefaultScreen(true, i, name, false);
+    }
+
+    @Override
+    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+
+    }
+
+    class AccomplishmentsOutbox {
+        boolean m2017_1 = false;
+        boolean m2017_5 = false;
+        boolean m2017_10 = false;
+        boolean m2017_7in1 = false;
+        boolean m2017_50 = false;
+        boolean m2017_all = false;
+        boolean m2017_3in1 = false;
+        boolean m2017_top = false;
+
+
+        boolean isEmpty() {
+            return !m2017_1 && !m2017_5 && !m2017_10 &&
+                    !m2017_7in1 && !m2017_50 && !m2017_all && !m2017_3in1 && !m2017_top;
+        }
+
+        public void saveLocal(Context ctx) {
+            /* TODO: This is left as an exercise. To make it more difficult to cheat,
+             * this data should be stored in an encrypted file! And remember not to
+             * expose your encryption key (obfuscate it by building it from bits and
+             * pieces and/or XORing with another string, for instance). */
+        }
+
+        public void loadLocal(Context ctx) {
+            /* TODO: This is left as an exercise. Write code here that loads data
+             * from the file you wrote in saveLocal(). */
+        }
     }
 }

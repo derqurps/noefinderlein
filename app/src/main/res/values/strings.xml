@@ -260,4 +260,10 @@
     <string name="not_open_today">Heute nicht offen</string>
     <string name="not_open_on">Nicht offen am:</string>
 
+    <string name="achievement">Achievement</string>
+    <string name="your_progress_will_be_uploaded">Your existing achievements and score will be uploaded shortly.</string>
+    <string name="signin_other_error">There was an issue with sign in. Please try again later.</string>
+
+    <string name="achievements_not_available">Please sign in to view achievements.</string>
+    <string name="leaderboards_not_available">Please sign in to view leaderboards.</string>
 </resources>
