@@ -195,6 +195,19 @@
     <string name="str_2021">2021/2022</string>
     <string name="str_2022">2022/2023</string>
     <string name="str_2023">2023/2024</string>
+
+    <string-array name="pref_year">
+        <item>@string/str_2014</item>
+        <item>@string/str_2015</item>
+        <item>@string/str_2016</item>
+        <item>@string/str_2017</item>
+        <item>@string/str_2018</item>
+        <item>@string/str_2019</item>
+        <item>@string/str_2020</item>
+        <item>@string/str_2021</item>
+        <item>@string/str_2022</item>
+        <item>@string/str_2023</item>
+    </string-array>
     <string name="title_menu_favorit">Ziel zu Favoriten hinzufügen</string>
     <string name="title_menu_visited">Ziel als besichtigt markieren</string>
     <string name="desc_koordinaten">Koordinaten</string>
@@ -206,14 +219,7 @@
     <string name="title_authenticationclass">Authentifizierung</string>
     <string name="detail_send_picture">Foto senden</string>
 
-    <string-array name="pref_year">
-        <item>@string/str_2014</item>
-        <item>@string/str_2015</item>
-        <item>@string/str_2016</item>
-        <item>@string/str_2017</item>
-        <item>@string/str_2018</item>
-        <item>@string/str_2019</item>
-    </string-array>
+
     <string name="changelog_full_title">Change Log</string>
     <string name="changelog_title">What\'s New</string>
     <string name="changelog_ok_button">OK</string>
@@ -259,6 +265,12 @@
     <string name="toast_offline">Updates deaktiviert - Siehe Einstellungen</string>
     <string name="not_open_today">Heute nicht offen</string>
     <string name="not_open_on">Nicht offen am:</string>
+
+    <string name="pref_delete_locations">Ziele löschen</string>
+    <string name="pref_delete_locations_year">Jahr zum Löschen wählen</string>
+
+    <string name="pref_dialog_delete_year_title">Delete</string>
+    <string name="pref_dialog_delete_year_message">Alle Daten zum Jahr werden gelöscht. Falls es sich um das aktuelle Jahr handelt, werden diese nach einem kompletten App-Neustart neu synchronisiert.</string>
 
     <string name="achievement">Achievement</string>
     <string name="your_progress_will_be_uploaded">Your existing achievements and score will be uploaded shortly.</string>

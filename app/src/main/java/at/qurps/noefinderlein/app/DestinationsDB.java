@@ -665,7 +665,16 @@ public class DestinationsDB {
         }
         db.close(); // Closing database connection
     }
-    
+    public void removeYear(int year) {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(DB_Location_NoeC.TABLE_NAME,
+                DB_Location_NoeC.KEY_JAHR + " = ?",
+                new String[] { String.valueOf(year) });
+        db.delete(DB_Changeval.TABLE_NAME,
+                DB_Changeval.KEY_YEAR + " = ?",
+                new String[] { String.valueOf(year) });
+        db.close();
+    }
     // Delete all location but location in list
     public void deleteAllButArrayLocations(ArrayList<Integer> locationlist) {
     	String[] location_string=new String[locationlist.size()];

@@ -15,4 +15,6 @@
 
     <dimen name="flexible_space_show_fab_offset">120dp</dimen>
     <dimen name="margin_standard">16dp</dimen>
+
+    <dimen name="about_textheight">16sp</dimen>
 </resources>
