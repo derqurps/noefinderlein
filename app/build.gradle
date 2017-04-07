@@ -93,6 +93,7 @@ dependencies {
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     // compile 'com.google.android.gms:play-services-gcm:10.2.0'
     // compile 'com.google.android.gms:play-services-auth:10.2.0'
+    compile "com.google.android.gms:play-services-auth:${gms_library_version}"
     compile "com.google.android.gms:play-services-maps:${gms_library_version}"
     compile "com.google.android.gms:play-services-location:${gms_library_version}"
     compile "com.google.android.gms:play-services-games:${gms_library_version}"

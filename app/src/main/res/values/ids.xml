@@ -2,6 +2,8 @@
 <resources>
     <string name="app_id">581600539864</string>
 
+    <string name="mainLeaderboardId">CgkI2Onf0PYQEAIQCQ</string>
+
     <string name="achievement_2017_first_location">CgkI2Onf0PYQEAIQAQ</string>
     <string name="achievement_2017_5">CgkI2Onf0PYQEAIQAg</string>
     <string name="achievement_2017_10">CgkI2Onf0PYQEAIQAw</string>

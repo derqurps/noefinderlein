@@ -8,7 +8,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -39,46 +38,40 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.games.Player;
-import com.google.android.gms.location.LocationServices;
-
-
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesStatusCodes;
-import com.google.android.gms.games.GamesActivityResultCodes;
-import com.google.android.gms.games.multiplayer.Invitation;
-import com.google.android.gms.games.multiplayer.Multiplayer;
-import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
-import com.google.android.gms.games.multiplayer.Participant;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
-import com.google.android.gms.games.multiplayer.realtime.Room;
-import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
-import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
-import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
-import com.google.android.gms.plus.Plus;
+import com.google.android.gms.location.LocationServices;
 
 import org.joda.time.DateTime;
 
+import java.text.MessageFormat;
+
+import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
+
 
 public class Activity_Main extends AppCompatActivity implements
-            ConnectionCallbacks,
-            OnConnectionFailedListener,
-            NavigationView.OnNavigationItemSelectedListener,
-            Fragment_LocationList.Callbacks,
-            Fragment_LocationNear.Callbacks,
-            Fragment_LocationFavorits.Callbacks,
-            Fragment_Regions.Callbacks,
-            Downloader_Destination.Callbacks,
-        RealTimeMessageReceivedListener{
+        ConnectionCallbacks,
+        OnConnectionFailedListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        Fragment_LocationList.Callbacks,
+        Fragment_LocationNear.Callbacks,
+        Fragment_LocationFavorits.Callbacks,
+        Fragment_Regions.Callbacks,
+        Downloader_Destination.Callbacks{
 
     private static final String TAG = "Activity_Main";
+    public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
+
     private SharedPreferences mPrefs;
 
     private SharedPreferences.Editor mEditor;
@@ -86,24 +79,16 @@ public class Activity_Main extends AppCompatActivity implements
     public int mActiveyear;
     private boolean mTwoPane;
     public Location mLastLocation;
+
+    private String serverAuthCode;
+
     private boolean locationUpdatesRunning = false;
+    private boolean mDownloadDone = false;
     private static final int LOCATION_REQUEST = 1;
     private static final int LAST_LOCATION_REQUEST = 2;
 
     protected LocationManager locationManager;
-    private GoogleApiClient mGoogleApiClient = null;
-    // Has the user clicked the sign-in button?
-    private boolean mGameSignInClicked = false;
-    // Set to true to automatically start the sign in flow when the Activity starts.
-    // Set to false to require the user to click the button in order to sign in.
-    private boolean mAutoStartSignInFlow = true;
-    // Are we currently resolving a connection failure?
-    private boolean mResolvingConnectionFailure = false;
-
-    // request codes we use when invoking an external activity
-    private static final int RC_RESOLVE = 5000;
-    private static final int RC_UNUSED = 5001;
-    private static final int RC_SIGN_IN = 9001;
+    private GoogleApiClient mGoogleApiClient;
 
     private TextView yeartext;
     /**
@@ -114,10 +99,16 @@ public class Activity_Main extends AppCompatActivity implements
     private static final int TWO_MINUTES = 1000 * 60 * 2;
 
 
-    public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
 
-    AccomplishmentsOutbox mOutbox = new AccomplishmentsOutbox();
+    private static final int RC_RESOLVE = 5000;
+    private static final int RC_UNUSED = 5001;
+    private static final int RC_SIGN_IN = 9001;
 
+    private boolean mResolvingConnectionFailure = false;
+    private boolean mAutoStartSignInflow = true;
+    private boolean mGameSignInClicked = false;
+
+    private NavigationView nav_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +116,8 @@ public class Activity_Main extends AppCompatActivity implements
         //JodaTimeAndroid.init(this);
         setContentView(R.layout.activity_list);
 
-        NavigationView nav_view = (NavigationView) findViewById(R.id.nav_view);
+        nav_view = (NavigationView) findViewById(R.id.nav_view);
+
         if(nav_view!=null) {
             View headerLayout = nav_view.getHeaderView(0);
             nav_view.setNavigationItemSelectedListener(this);
@@ -135,10 +127,7 @@ public class Activity_Main extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        if (mGoogleApiClient == null) {
-            buildGoogleApiClient();
-        }
+        buildGoogleApiClient();
 
         locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
@@ -217,29 +206,45 @@ public class Activity_Main extends AppCompatActivity implements
 
 
     }
-    private void buildGoogleApiClient(){
-        GoogleApiClient.Builder mGoogleApiClientBUilder = new GoogleApiClient.Builder(this);
-        mGoogleApiClientBUilder.addConnectionCallbacks(this);
-        mGoogleApiClientBUilder.addOnConnectionFailedListener(this);
 
-        mGoogleApiClientBUilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
+    private void buildGoogleApiClient() {
+        buildGoogleApiClient(false);
+    }
+    private void buildGoogleApiClient(boolean reconnect) {
+        if(mGoogleApiClient == null || reconnect) {
+            GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
+            mGoogleApiClientBuilder.addConnectionCallbacks(this);
+            mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
+            mGoogleApiClientBuilder.addApi(LocationServices.API);
+            if(mGameSignInClicked) {
 
-        mGoogleApiClientBUilder.addApi(LocationServices.API);
-        mGoogleApiClient = mGoogleApiClientBUilder.build();
+                GoogleSignInOptions options = new GoogleSignInOptions
+                        .Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                        .build();
+                mGoogleApiClientBuilder.addApi(Auth.GOOGLE_SIGN_IN_API, options);
+                mGoogleApiClientBuilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
+            }
+            mGoogleApiClient = mGoogleApiClientBuilder.build();
+
+        }
     }
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         initYear();
-        onDownloadCompleted();
+        notifyDataChanged();
     }
     @Override
     protected void onStart() {
+        Log.d(TAG, "onStart()");
         super.onStart();
-        mGoogleApiClient.connect();
+        if(mDownloadDone && !isGameSignedIn()) {
+            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        }
     }
     @Override
     protected void onStop() {
+        Log.d(TAG, "onStop()");
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
@@ -357,20 +362,24 @@ public class Activity_Main extends AppCompatActivity implements
             startVisitedScreen();
         } else if (id == R.id.nav_near) {
             startNearScreen();
-        } else if (id == R.id.game_achievements) {
-            onShowAchievementsRequested();
-        } else if (id == R.id.game_leaderboard) {
-            onShowLeaderboardsRequested();
         } else if (id == R.id.game_login) {
+            Log.d(TAG, "Sign-in button clicked");
+
             mGameSignInClicked = true;
-            mGoogleApiClient.connect();
+            buildGoogleApiClient(true);
+            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+            handleSignin();
 
         } else if (id == R.id.game_logout) {
 
             mGameSignInClicked = false;
-            Games.signOut(mGoogleApiClient);
+            handleSignOut();
 
-        }else if (id == R.id.nav_money) {
+        } else if (id == R.id.game_achievements) {
+            onShowAchievementsRequested();
+        } else if (id == R.id.game_leaderboard) {
+            onShowLeaderboardsRequested();
+        } else if (id == R.id.nav_money) {
             String url = String.valueOf("https://noecard.reitschmied.at/donate");
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(browserIntent);
@@ -489,7 +498,6 @@ public class Activity_Main extends AppCompatActivity implements
                 }*/
         }
     }
-
     private void startRegionsScreen(){
         Fragment_Regions testfrag = (Fragment_Regions) getSupportFragmentManager().findFragmentByTag(Fragment_Regions.TAG);
         if(testfrag==null || !testfrag.isVisible()) {
@@ -771,11 +779,18 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     public void onDownloadCompleted() {
+        notifyDataChanged();
+        if(mGoogleApiClient!= null && !mGoogleApiClient.isConnected()){
+            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        }
+    }
+    public void notifyDataChanged() {
         System.gc();
         //Util.setToast(this,"Download finished",1);
         Intent data = new Intent("dataupdate");
         data.putExtra("key", "now");
         data.putExtra("year", mActiveyear);
+        mDownloadDone=true;
         this.sendBroadcast(data);
     }
     @Override
@@ -812,119 +827,84 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
     }
-    // Shows the "sign in" bar (explanation and button).
-    private void showSignInBar() {
-        Log.d(TAG, "Showing sign in bar");
-        try {
-            findViewById(R.id.game_login).setVisibility(View.VISIBLE);
-
-            findViewById(R.id.game_logout).setVisibility(View.GONE);
-        } catch(Exception e) {
-
-        }
-    }
-
-    // Shows the "sign out" bar (explanation and button).
-    private void showSignOutBar() {
-        Log.d(TAG, "Showing sign out bar");
-        try {
-        findViewById(R.id.game_login).setVisibility(View.GONE);
-        findViewById(R.id.game_logout).setVisibility(View.VISIBLE);
-        } catch(Exception e) {
-
-        }
-    }
-
-
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
-
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        Log.d(TAG, "onConnectionFailed() called, result: " + result);
         if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
+            Log.d(TAG, "onConnectionFailed(): already resolving");
+            // already resolving
             return;
         }
 
-        if (mGameSignInClicked || mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
+        // if the sign-in button was clicked or if auto sign-in is enabled,
+        // launch the sign-in flow
+        if (mGameSignInClicked || mAutoStartSignInflow) {
+            mAutoStartSignInflow = false;
             mGameSignInClicked = false;
             mResolvingConnectionFailure = true;
-            if (!Util.resolveConnectionFailure(this, mGoogleApiClient, connectionResult,
+
+            // Attempt to resolve the connection failure using BaseGameUtils.
+            // The R.string.signin_other_error value should reference a generic
+            // error string in your strings.xml file, such as "There was
+            // an issue with sign-in, please try again later."
+            if (!BaseGameUtils.resolveConnectionFailure(this,
+                    mGoogleApiClient, result,
                     RC_SIGN_IN, getString(R.string.signin_other_error))) {
                 mResolvingConnectionFailure = false;
             }
-
-        }
-        showSignInBar();
-    }
-    private boolean isSignedIn() {
-        return (mGoogleApiClient != null && mGoogleApiClient.isConnected());
-    }
-    void unlockAchievement(int achievementId, String fallbackString) {
-        if (isSignedIn()) {
-            Games.Achievements.unlock(mGoogleApiClient, getString(achievementId));
-        } else {
-            Toast.makeText(this, getString(R.string.achievement) + ": " + fallbackString,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-
-    void achievementToast(String achievement) {
-        // Only show toast if not signed in. If signed in, the standard Google Play
-        // toasts will appear, so we don't need to show our own.
-        if (!isSignedIn()) {
-            Toast.makeText(this, getString(R.string.achievement) + ": " + achievement,
-                    Toast.LENGTH_LONG).show();
-        }
-    }
-    //@Override
-    public void onShowAchievementsRequested() {
-        if (isSignedIn()) {
-            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient),
-                    RC_UNUSED);
-        } else {
-            Util.makeSimpleDialog(this, getString(R.string.achievements_not_available)).show();
-        }
-    }
-
-    //@Override
-    public void onShowLeaderboardsRequested() {
-        if (isSignedIn()) {
-            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient),
-                    RC_UNUSED);
-        } else {
-            Util.makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
-        }
-    }
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "onConnected() called. Sign in successful!");
-        if(mGoogleApiClient.hasConnectedApi(Games.API)){
-            Log.d(TAG, "onConnected() called. GameApi enabled");
-            showSignOutBar();
-            Player p = Games.Players.getCurrentPlayer(mGoogleApiClient);
-            String displayName;
-            if (p == null) {
-                Log.w(TAG, "mGamesClient.getCurrentPlayer() is NULL!");
-                displayName = "???";
-            } else {
-                displayName = p.getDisplayName();
-            }
-            Toast.makeText(this, "Hello, " + displayName, Toast.LENGTH_LONG).show();
-            if (!mOutbox.isEmpty()) {
-                //pushAccomplishments();
-                Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
-                        Toast.LENGTH_LONG).show();
-            }
         }
 
+        // Put code here to display the sign-in button
+        isGameSignedIn();
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        Log.d(TAG, "onConnectionSuspended() called. Trying to reconnect.");
-        mGoogleApiClient.connect();
+    public void onConnectionSuspended(int cause) {
+        Log.d(TAG, "onConnectionSuspended() called: " + cause);
+        if(mDownloadDone) {
+            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        }
     }
+
+    /*@Override
+    public void onConnected(Bundle connectionHint) {
+        // The player is signed in. Hide the sign-in button and allow the
+        // player to proceed.
+        Log.d(TAG, "onconnected");
+
+        if(isGameSignedIn()){
+            Log.d(TAG, "Connected successful to games");
+        }
+    }*/
+
+    @Override
+    public void onConnected(@Nullable final Bundle connectionHint) {
+        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<GoogleSignInResult>() {
+                        @Override
+                        public void onResult(
+                                @NonNull GoogleSignInResult googleSignInResult) {
+                            if (googleSignInResult.isSuccess()) {
+                                onSignedIn(googleSignInResult.getSignInAccount(),
+                                        connectionHint);
+                            } else {
+                                Log.e(TAG, "Error with silentSignIn: " +
+                                        googleSignInResult.getStatus());
+                                // Don't show a message here, this only happens
+                                // when the user can be authenticated, but needs
+                                // to accept consent requests.
+                                handleSignOut();
+                            }
+                        }
+                    }
+            );
+        } else {
+            handleSignOut();
+        }
+        isGameSignedIn();
+    }
+
 
     @Override
     public void onRegionSelected(int i, String name) {
@@ -932,36 +912,121 @@ public class Activity_Main extends AppCompatActivity implements
     }
 
     @Override
-    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+    protected void onActivityResult(int requestCode, int responseCode,
+                                    Intent intent) {
+
+        if (requestCode == RC_SIGN_IN) {
+            Log.d(TAG, "onActivityResult RC_SIGN_IN, responseCode="
+                    + responseCode + ", intent=" + intent);
+            mGameSignInClicked = false;
+            mResolvingConnectionFailure = false;
+            if (responseCode == RESULT_OK) {
+                mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+            } else {
+                // Bring up an error dialog to alert the user that sign-in
+                // failed. The R.string.signin_failure should reference an error
+                // string in your strings.xml file that tells the user they
+                // could not be signed in, such as "Unable to sign in."
+                BaseGameUtils.showActivityResultError(this,
+                        requestCode, responseCode, R.string.sign_in_failed);
+            }
+            isGameSignedIn();
+        } else {
+            super.onActivityResult(requestCode, responseCode, intent);
+        }
+    }
+    private boolean isGameSignedIn() {
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
+            showGameLogout();
+            return true;
+        } else {
+            showGameLogin();
+            return false;
+        }
+    }
+    public void onShowAchievementsRequested() {
+        if (isGameSignedIn()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), RC_UNUSED);
+        } else {
+            BaseGameUtils.makeSimpleDialog(this, getString(R.string.achievements_not_available)).show();
+        }
+    }
+
+    /**
+     * Show a meaningful error when sign-in fails.
+     *
+     * @param errorCode - The errorCode.
+     */
+    public void showSignInError(int errorCode) {
+        Dialog dialog = GoogleApiAvailability.getInstance()
+                .getErrorDialog(this, errorCode, RC_SIGN_IN);
+        if (dialog != null) {
+            dialog.show();
+        } else {
+            // no built-in dialog: show the fallback error message
+            (new AlertDialog.Builder(this))
+                    .setMessage("Could not sign in!")
+                    .setNeutralButton(android.R.string.ok, null)
+                    .show();
+        }
+    }
+
+    public void onShowLeaderboardsRequested() {
+        if (isGameSignedIn()) {
+            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient, getString(R.string.mainLeaderboardId)), RC_UNUSED);
+        } else {
+            BaseGameUtils.makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
+        }
+    }
+    private void showGameLogin() {
+        Menu mainmenu = nav_view.getMenu();
+        mainmenu.findItem(R.id.game_login).setVisible(true);
+        mainmenu.findItem(R.id.game_logout).setVisible(false);
+        mainmenu.findItem(R.id.game_achievements).setVisible(false);
+        mainmenu.findItem(R.id.game_leaderboard).setVisible(false);
+    }
+    private void showGameLogout() {
+        Menu mainmenu = nav_view.getMenu();
+        mainmenu.findItem(R.id.game_login).setVisible(false);
+        mainmenu.findItem(R.id.game_logout).setVisible(true);
+        mainmenu.findItem(R.id.game_achievements).setVisible(true);
+        mainmenu.findItem(R.id.game_leaderboard).setVisible(true);
+    }
+
+    /**
+     * Handle being signed in successfully.  The account information is
+     * populated from the Auth API, and now Games APIs can be called.
+     * <p/>
+     * Here the server auth code is read from the account.
+     * <p>
+     * </p>
+     *
+     * @param acct   - the Google account information.
+     * @param bundle - the connection Hint.
+     */
+    public void onSignedIn(GoogleSignInAccount acct, @Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected() called. Sign in successful!");
+
+        serverAuthCode = acct.getServerAuthCode();
 
     }
 
-    class AccomplishmentsOutbox {
-        boolean m2017_1 = false;
-        boolean m2017_5 = false;
-        boolean m2017_10 = false;
-        boolean m2017_7in1 = false;
-        boolean m2017_50 = false;
-        boolean m2017_all = false;
-        boolean m2017_3in1 = false;
-        boolean m2017_top = false;
-
-
-        boolean isEmpty() {
-            return !m2017_1 && !m2017_5 && !m2017_10 &&
-                    !m2017_7in1 && !m2017_50 && !m2017_all && !m2017_3in1 && !m2017_top;
+    private void handleSignOut() {
+        // sign out.
+        Log.d(TAG, "Sign-out button clicked");
+        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+            Games.signOut(mGoogleApiClient);
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
         }
+        isGameSignedIn();
 
-        public void saveLocal(Context ctx) {
-            /* TODO: This is left as an exercise. To make it more difficult to cheat,
-             * this data should be stored in an encrypted file! And remember not to
-             * expose your encryption key (obfuscate it by building it from bits and
-             * pieces and/or XORing with another string, for instance). */
-        }
-
-        public void loadLocal(Context ctx) {
-            /* TODO: This is left as an exercise. Write code here that loads data
-             * from the file you wrote in saveLocal(). */
-        }
     }
+
+    private void handleSignin() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+        isGameSignedIn();
+    }
+
+
 }
