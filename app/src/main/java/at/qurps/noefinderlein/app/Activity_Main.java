@@ -1,8 +1,6 @@
 package at.qurps.noefinderlein.app;
 
-import android.*;
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -324,6 +322,7 @@ public class Activity_Main extends AppCompatActivity implements
             startActivity(intent);
         } else if (id == R.id.nav_about) {
             Intent intent = new Intent(this, Activity_About.class);
+            intent.putExtra(Activity_About.KEY_YEAR, mActiveyear);
             startActivity(intent);
         } /*else if (id == R.id.nav_send) {
 

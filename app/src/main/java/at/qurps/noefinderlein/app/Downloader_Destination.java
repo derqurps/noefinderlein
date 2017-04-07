@@ -166,22 +166,7 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                     } else {
                         Log.e("ServiceHandler", "Couldn't get any data from the url");
                     }
-                    String jsonStrDel;
-                    ServiceHandler_GETPOSTPUT shgetdel = new ServiceHandler_GETPOSTPUT();
-                    jsonStrDel = shgetdel.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
-                    if (jsonStrDel != null) {
-                        try {
-                            JSONArray nummern = new JSONArray(jsonStrDel);
-                            if(nummern.length()>3) {
-                                db.delItemsNotInArray(year, nummern);
-                            }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        Log.e("ServiceHandler", "Couldn't get any data from the url");
-                    }
                 }
                 Log.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
                 if(loadOpenData && currentChangeIdInDB < daysChangeId) {
@@ -197,10 +182,36 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            try{
+                String jsonStrDel;
+                ServiceHandler_GETPOSTPUT shgetdel = new ServiceHandler_GETPOSTPUT();
+                jsonStrDel = shgetdel.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/findAllIdsToYear?year="+String.valueOf(year), ServiceHandler_GETPOSTPUT.GET);
+                if (jsonStrDel != null) {
+                    try {
+                        JSONArray nummern = new JSONArray(jsonStrDel);
+                        if(nummern.length()>3) {
+                            db.delItemsNotInArray(year, nummern);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e("ServiceHandler", "Couldn't get any data from the url");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }else {
             Log.e("ServiceHandler", "Couldn't get any data from the url");
         }
         return null;
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        mCallbacks.onDownloadCompleted();
     }
 
     @Override
@@ -290,18 +301,18 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
             boolean updateornew=db.updateornewForItemNeeded(id);
             if(!updateornew){
 
-                    DB_Location_NoeC newloc = new DB_Location_NoeC();
-                    newloc.setId(id);
-                    newloc.setNummer(destination.getInt(DB_Location_NoeC.KEY_NUMMER));
-                    newloc.setJahr(destination.getInt(DB_Location_NoeC.KEY_JAHR));
-                    newloc.setKat(destination.getInt(DB_Location_NoeC.KEY_KAT));
-                    newloc.setReg(destination.getInt(DB_Location_NoeC.KEY_REG));
-                    newloc.setName(destination.getString(DB_Location_NoeC.KEY_NAME));
-                    newloc.setLatitude(destination.getDouble(DB_Location_NoeC.KEY_LAT));
-                    newloc.setLongitude(destination.getDouble(DB_Location_NoeC.KEY_LON));
-                    newloc.setChanged_date("2000.01.01");
-                    newloc.setChange_index(-1);
-                    db.addMinimalLocation(newloc);
+                DB_Location_NoeC newloc = new DB_Location_NoeC();
+                newloc.setId(id);
+                newloc.setNummer(destination.getInt(DB_Location_NoeC.KEY_NUMMER));
+                newloc.setJahr(destination.getInt(DB_Location_NoeC.KEY_JAHR));
+                newloc.setKat(destination.getInt(DB_Location_NoeC.KEY_KAT));
+                newloc.setReg(destination.getInt(DB_Location_NoeC.KEY_REG));
+                newloc.setName(destination.getString(DB_Location_NoeC.KEY_NAME));
+                newloc.setLatitude(destination.getDouble(DB_Location_NoeC.KEY_LAT));
+                newloc.setLongitude(destination.getDouble(DB_Location_NoeC.KEY_LON));
+                newloc.setChanged_date("2000.01.01");
+                newloc.setChange_index(-1);
+                db.addMinimalLocation(newloc);
 
             }
             updatewiththisdata(destination,id);
@@ -345,7 +356,7 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
             newloc.setChanged_date(destinations.getString(DB_Location_NoeC.KEY_CHANGED_DATE));
             newloc.setChange_index(destinations.getInt(DB_Location_NoeC.KEY_CHANGE_INDEX));
             db.updateLocation(newloc);
-            mCallbacks.onDownloadCompleted(id);
+            //mCallbacks.onDownloadCompleted(id);
 
         } catch (JSONException e) {
             Log.e("Exception3", String.valueOf(e));

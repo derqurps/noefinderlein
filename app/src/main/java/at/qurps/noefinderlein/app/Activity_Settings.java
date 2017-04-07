@@ -3,23 +3,21 @@ package at.qurps.noefinderlein.app;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.MenuItem;
 
 import java.util.List;
@@ -44,12 +42,16 @@ public class Activity_Settings extends Activity_AppCompatPreference {
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
+    private static final String TAG = "Activity_Settings";
+
     public static final String KEY_PREF_DOWNLOAD_NEW = "settings_download_new";
     public static final String KEY_PREF_OVERWRITE_YEAR = "pref_overwrite_year_man";
     public static final String KEY_PREF_OVERWRITE_YEAR_MAN = "year_chosen_2";
     public static final String KEY_PREF_OFFLINE_MODE = "pref_offline_mode";
     public static final String KEY_PREF_FILTER_VISITED = "pref_filter_visited";
     public static final String KEY_PREF_LOAD_OPEN_DATA = "pref_load_open_data";
+
+    private static Context mContext;
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -58,6 +60,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+            Log.d(TAG, " nowdodialog" + stringValue);
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -71,7 +74,8 @@ public class Activity_Settings extends Activity_AppCompatPreference {
                                 ? listPreference.getEntries()[index]
                                 : null);
 
-            }  else {
+
+            } else {
                 // For all other preferences, set the summary to the value's
                 // simple string representation.
                 preference.setSummary(stringValue);
@@ -79,6 +83,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
             return true;
         }
     };
+
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -126,6 +131,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
         setupActionBar();
     }
 

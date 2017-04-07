@@ -165,4 +165,10 @@
     <string name="not_open_today">Not open today</string>
     <string name="not_open_on">Not open on:</string>
 
+    <string name="pref_delete_locations">Delete locations</string>
+    <string name="pref_delete_locations_year">Choose to be deleted year</string>
+
+    <string name="pref_dialog_delete_year_title">Delete</string>
+    <string name="pref_dialog_delete_year_message">All data from that year wil be deleted. If it is the curent year it will be resync\'t if you completely restart the app</string>
+
 </resources>

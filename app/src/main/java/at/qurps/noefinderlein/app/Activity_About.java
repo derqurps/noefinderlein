@@ -1,11 +1,13 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -18,12 +20,16 @@ public class Activity_About extends AppCompatActivity {
 
     private View rootView;
     private Context mContext;
+    private int mActiveYear;
+    public static final String KEY_YEAR = "intentkeyyear";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
         mContext = getApplication();
+        Intent myIntent = getIntent();
+        mActiveYear = myIntent.getIntExtra(KEY_YEAR, 0);
         rootView = getWindow().getDecorView().getRootView();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,5 +89,43 @@ public class Activity_About extends AppCompatActivity {
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             }
         });
+        ((LinearLayout) rootView.findViewById(R.id.about_resetCurrentyear)).setOnClickListener(new MyLovelyOnClickListener(mActiveYear));
     }
+    public class MyLovelyOnClickListener implements View.OnClickListener
+    {
+
+        int mActiveYear;
+        DestinationsDB db;
+        public MyLovelyOnClickListener(int mActiveYear) {
+            this.mActiveYear = mActiveYear;
+            this.db = new DestinationsDB(Activity_About.this);
+        }
+
+        @Override
+        public void onClick(View v)
+        {
+            if(mActiveYear != 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Activity_About.this);
+
+                builder.setMessage(R.string.pref_dialog_delete_year_message)
+                        .setTitle(getString(R.string.pref_dialog_delete_year_title) + " " + String.valueOf(mActiveYear));
+
+                builder.setPositiveButton(R.string.changelog_ok_button, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked OK button
+                        db.removeYear(mActiveYear);
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        }
+
+    };
 }
