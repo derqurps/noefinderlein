@@ -303,24 +303,18 @@ public class DestinationsDB {
 
         String fDate = Util.getDBDateString(mContext);
 
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[]{
-                        DB_Location_NoeC.KEY_ID,
-                        DB_Location_NoeC.KEY_NUMMER,
-                        DB_Location_NoeC.KEY_JAHR,
-                        DB_Location_NoeC.KEY_NAME,
-                        DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL,
-                        DB_Location_NoeC.KEY_KAT,
-                        DB_Location_NoeC.KEY_ADR_ORT,
-                        DB_Location_NoeC.KEY_HUND,
-                        DB_Location_NoeC.KEY_ROLLSTUHL,
-                        DB_Location_NoeC.KEY_KINDERWAGEN,
-                        DB_Location_NoeC.KEY_GRUPPE},
-                DB_Location_NoeC.KEY_JAHR + "=?",
-                new String[]{String.valueOf(jahr)},
-                null, null, DB_Location_NoeC.KEY_NUMMER + " ASC", null);
-        //Log.d("DB_Cursor : ", DatabaseUtils.dumpCursorToString(cursor));
-    	// looping through all rows and adding to list
+    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String dbl = DB_Location_NoeC.TABLE_NAME;
+        String dbd = DB_Days.TABLE_NAME;
+
+        Cursor cursor = db.rawQuery("select "
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
+                        + "from " + dbl
+                        + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
+                        + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
+            , new String[]{fDate, String.valueOf(jahr)});
+
     	if (cursor != null && cursor.moveToFirst()) {
     		do {
     			DB_Location_NoeC location = new DB_Location_NoeC();
@@ -336,7 +330,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(isOpenToday(location.getId(), fDate));
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(30))); // FIXME: use constant for col idx (2 more occurrences below)
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -394,23 +388,17 @@ public class DestinationsDB {
         String fDate = Util.getDBDateString(mContext);
 
         Log.d("nummer + jahr : ", String.valueOf(regionnumber)+" "+String.valueOf(jahr));
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[] {
-                    DB_Location_NoeC.KEY_ID,
-                    DB_Location_NoeC.KEY_NUMMER,
-                    DB_Location_NoeC.KEY_JAHR,
-                    DB_Location_NoeC.KEY_NAME,
-                    DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL,
-                    DB_Location_NoeC.KEY_KAT,
-                    DB_Location_NoeC.KEY_ADR_ORT,
-                    DB_Location_NoeC.KEY_HUND,
-                    DB_Location_NoeC.KEY_ROLLSTUHL,
-                    DB_Location_NoeC.KEY_KINDERWAGEN,
-                    DB_Location_NoeC.KEY_GRUPPE
-                },
-                DB_Location_NoeC.KEY_REG +" LIKE '%"+String.valueOf(regionnumber)+"%' AND " + DB_Location_NoeC.KEY_JAHR + "=?",
-                new String[] { String.valueOf(jahr) },
-                null, null, DB_Location_NoeC.KEY_NUMMER + " ASC", null);
+    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String dbl = DB_Location_NoeC.TABLE_NAME;
+        String dbd = DB_Days.TABLE_NAME;
+
+        Cursor cursor = db.rawQuery("select "
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
+                        + "from " + dbl
+                        + " where " + DB_Location_NoeC.KEY_REG + " like '%" + String.valueOf(regionnumber) + "%' and " + DB_Location_NoeC.KEY_JAHR + " = ?"
+                        + " order by " + DB_Location_NoeC.KEY_ID + " asc"
+                , new String[]{fDate, String.valueOf(jahr)});
 
     	// looping through all rows and adding to list
     	if (cursor != null && cursor.moveToFirst()) {
@@ -427,7 +415,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(isOpenToday(location.getId(), fDate));
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(30)));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -443,27 +431,19 @@ public class DestinationsDB {
     public List<DB_Location_NoeC> getAllMenuDistanceLocations(int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
         String fDate = Util.getDBDateString(mContext);
-    	SQLiteDatabase db = mDbHelper.getWritableDatabase();
-    	Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME, new String[] {
-                    DB_Location_NoeC.KEY_ID,
-                    DB_Location_NoeC.KEY_NUMMER,
-                    DB_Location_NoeC.KEY_JAHR,
-                    DB_Location_NoeC.KEY_NAME,
-                    DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL,
-                    DB_Location_NoeC.KEY_KAT,
-                    DB_Location_NoeC.KEY_ADR_ORT,
-                    DB_Location_NoeC.KEY_LAT,
-                    DB_Location_NoeC.KEY_LON,
-                    DB_Location_NoeC.KEY_HUND,
-                    DB_Location_NoeC.KEY_ROLLSTUHL,
-                    DB_Location_NoeC.KEY_KINDERWAGEN,
-                    DB_Location_NoeC.KEY_GRUPPE
-                },
-                DB_Location_NoeC.KEY_JAHR+"=?",
-                new String[] {String.valueOf(jahr)},
-                null, null, DB_Location_NoeC.KEY_NUMMER + " ASC", null);
+    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-    	// looping through all rows and adding to list
+        String dbl = DB_Location_NoeC.TABLE_NAME;
+        String dbd = DB_Days.TABLE_NAME;
+
+        Cursor cursor = db.rawQuery("select "
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
+                        + "from " + dbl
+                        + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
+                        + " order by " + DB_Location_NoeC.KEY_ID + " asc"
+                , new String[]{fDate, String.valueOf(jahr)});
+
+        // looping through all rows and adding to list
     	if (cursor != null && cursor.moveToFirst()) {
     		do {
     			DB_Location_NoeC location = new DB_Location_NoeC();
@@ -480,7 +460,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(isOpenToday(location.getId(), fDate));
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(30)));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -877,6 +857,7 @@ public class DestinationsDB {
         String fDate = Util.getDBDateString(mContext);
         return isOpenToday(locId, fDate);
     }
+
     public boolean isOpenToday(int locId, String day) {
 
         boolean returnVal = false;
