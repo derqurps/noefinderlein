@@ -218,7 +218,8 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onClusterItemInfoWindowClick(DB_Location_NoeC item) {
-        Activity_Main.detailItemChosen(item.getId(), item.getJahr(), this);
+        // TODO
+        //Activity_Main.detailItemChosen(item.getId(), item.getJahr(), this);
 
         // Does nothing, but you could go into the user's profile page, for example.
     }

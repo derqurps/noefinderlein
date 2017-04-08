@@ -24,6 +24,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,6 +34,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,13 +48,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 
 import org.joda.time.DateTime;
-
-import java.text.MessageFormat;
 
 import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
@@ -65,10 +64,11 @@ public class Activity_Main extends AppCompatActivity implements
         Fragment_LocationNear.Callbacks,
         Fragment_LocationFavorits.Callbacks,
         Fragment_Regions.Callbacks,
-        Downloader_Destination.Callbacks{
+        Downloader_Destination.Callbacks {
 
     private static final String TAG = "Activity_Main";
     public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
+    public static final String KEY_GAME_SIGN_IN_CLICKED = "game_sign_in_clicked";
 
     private SharedPreferences mPrefs;
 
@@ -107,12 +107,16 @@ public class Activity_Main extends AppCompatActivity implements
     private boolean mGameSignInClicked = false;
 
     private NavigationView nav_view;
+    private FrameLayout mainView;
+    private DrawerLayout mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //JodaTimeAndroid.init(this);
         setContentView(R.layout.activity_list);
+
+        mainView = (FrameLayout) findViewById(R.id.region_list_container);
 
         nav_view = (NavigationView) findViewById(R.id.nav_view);
 
@@ -124,6 +128,7 @@ public class Activity_Main extends AppCompatActivity implements
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
 
         buildGoogleApiClient();
 
@@ -141,11 +146,11 @@ public class Activity_Main extends AppCompatActivity implements
             fab.hide();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer!=null) {
+        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if(mDrawer!=null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                    this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
+                    this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            mDrawer.setDrawerListener(toggle);
             toggle.syncState();
         }
 
@@ -209,11 +214,16 @@ public class Activity_Main extends AppCompatActivity implements
         buildGoogleApiClient(false);
     }
     private void buildGoogleApiClient(boolean reconnect) {
+
+        mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
+
         if(mGoogleApiClient == null || reconnect) {
             GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
             mGoogleApiClientBuilder.addConnectionCallbacks(this);
             mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
             mGoogleApiClientBuilder.addApi(LocationServices.API);
+            mGoogleApiClientBuilder.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+            mGoogleApiClientBuilder.setViewForPopups(mainView);
             if(mGameSignInClicked) {
 
                 GoogleSignInOptions options = new GoogleSignInOptions
@@ -236,6 +246,7 @@ public class Activity_Main extends AppCompatActivity implements
     protected void onStart() {
         Log.d(TAG, "onStart()");
         super.onStart();
+
         if(mDownloadDone && !isGameSignedIn()) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }
@@ -364,6 +375,7 @@ public class Activity_Main extends AppCompatActivity implements
             Log.d(TAG, "Sign-in button clicked");
 
             mGameSignInClicked = true;
+            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
             buildGoogleApiClient(true);
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
             handleSignin();
@@ -371,6 +383,8 @@ public class Activity_Main extends AppCompatActivity implements
         } else if (id == R.id.game_logout) {
 
             mGameSignInClicked = false;
+            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
+            setToast(getResources().getString(R.string.game_loggedout),1);
             handleSignOut();
 
         } else if (id == R.id.game_achievements) {
@@ -619,19 +633,20 @@ public class Activity_Main extends AppCompatActivity implements
     private void detailItemChosen(int id, int year){
         detailItemChosen(id, year, this);
     }
-    public static void detailItemChosen(int id, int year, Context mContext) {
+    public void detailItemChosen(int id, int year, Context mContext) {
 
         Bundle arguments = new Bundle();
         arguments.putInt(Activity_Detail.ARG_ITEM_ID, id);
         arguments.putInt(Activity_Detail.ARG_ITEM_JAHR, year);
-        //arguments.putBoolean(Activity_Detail.ARG_MTWOPANE, mTwoPane);
+
         Intent intent = new Intent(mContext, Activity_Detail.class);
         intent.putExtras(arguments);
         mContext.startActivity(intent);
-        //finish();
+
 
 
     }
+
 
     public void initYear(){
         Boolean overwriteyear = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OVERWRITE_YEAR, false);
@@ -926,8 +941,10 @@ public class Activity_Main extends AppCompatActivity implements
                 // failed. The R.string.signin_failure should reference an error
                 // string in your strings.xml file that tells the user they
                 // could not be signed in, such as "Unable to sign in."
-                BaseGameUtils.showActivityResultError(this,
-                        requestCode, responseCode, R.string.sign_in_failed);
+                if(!isGameSignedIn()) {
+                    BaseGameUtils.showActivityResultError(this,
+                            requestCode, responseCode, R.string.sign_in_failed);
+                }
             }
             isGameSignedIn();
         } else {
@@ -972,7 +989,7 @@ public class Activity_Main extends AppCompatActivity implements
 
     public void onShowLeaderboardsRequested() {
         if (isGameSignedIn()) {
-            startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient, getString(R.string.mainLeaderboardId)), RC_UNUSED);
+            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), RC_UNUSED); // , getString(R.string.mainLeaderboardId)
         } else {
             BaseGameUtils.makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
         }

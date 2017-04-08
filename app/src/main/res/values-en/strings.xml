@@ -176,6 +176,8 @@
     <string name="your_progress_will_be_uploaded">Your existing achievements and score will be uploaded shortly.</string>
     <string name="signin_other_error">There was an issue with sign in. Please try again later.</string>
 
+    <string name="game_loggedout">Logged out...</string>
+
     <string name="achievements_not_available">Please sign in to view achievements.</string>
     <string name="leaderboards_not_available">Please sign in to view leaderboards.</string>
 

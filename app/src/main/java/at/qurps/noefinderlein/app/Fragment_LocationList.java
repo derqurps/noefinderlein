@@ -46,7 +46,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class Fragment_LocationList extends ListFragment implements DialogFragment_FilterList.NoticeDialogListener{
+public class Fragment_LocationList extends ListFragment implements DialogFragment_FilterList.NoticeDialogListener {
 
 	/**
 	 * The serialization (saved instance state) Bundle key representing the

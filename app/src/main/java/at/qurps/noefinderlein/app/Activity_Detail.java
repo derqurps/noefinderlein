@@ -18,6 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -34,6 +36,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spannable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +49,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.games.Games;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -54,7 +67,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class Activity_Detail extends AppCompatActivity {
+import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
+
+public class Activity_Detail extends AppCompatActivity implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+DialogFragment_ChooseCheckinDate.Callbacks{
 
     public static final String ARG_ITEM_ID = "item_id" ;
     public static final String ARG_ITEM_JAHR = "item_jahr" ;
@@ -84,6 +102,15 @@ public class Activity_Detail extends AppCompatActivity {
     private SharedPreferences prefs;
     private String fDate;
 
+    private GoogleApiClient mGoogleApiClient;
+    private boolean mGameSignInClicked = false;
+    private boolean mResolvingConnectionFailure = false;
+    private boolean mAutoStartSignInflow = true;
+
+    private static final int RC_RESOLVE = 5000;
+    private static final int RC_UNUSED = 5001;
+    private static final int RC_SIGN_IN = 9001;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +132,27 @@ public class Activity_Detail extends AppCompatActivity {
         });
         setupActionBar();
         this.db = new DestinationsDB(this);
+
+        mGameSignInClicked = Util.getPreferencesBoolean(this, Activity_Main.KEY_GAME_SIGN_IN_CLICKED, false);
+
+        if(mGoogleApiClient == null ) {
+            GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
+            mGoogleApiClientBuilder.addConnectionCallbacks(this);
+            mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
+            mGoogleApiClientBuilder.addApi(LocationServices.API);
+            mGoogleApiClientBuilder.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+            mGoogleApiClientBuilder.setViewForPopups(rootView);
+            if(mGameSignInClicked) {
+
+                GoogleSignInOptions options = new GoogleSignInOptions
+                        .Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                        .build();
+                mGoogleApiClientBuilder.addApi(Auth.GOOGLE_SIGN_IN_API, options);
+                mGoogleApiClientBuilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
+            }
+            mGoogleApiClient = mGoogleApiClientBuilder.build();
+
+        }
         changeView(getIntent().getExtras());
 
 
@@ -609,6 +657,122 @@ public class Activity_Detail extends AppCompatActivity {
             }
         }
     }
+    private boolean isGameSignedIn() {
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    protected void onStart() {
+        Log.d(TAG, "onStart()");
+        super.onStart();
 
+        if(!isGameSignedIn()) {
+            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        }
+    }
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop()");
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
 
+    @Override
+    public void onConnected(@Nullable final Bundle connectionHint) {
+        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
+                new ResultCallback<GoogleSignInResult>() {
+                    @Override
+                    public void onResult(
+                            @NonNull GoogleSignInResult googleSignInResult) {
+                        if (googleSignInResult.isSuccess()) {
+                            onSignedIn(googleSignInResult.getSignInAccount(),
+                                    connectionHint);
+                        } else {
+                            Log.e(TAG, "Error with silentSignIn: " +
+                                    googleSignInResult.getStatus());
+                            // Don't show a message here, this only happens
+                            // when the user can be authenticated, but needs
+                            // to accept consent requests.
+                            handleSignOut();
+                        }
+                    }
+                }
+            );
+        } else {
+            handleSignOut();
+        }
+        isGameSignedIn();
+    }
+
+    private void handleSignOut() {
+        // sign out.
+        Log.d(TAG, "Sign-out button clicked");
+        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+            Games.signOut(mGoogleApiClient);
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+        }
+        isGameSignedIn();
+
+    }
+
+    public void onSignedIn(GoogleSignInAccount acct, @Nullable Bundle bundle) {
+        Log.d(TAG, "onConnected() called. Sign in successful!");
+
+        //serverAuthCode = acct.getServerAuthCode();
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(TAG, "onConnectionSuspended() called: " );
+
+        mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
+        if (mResolvingConnectionFailure) {
+            Log.d(TAG, "onConnectionFailed(): already resolving");
+            // already resolving
+            return;
+        }
+
+        // if the sign-in button was clicked or if auto sign-in is enabled,
+        // launch the sign-in flow
+        if (mGameSignInClicked || mAutoStartSignInflow) {
+            mAutoStartSignInflow = false;
+            mGameSignInClicked = false;
+            mResolvingConnectionFailure = true;
+
+            // Attempt to resolve the connection failure using BaseGameUtils.
+            // The R.string.signin_other_error value should reference a generic
+            // error string in your strings.xml file, such as "There was
+            // an issue with sign-in, please try again later."
+            if (!BaseGameUtils.resolveConnectionFailure(this,
+                    mGoogleApiClient, connectionResult,
+                    RC_SIGN_IN, getString(R.string.signin_other_error))) {
+                mResolvingConnectionFailure = false;
+            }
+        }
+
+        // Put code here to display the sign-in button
+        isGameSignedIn();
+    }
+
+    @Override
+    public void onItemSelected_DialogFragment_ChooseCheckinDate() {
+        checkAchievements();
+    }
+
+    private void checkAchievements() {
+        
+    }
 }
