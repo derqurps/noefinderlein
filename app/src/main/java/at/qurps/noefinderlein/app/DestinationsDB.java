@@ -309,8 +309,8 @@ public class DestinationsDB {
         String dbd = DB_Days.TABLE_NAME;
 
         Cursor cursor = db.rawQuery("select "
-                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
-                        + "from " + dbl
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET
+                        + " from " + dbl
                         + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
                         + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
             , new String[]{fDate, String.valueOf(jahr)});
@@ -330,7 +330,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(getBooleanfromInt(cursor.getInt(30))); // FIXME: use constant for col idx (2 more occurrences below)
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -394,8 +394,8 @@ public class DestinationsDB {
         String dbd = DB_Days.TABLE_NAME;
 
         Cursor cursor = db.rawQuery("select "
-                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
-                        + "from " + dbl
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET
+                        + " from " + dbl
                         + " where " + DB_Location_NoeC.KEY_REG + " like '%" + String.valueOf(regionnumber) + "%' and " + DB_Location_NoeC.KEY_JAHR + " = ?"
                         + " order by " + DB_Location_NoeC.KEY_ID + " asc"
                 , new String[]{fDate, String.valueOf(jahr)});
@@ -415,7 +415,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(getBooleanfromInt(cursor.getInt(30)));
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -437,8 +437,8 @@ public class DestinationsDB {
         String dbd = DB_Days.TABLE_NAME;
 
         Cursor cursor = db.rawQuery("select "
-                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end "
-                        + "from " + dbl
+                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET
+                        + " from " + dbl
                         + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
                         + " order by " + DB_Location_NoeC.KEY_ID + " asc"
                 , new String[]{fDate, String.valueOf(jahr)});
@@ -460,7 +460,7 @@ public class DestinationsDB {
                 location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
                 location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(getBooleanfromInt(cursor.getInt(30)));
+                location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}

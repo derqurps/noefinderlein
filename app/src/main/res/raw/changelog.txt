@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 1.0.12
+  % Version 1.0.12
+  _ 2017-04-08
+    * Ersten pull request gemerged :) (fix lag at opening locations)
 $ 1.0.11
   % Version 1.0.11
   _ 2017-04-06
