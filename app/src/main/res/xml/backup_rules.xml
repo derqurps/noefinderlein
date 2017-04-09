@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <include domain="sharedpref" path="at.qurps.noefinderlein.app_preferences.xml"/>
+    <include domain="sharedpref" path="at.qurps.noefinderlein.app.debug_preferences.xml"/>
+    <include domain="database" path="NoecardData.db"/>
+</full-backup-content>

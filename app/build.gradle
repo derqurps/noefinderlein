@@ -90,16 +90,15 @@ dependencies {
     compile "com.android.support:support-v4:${support_library_version}"
     compile "com.android.support:design:${support_library_version}"
     compile "com.android.support:appcompat-v7:${support_library_version}"
+    compile "com.android.support:support-vector-drawable:${support_library_version}"
     // debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
     compile "com.google.android.gms:play-services-auth:${gms_library_version}"
     compile "com.google.android.gms:play-services-maps:${gms_library_version}"
     compile "com.google.android.gms:play-services-location:${gms_library_version}"
     compile "com.google.android.gms:play-services-games:${gms_library_version}"
     compile "com.google.android.gms:play-services-plus:${gms_library_version}"
-    compile 'com.android.support:support-vector-drawable:25.3.1'
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
     compile 'joda-time:joda-time:2.9.2'
-    compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'
 }
