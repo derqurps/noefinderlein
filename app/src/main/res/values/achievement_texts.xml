@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="achievement_2017_first_location_text">Das erste Ziel ist erledigt :)</string>
+    <string name="achievement_2017_5_text">Es geht voran, 5 geschafft</string>
+    <string name="achievement_2017_10_text">Schon 10...</string>
+    <string name="achievement_2017_7in1_text">Sieben auf einen Streich</string>
+    <string name="achievement_2017_50_text">Fleißig fleißig, 50</string>
+    <string name="achievement_2017_all_text">ALLE Ziele...das gibt´s ja nicht...</string>
+    <string name="achievement_2017_3in1_text">Drei an einem Tag ;)</string>
+    <string name="achievement_2017_top_text">Alle Top Ausflugsziele besichtigt</string>
+</resources>

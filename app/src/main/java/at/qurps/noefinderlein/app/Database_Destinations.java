@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -65,9 +65,12 @@ public class Database_Destinations extends SQLiteOpenHelper {
     private static final String SQL_CREATE_VISITED =
             "CREATE TABLE " + DB_Visited_Locations.TABLE_NAME + " (" +
                     DB_Visited_Locations.KEY_ID + " INTEGER PRIMARY KEY NOT NULL DEFAULT (0)," +
-                    DB_Visited_Locations.KEY_lOC_ID + INT_TYPE_0 + COMMA_SEP +
+                    DB_Visited_Locations.KEY_LOC_ID + INT_TYPE_0 + COMMA_SEP +
                     DB_Visited_Locations.KEY_YEAR + INT_TYPE_0 + COMMA_SEP +
-                    DB_Visited_Locations.KEY_LOGGED_DATE + TEXT_TYPE_0 +
+                    DB_Visited_Locations.KEY_LOGGED_DATE + TEXT_TYPE_0 + COMMA_SEP +
+                    DB_Visited_Locations.KEY_ACCEPTED + BOOL_TYPE_0 + COMMA_SEP +
+                    DB_Visited_Locations.KEY_LAT + DOUBLE_TYPE_0 + COMMA_SEP +
+                    DB_Visited_Locations.KEY_LON + DOUBLE_TYPE_0 +
                     " )";
 
     private static final String SQL_CREATE_CHANGEVAL =
@@ -113,6 +116,12 @@ public class Database_Destinations extends SQLiteOpenHelper {
             case 5:
                 db.execSQL("DELETE FROM " + DB_Days.TABLE_NAME + " WHERE year=2016");
             case 6:
+                db.execSQL("ALTER TABLE " + DB_Visited_Locations.TABLE_NAME + " RENAME TO TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+                db.execSQL(SQL_CREATE_VISITED);
+                db.execSQL("INSERT INTO " + DB_Visited_Locations.TABLE_NAME + " (" + DB_Visited_Locations.KEY_ID + ", " + DB_Visited_Locations.KEY_LOC_ID + ", " + DB_Visited_Locations.KEY_YEAR + ", " + DB_Visited_Locations.KEY_LOGGED_DATE + ") SELECT " + DB_Visited_Locations.KEY_ID + ", " + DB_Visited_Locations.KEY_LOC_ID + ", " + DB_Visited_Locations.KEY_YEAR + ", " + DB_Visited_Locations.KEY_LOGGED_DATE + " FROM TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+                db.execSQL("UPDATE " + DB_Visited_Locations.TABLE_NAME + " SET " + DB_Visited_Locations.KEY_ACCEPTED + "=1;");
+                db.execSQL("DROP TABLE TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+            case 7:
         }
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {

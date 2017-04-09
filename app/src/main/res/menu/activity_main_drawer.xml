@@ -28,8 +28,8 @@
         <menu>
             <item
                 android:id="@+id/game_login"
-                android:icon="@drawable/google_gamepad"
-                android:title="Login"/>
+                android:icon="@drawable/ic_google_g"
+                android:title="Sign in with Google"/>
             <item
                 android:id="@+id/game_logout"
                 android:icon="@drawable/google_gamepad"

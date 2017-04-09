@@ -167,7 +167,7 @@ public class Fragment_LocationVisited extends ListFragment {
         setListAdapter(adapter);
         TextView ersparnis = (TextView) rootView.findViewById(R.id.ersparnis_summe);
 
-        ersparnis.setText(adapter.getGesamtErsparnis());
+        ersparnis.setText(String.valueOf(db.getSavingsToYear(mRegionItemJahr, false)));
     }
     public void parseArguments(Bundle arguments) {
         if (arguments!=null) {

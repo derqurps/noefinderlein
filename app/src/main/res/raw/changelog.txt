@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 1.1.0
+  % Version 1.1.0
+  _ 2017-04-08
+    * Gamification Elemente eingebaut - wenn man will kann man sich anmelden und die eigenen Scores sharen und mit anderen Personen vergleichen. Achievements gibt es ebenfalls.
 $ 1.0.12
   % Version 1.0.12
   _ 2017-04-08

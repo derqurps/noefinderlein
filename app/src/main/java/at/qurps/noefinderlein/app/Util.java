@@ -474,4 +474,5 @@ public class Util {
         int day = preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
         return ((year == (int)cNow.get(Calendar.YEAR)) && (month == (int)cNow.get(Calendar.MONTH)) && (day == (int)cNow.get(Calendar.DAY_OF_MONTH)));
     }
+
 }

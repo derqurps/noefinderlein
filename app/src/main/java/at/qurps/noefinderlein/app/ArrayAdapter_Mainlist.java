@@ -69,6 +69,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
         protected ImageView kinderwagen;
         protected ImageView gruppe;
         protected LinearLayout greyout;
+		protected ImageView visited;
 	}
 	public void setCallingFragment(String callingFragment) {
 		this.callingFragment = callingFragment;
@@ -102,6 +103,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
             viewHolder.kinderwagen = (ImageView) view.findViewById(R.id.menuitem_kinderwagen);
             viewHolder.gruppe = (ImageView) view.findViewById(R.id.menuitem_gruppe);
             viewHolder.greyout = (LinearLayout) view.findViewById(R.id.greyout);
+			viewHolder.visited = (ImageView) view.findViewById(R.id.menuitem_visited);
 
 			view.setTag(viewHolder);
 			//viewHolder.checkbox.setTag(list.get(position));
@@ -145,6 +147,14 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 			holder.sortnumber.setText(String.valueOf(nummer));
 		}else{
 			holder.sortnumber.setVisibility(View.GONE);
+		}
+		if (!filteredData.get(position).getVisited())
+		{
+			holder.visited.setVisibility(View.INVISIBLE);
+		}
+		else
+		{
+			holder.visited.setVisibility(View.VISIBLE);
 		}
 		holder.name.setText(filteredData.get(position).getName());
 		holder.ort.setText(filteredData.get(position).getAdr_ort());

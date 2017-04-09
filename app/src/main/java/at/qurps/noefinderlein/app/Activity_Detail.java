@@ -1,14 +1,10 @@
 package at.qurps.noefinderlein.app;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
@@ -21,15 +17,12 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.Toolbar;
@@ -37,13 +30,10 @@ import android.text.Html;
 import android.text.Spannable;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -60,9 +50,7 @@ import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.ByteArrayOutputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -106,10 +94,16 @@ DialogFragment_ChooseCheckinDate.Callbacks{
     private boolean mGameSignInClicked = false;
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
+    private Location mLastLocation;
+    private double mLatitude = 0;
+    private double mLongitude = 0;
+    private static final int LAST_LOCATION_REQUEST = 2;
 
     private static final int RC_RESOLVE = 5000;
     private static final int RC_UNUSED = 5001;
     private static final int RC_SIGN_IN = 9001;
+
+    AccomplishmentsOutbox mOutbox;
 
 
     @Override
@@ -154,9 +148,9 @@ DialogFragment_ChooseCheckinDate.Callbacks{
 
         }
         changeView(getIntent().getExtras());
-
-
-
+        aktjahr = getIntent().getIntExtra(ARG_ITEM_JAHR, 0);
+        mOutbox = new AccomplishmentsOutbox(this, aktjahr, this.db);
+        mOutbox.loadLocal();
     }
 
     @Override
@@ -240,6 +234,8 @@ DialogFragment_ChooseCheckinDate.Callbacks{
                 Bundle argumentsa = new Bundle();
                 argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_ITEMID, ziel.getId());
                 argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_YEAR, ziel.getJahr());
+                argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LAT, mLatitude);
+                argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LON, mLongitude);
 
                 DialogFragment_ChooseCheckinDate newFragment = new DialogFragment_ChooseCheckinDate();
                 newFragment.setArguments(argumentsa);
@@ -684,6 +680,10 @@ DialogFragment_ChooseCheckinDate.Callbacks{
 
     @Override
     public void onConnected(@Nullable final Bundle connectionHint) {
+        if (mGoogleApiClient.hasConnectedApi(LocationServices.API)) {
+            getLastKnownLocation();
+
+        }
         if (mGoogleApiClient.hasConnectedApi(Games.API)) {
             Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
                 new ResultCallback<GoogleSignInResult>() {
@@ -704,6 +704,11 @@ DialogFragment_ChooseCheckinDate.Callbacks{
                     }
                 }
             );
+            if (!mOutbox.isEmpty()) {
+                mOutbox.pushAccomplishments(mGoogleApiClient, 0);
+                Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
+                        Toast.LENGTH_LONG).show();
+            }
         } else {
             handleSignOut();
         }
@@ -768,11 +773,50 @@ DialogFragment_ChooseCheckinDate.Callbacks{
     }
 
     @Override
-    public void onItemSelected_DialogFragment_ChooseCheckinDate() {
-        checkAchievements();
+    public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
+        checkAchievements(id);
     }
 
-    private void checkAchievements() {
-        
+    private void checkAchievements(int id) {
+
+        mOutbox.checkForAchievements(mGoogleApiClient, id);
+
+        mOutbox.updateLeaderboards(mGoogleApiClient, id);
+
+        mOutbox.pushAccomplishments(mGoogleApiClient, id);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        switch (requestCode){
+            case LAST_LOCATION_REQUEST:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    getLastKnownLocation();
+                }else{
+                    Util.setToast(this, "Location updates denied", 1);
+                    //startDefaultScreen();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
+
+    }
+
+    protected void getLastKnownLocation(){
+        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
+            if(ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(Activity_Detail.this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+                return;
+            }
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+            if (mLastLocation != null) {
+                mLatitude = mLastLocation.getLatitude();
+                mLongitude = mLastLocation.getLongitude();
+            }
+        }
     }
 }

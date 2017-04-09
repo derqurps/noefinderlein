@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="achievement_2017_first_location_text">The first is done</string>
+    <string name="achievement_2017_5_text">5 Locations visited</string>
+    <string name="achievement_2017_10_text">10 Locations visited</string>
+    <string name="achievement_2017_7in1_text">7 locations in one day</string>
+    <string name="achievement_2017_50_text">50 Locations visited</string>
+    <string name="achievement_2017_all_text">ALL Locations - I don´t believe it</string>
+    <string name="achievement_2017_3in1_text">Three in one day</string>
+    <string name="achievement_2017_top_text">All TOP Locations visited</string>
+</resources>

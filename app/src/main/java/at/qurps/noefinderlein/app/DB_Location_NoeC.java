@@ -37,6 +37,7 @@ public class DB_Location_NoeC implements ClusterItem {
 	public static final String KEY_CHANGED_DATE = "changed_date";
 	public static final String KEY_CHANGE_INDEX = "change_index";
 	public static final String KEY_FAVORIT = "favorit";
+	public static final String KEY_VISITED = "visited";
 
 	//private variables
     int _id;
@@ -75,6 +76,7 @@ public class DB_Location_NoeC implements ClusterItem {
 	String _visited_date;
 	int _visited_id;
 	boolean _todayActive;
+	boolean _visited;
 	
 	
 	// Empty constructor
@@ -452,5 +454,14 @@ public class DB_Location_NoeC implements ClusterItem {
 
 	public void setTodayActive(boolean todayActive){
 		this._todayActive = todayActive;
+	}
+
+
+	public boolean getVisited(){
+		return this._visited;
+	}
+
+	public void setVisited(boolean visited){
+		this._visited = visited;
 	}
 }

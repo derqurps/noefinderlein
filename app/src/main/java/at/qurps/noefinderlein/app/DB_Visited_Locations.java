@@ -7,27 +7,32 @@ public class DB_Visited_Locations {
     public static final String TABLE_NAME = "visited";
 
     public static final String KEY_ID = "vis_id";
-    public static final String KEY_lOC_ID = "vis_locid";
+    public static final String KEY_LOC_ID = "vis_locid";
     public static final String KEY_YEAR = "vis_year";
     public static final String KEY_LOGGED_DATE = "vis_loggeddate";
+    public static final String KEY_ACCEPTED = "vis_accepted";
+    public static final String KEY_LAT= "vis_latitude";
+    public static final String KEY_LON = "vis_longitude";
 
 
     int _id;
     int _locid;
     int _year;
     String _date;
+    float _lat;
+    float _lon;
 
     // Empty constructor
     public DB_Visited_Locations(){
 
     }
     // constructor
-    public DB_Visited_Locations(int locid, int year, String date){
+    public DB_Visited_Locations(int locid, int year, String date, float lat, float lon){
         this._locid = locid;
         this._year = year;
         this._date = date;
-
-
+        this._lat = lat;
+        this._lon = lon;
     }
 
     // getting ID

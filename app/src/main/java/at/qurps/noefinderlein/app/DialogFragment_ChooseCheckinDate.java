@@ -32,14 +32,19 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
     private DestinationsDB db;
     public static final String ARG_ITEMID = "item_id" ;
     public static final String ARG_YEAR = "item_year" ;
+    public static final String ARG_LAT = "item_lat" ;
+    public static final String ARG_LON = "item_lon" ;
+
     private int year = -1;
     private int id = -1;
+    private double lat = -1;
+    private double lon = -1;
 
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
          */
-        public void onItemSelected_DialogFragment_ChooseCheckinDate();
+        void onItemSelected_DialogFragment_ChooseCheckinDate(int id);
     }
 
     /**
@@ -48,7 +53,7 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
      */
     private static Callbacks sDummyCallbacks = new Callbacks() {
         @Override
-        public void onItemSelected_DialogFragment_ChooseCheckinDate() {
+        public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
         }
     };
 
@@ -68,16 +73,44 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
         if(getArguments().containsKey(ARG_ITEMID)){
             id = getArguments().getInt(ARG_ITEMID);
         }
+        if(getArguments().containsKey(ARG_LAT)){
+            lat = getArguments().getDouble(ARG_LAT);
+        }
+        if(getArguments().containsKey(ARG_LON)){
+            lon = getArguments().getDouble(ARG_LON);
+        }
 
     }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        // Activities containing this fragment must implement its callbacks.
+        if (!(context instanceof Callbacks)) {
+            throw new IllegalStateException(
+                    "Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) context;
+    }
+
 
     @Override
+    public void onDetach() {
+        super.onDetach();
+
+        // Reset the active callbacks interface to the dummy implementation.
+        mCallbacks = sDummyCallbacks;
+    }
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Calendar nowCalendar = Calendar.getInstance();
         Calendar calendar = Calendar.getInstance();
         calendar.set(year, 3, 1, 0, 0, 0);
         final long minDate = calendar.getTimeInMillis();
         Calendar calendar2 = Calendar.getInstance();
-        calendar2.set(year+1, 2, 31, 23, 59, 0);
+        //calendar2.set(year+1, 2, 31, 23, 59, 0);
+        calendar2.set(nowCalendar.get(Calendar.YEAR), nowCalendar.get(Calendar.MONTH), nowCalendar.get(Calendar.DAY_OF_MONTH), 23, 59, 0);
         final long maxDate = calendar2.getTimeInMillis();
         Calendar calendar3 = Calendar.getInstance();
         long heute = calendar3.getTimeInMillis();
@@ -126,11 +159,12 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
             String format = "yyyy-MM-dd";
             SimpleDateFormat sdf = new SimpleDateFormat(format);
             String date = sdf.format(checkDate);
-            DB_Visited_Locations visited = new DB_Visited_Locations(this.id, this.year, date);
+            DB_Visited_Locations visited = new DB_Visited_Locations(this.id, this.year, date, (float)this.lat, (float)this.lon);
             if(db.insertVisitedData(visited)){
-                Util.setToast(mContext, mContext.getResources().getString(R.string.visitedChecked),0);
+                Util.setToast(mContext, mContext.getResources().getString(R.string.visitedChecked), 0);
+                mCallbacks.onItemSelected_DialogFragment_ChooseCheckinDate(this.id);
             }else{
-                Util.setToast(mContext, mContext.getResources().getString(R.string.visitedNotChecked),0);
+                Util.setToast(mContext, mContext.getResources().getString(R.string.visitedNotChecked), 0);
             }
         }else{
             Util.setToast(getActivity(), "Error getting the id & year",0);

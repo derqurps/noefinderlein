@@ -125,42 +125,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
         returnyear=filteredData.get(0).getJahr();
         return returnyear;
     }
-    public String getGesamtErsparnis() {
-        float ersparnis = 0;
-        Log.d(TAG, "hier -2");
-        for (int i = 0; i < filteredData.size(); i++) {
-            try {
-                Log.d(TAG, String.valueOf(i));
-                String ersparnis_str = filteredData.get(i).getErsparnis();
-                String[] splitResult = ersparnis_str.split("€");
-                float[] zwischarr = new float[splitResult.length-1];
-                float zwischenwert = 0;
-                for(int j = 1; j < splitResult.length; j++)
-                {
-                    Log.d(TAG,String.valueOf(splitResult[j]));
-                    if(splitResult[j].indexOf("-")>-1){
-                        splitResult[j]=splitResult[j].substring(0,splitResult[j].indexOf("-"));
-                    }
-                    splitResult[j]=splitResult[j].replace("€","").replace(" " ,"").replace("-","").replace(".","");
-                    splitResult[j]=splitResult[j].replace(",",".");
-                    zwischarr[j-1]=Float.valueOf(splitResult[j]).floatValue();
-                    Log.d(TAG,String.valueOf(zwischarr[j-1]));
-                }
 
-                for(int j = 0; j < zwischarr.length; j++) {
-                    zwischenwert = zwischenwert + zwischarr[j];
-                }
-                zwischenwert = zwischenwert / zwischarr.length;
-                Log.d(TAG,String.valueOf(zwischenwert ));
-
-                ersparnis = ersparnis + zwischenwert;
-            }
-            catch (Exception e) {
-                Log.e(TAG,e.toString());
-            }
-        }
-        return String.valueOf(ersparnis);
-    }
     private void executefilter()
     {
         boolean[] filterbool= filtertyp;

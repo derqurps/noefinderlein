@@ -225,8 +225,8 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 			dbContentChanged();
             this.useOpenData = compUseOpenData;
 		}
-		//dbContentChanged();
-		//adapter.notifyDataSetChanged();
+		// dbContentChanged();
+		// adapter.notifyDataSetChanged();
 	}
 	@Override
 	public void onPause() {
