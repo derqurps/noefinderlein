@@ -36,7 +36,7 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 61
+        versionCode 63
         versionName "1.1.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
