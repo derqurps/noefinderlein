@@ -1,6 +1,7 @@
 package at.qurps.noefinderlein.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -218,10 +219,17 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onClusterItemInfoWindowClick(DB_Location_NoeC item) {
-        // TODO
+
         //Activity_Main.detailItemChosen(item.getId(), item.getJahr(), this);
 
         // Does nothing, but you could go into the user's profile page, for example.
+        Bundle arguments = new Bundle();
+        arguments.putInt(Activity_Detail.ARG_ITEM_ID, item.getId());
+        arguments.putInt(Activity_Detail.ARG_ITEM_JAHR, item.getJahr());
+
+        Intent intent = new Intent(mContext, Activity_Detail.class);
+        intent.putExtras(arguments);
+        mContext.startActivity(intent);
     }
 
     private void addItems(){

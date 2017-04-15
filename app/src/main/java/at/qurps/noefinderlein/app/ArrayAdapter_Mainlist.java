@@ -322,7 +322,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
             final ArrayList<DB_Location_NoeC> zwzwlist = new ArrayList<DB_Location_NoeC>(countZw);
             for (int i = 0; i < countZw; i++) {
                 filterableLocation = zwlist.get(i);
-                if (!this.db.isVisited(filterableLocation.getId())) {
+                if (!filterableLocation.getVisited()) {
                     zwzwlist.add(filterableLocation);
                 }
             }

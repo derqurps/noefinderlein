@@ -113,6 +113,8 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         setContentView(R.layout.activity_detail);
         rootView = getWindow().getDecorView().getRootView();
         Toolbar toolbar = (Toolbar) findViewById(R.id.detailtoolbar);
+        /*ImageView im = (ImageView)findViewById(R.id.header_logo);
+        im.setImageResource(R.drawable.example);*/
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
