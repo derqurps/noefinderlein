@@ -36,10 +36,10 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 63
-        versionName "1.1.0"
+        versionCode 64
+        versionName "1.1.1"
         multiDexEnabled true
-        vectorDrawables.useSupportLibrary = true
+        /*vectorDrawables.useSupportLibrary = true*/
     }
     signingConfigs {
         debug {
@@ -90,7 +90,7 @@ dependencies {
     compile "com.android.support:support-v4:${support_library_version}"
     compile "com.android.support:design:${support_library_version}"
     compile "com.android.support:appcompat-v7:${support_library_version}"
-    compile "com.android.support:support-vector-drawable:${support_library_version}"
+    // compile "com.android.support:support-vector-drawable:${support_library_version}"
     // debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
     compile "com.google.android.gms:play-services-auth:${gms_library_version}"
     compile "com.google.android.gms:play-services-maps:${gms_library_version}"

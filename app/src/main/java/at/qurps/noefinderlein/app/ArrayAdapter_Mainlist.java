@@ -455,7 +455,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 				for (int i = 0; i < count; i++) {
 					filterableLocation = list.get(i);
 
-					if (filterableLocation.getName().toLowerCase().contains(filterString)) {
+					if (filterableLocation.getSearchStr().toLowerCase().contains(filterString)) {
 						nlist.add(filterableLocation);
 					}
 				}

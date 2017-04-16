@@ -77,6 +77,7 @@ public class DB_Location_NoeC implements ClusterItem {
 	int _visited_id;
 	boolean _todayActive;
 	boolean _visited;
+	String _searchstr;
 	
 	
 	// Empty constructor
@@ -463,5 +464,13 @@ public class DB_Location_NoeC implements ClusterItem {
 
 	public void setVisited(boolean visited){
 		this._visited = visited;
+	}
+
+	public String getSearchStr(){
+		return this._searchstr;
+	}
+
+	public void setSearchStr(String searchstr){
+		this._searchstr = searchstr;
 	}
 }

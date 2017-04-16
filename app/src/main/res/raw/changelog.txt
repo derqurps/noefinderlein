@@ -17,6 +17,11 @@
     </style>
   </head>
   <body>
+$ 1.1.1
+  % Version 1.1.1
+  _ 2017-04-16
+    * Vektor Problem auf Android 4.x gelöst (Force Close)
+    * Suche erweitert. Es wird auch nach Elementen gesucht, die nicht in der Mnüansicht sichtbar sind
 $ 1.1.0
   % Version 1.1.0
   _ 2017-04-15
