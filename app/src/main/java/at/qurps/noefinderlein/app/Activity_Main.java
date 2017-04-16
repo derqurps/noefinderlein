@@ -68,7 +68,7 @@ public class Activity_Main extends AppCompatActivity implements
 
     private static final String TAG = "Activity_Main";
     public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
-    public static final String KEY_GAME_SIGN_IN_CLICKED = "game_sign_in_clicked";
+    public static final String KEY_GAME_SIGN_IN_CLICKED = "game_sign_in_clicked_v2";
 
     private SharedPreferences mPrefs;
 
@@ -215,7 +215,7 @@ public class Activity_Main extends AppCompatActivity implements
     }
     private void buildGoogleApiClient(boolean reconnect) {
 
-        mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
+        // mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
 
         if(mGoogleApiClient == null || reconnect) {
             GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
@@ -375,7 +375,7 @@ public class Activity_Main extends AppCompatActivity implements
             Log.d(TAG, "Sign-in button clicked");
 
             mGameSignInClicked = true;
-            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
+
             buildGoogleApiClient(true);
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
             handleSignin();
@@ -894,6 +894,8 @@ public class Activity_Main extends AppCompatActivity implements
     @Override
     public void onConnected(@Nullable final Bundle connectionHint) {
         if (mGoogleApiClient.hasConnectedApi(Games.API)) {
+            Log.d(TAG, "onConnected now");
+
             Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
                     new ResultCallback<GoogleSignInResult>() {
                         @Override
@@ -953,6 +955,8 @@ public class Activity_Main extends AppCompatActivity implements
     }
     private boolean isGameSignedIn() {
         if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
+            mGameSignInClicked = true;
+            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
             showGameLogout();
             return true;
         } else {
