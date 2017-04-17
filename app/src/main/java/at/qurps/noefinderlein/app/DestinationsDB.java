@@ -334,6 +334,7 @@ public class DestinationsDB {
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
                 location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
                 location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
+                location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
     			locationList.add(location);
     		} while (cursor.moveToNext());
     	}
@@ -422,7 +423,8 @@ public class DestinationsDB {
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
                 location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
                 location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
-    			locationList.add(location);
+                location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
+                locationList.add(location);
     		} while (cursor.moveToNext());
     	}
         if(cursor != null) {
@@ -470,7 +472,8 @@ public class DestinationsDB {
                 location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
                 location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
                 location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
-    			locationList.add(location);
+                location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
+                locationList.add(location);
     		} while (cursor.moveToNext());
     	}
         if(cursor != null) {

@@ -39,7 +39,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
                     android:tint="@color/noecard_white"
-                    app:srcCompat="@drawable/ic_check"
+                    android:src="@drawable/ic_check"
                     android:visibility="invisible"/>
             </RelativeLayout>
 
@@ -82,34 +82,34 @@
                         android:layout_height="16dip"
                         android:layout_toStartOf="@+id/menuitem_rollstuhl"
                         android:layout_marginStart="2dp"
-                        app:srcCompat="@mipmap/ic_hund" />
+                        android:src="@mipmap/ic_hund" />
                     <ImageView
                         android:id="@+id/menuitem_rollstuhl"
                         android:layout_width="16dip"
                         android:layout_height="16dip"
                         android:layout_toStartOf="@+id/menuitem_kinderwagen"
                         android:layout_marginStart="2dp"
-                        app:srcCompat="@mipmap/ic_rollstuhl" />
+                        android:src="@mipmap/ic_rollstuhl" />
                     <ImageView
                         android:id="@+id/menuitem_kinderwagen"
                         android:layout_width="16dip"
                         android:layout_height="16dip"
                         android:layout_toStartOf="@+id/menuitem_gruppe"
                         android:layout_marginStart="2dp"
-                        app:srcCompat="@mipmap/ic_kinderwagen" />
+                        android:src="@mipmap/ic_kinderwagen" />
                     <ImageView
                         android:id="@+id/menuitem_gruppe"
                         android:layout_width="16dip"
                         android:layout_height="16dip"
                         android:layout_toStartOf="@+id/topausflug"
                         android:layout_marginStart="2dp"
-                        app:srcCompat="@mipmap/ic_gruppe"/>
+                        android:src="@mipmap/ic_gruppe"/>
                     <ImageView
                         android:id="@+id/topausflug"
                         android:layout_width="16dip"
                         android:layout_height="16dip"
                         android:layout_toStartOf="@+id/burgschloessusw"
-                        app:srcCompat="@mipmap/ic_top_ausflugsziel"
+                        android:src="@mipmap/ic_top_ausflugsziel"
                         android:layout_marginStart="3dp"
                         />
 
