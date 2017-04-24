@@ -11,7 +11,9 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,7 +21,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.StringTokenizer;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by roman on 12.04.14.
@@ -269,99 +272,46 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
         Integer anzahlakt = nummern.length();
         Integer zael = 1;
         progress.setMax(anzahlakt);
-        for (int i = 0; i < nummern.length(); i++) {
 
-            try {
-                Log.e("Test", String.valueOf(nummern.getInt(i)));
+        try {
+            List<String> idList = new ArrayList<String>();
 
-                String jsonLocId = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Locations/" + String.valueOf(nummern.getInt(i)), ServiceHandler_GETPOSTPUT.GET);
-                JSONObject jsonLoc = new JSONObject(jsonLocId);
-                Log.d(TAG, jsonLoc.toString());
+            for(int i=0;i<anzahlakt;i++) {
+                idList.add(String.valueOf(nummern.getInt(i)));
+            }
+            int partitionSize = 20;
+            List<List<String>> partitions = new LinkedList<List<String>>();
+            for (int i = 0; i < anzahlakt; i += partitionSize) {
+                partitions.add(idList.subList(i,
+                        Math.min(i + partitionSize, idList.size())));
+            }
+            for (int i = 0; i < partitions.size(); i++) {
+                String putBody = "{\"arr\":[" + TextUtils.join(",", partitions.get(i)) + "]}";
+                String jsonLocId = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Locations/getLocationsToIds" , ServiceHandler_GETPOSTPUT.PUT, null, putBody);
+                JSONArray jsonarray = new JSONArray(jsonLocId);
 
+                db.insertOrReplaceLocations(jsonarray);
+                zael = zael + jsonarray.length();
                 mBuilder.setProgress(anzahlakt, zael, false);
                 mNotifyManager.notify(2, mBuilder.build());
                 progress.setProgress(Integer.valueOf(zael));
-                String currentLocationName = "";
-                try{
-                    currentLocationName = jsonLoc.getString(DB_Location_NoeC.KEY_NAME);
-                } catch (Exception e){}
-                publishProgress("Updating Location Data ...\n"+currentLocationName);
-                updatewiththisJsonobj(jsonLoc);
-                zael++;
-            }catch (JSONException e) {
-                Log.e("Exception1", String.valueOf(e));
-                e.printStackTrace();
+                /*String currentLocationName = "";
+                try {
+                    currentLocationName = jsonarray.getJSONObject(0).getString(DB_Location_NoeC.KEY_NAME);
+                } catch (Exception e) {
+                }
+                publishProgress("Updating Location Data ...\n" + currentLocationName);*/
             }
-        }
-    }
-
-    protected void updatewiththisJsonobj(JSONObject destination) {
-        try {
-            int id = destination.getInt(DB_Location_NoeC.KEY_ID);
-            boolean updateornew=db.updateornewForItemNeeded(id);
-            if(!updateornew){
-
-                DB_Location_NoeC newloc = new DB_Location_NoeC();
-                newloc.setId(id);
-                newloc.setNummer(destination.getInt(DB_Location_NoeC.KEY_NUMMER));
-                newloc.setJahr(destination.getInt(DB_Location_NoeC.KEY_JAHR));
-                newloc.setKat(destination.getInt(DB_Location_NoeC.KEY_KAT));
-                newloc.setReg(destination.getInt(DB_Location_NoeC.KEY_REG));
-                newloc.setName(destination.getString(DB_Location_NoeC.KEY_NAME));
-                newloc.setLatitude(destination.getDouble(DB_Location_NoeC.KEY_LAT));
-                newloc.setLongitude(destination.getDouble(DB_Location_NoeC.KEY_LON));
-                newloc.setChanged_date("2000.01.01");
-                newloc.setChange_index(-1);
-                db.addMinimalLocation(newloc);
-
-            }
-            updatewiththisdata(destination,id);
         } catch (JSONException e) {
-            Log.e("Exception2", String.valueOf(e));
+            Log.e("Exception1", String.valueOf(e));
+            e.printStackTrace();
+        } catch (Exception e) {
+            Log.e("LocationSaveException", String.valueOf(e));
             e.printStackTrace();
         }
     }
 
-    protected void updatewiththisdata(JSONObject destinations,int id) {
-        try {
-            DB_Location_NoeC newloc = db.getLocationToId(id);
-            newloc.setId(destinations.getInt(DB_Location_NoeC.KEY_ID));
-            newloc.setNummer(destinations.getInt(DB_Location_NoeC.KEY_NUMMER));
-            newloc.setJahr(destinations.getInt(DB_Location_NoeC.KEY_JAHR));
-            newloc.setKat(destinations.getInt(DB_Location_NoeC.KEY_KAT));
-            newloc.setReg(destinations.getInt(DB_Location_NoeC.KEY_REG));
-            newloc.setName(destinations.getString(DB_Location_NoeC.KEY_NAME));
-            newloc.setEmail(destinations.getString(DB_Location_NoeC.KEY_EMAIL));
-            newloc.setLatitude(destinations.getDouble(DB_Location_NoeC.KEY_LAT));
-            newloc.setLongitude(destinations.getDouble(DB_Location_NoeC.KEY_LON));
-            newloc.setAdr_plz(destinations.getString(DB_Location_NoeC.KEY_ADR_PLZ));
-            newloc.setTel(destinations.getString(DB_Location_NoeC.KEY_TEL));
-            newloc.setFax(destinations.getString(DB_Location_NoeC.KEY_FAX));
-            newloc.setAnreise(destinations.getString(DB_Location_NoeC.KEY_ANREISE));
-            newloc.setGeoeffnet(destinations.getString(DB_Location_NoeC.KEY_GEOEFFNET));
-            newloc.setAdr_ort(destinations.getString(DB_Location_NoeC.KEY_ADR_ORT));
-            newloc.setAdr_street(destinations.getString(DB_Location_NoeC.KEY_ADR_STREET));
-            newloc.setTipp(destinations.getString(DB_Location_NoeC.KEY_TIPP));
-            newloc.setRollstuhl(destinations.getBoolean(DB_Location_NoeC.KEY_ROLLSTUHL));
-            newloc.setKinderwagen(destinations.getBoolean(DB_Location_NoeC.KEY_KINDERWAGEN));
-            newloc.setHund(destinations.getBoolean(DB_Location_NoeC.KEY_HUND));
-            newloc.setGruppe(destinations.getBoolean(DB_Location_NoeC.KEY_GRUPPE));
-            newloc.setWebseite(destinations.getString(DB_Location_NoeC.KEY_WEBSEITE));
-            newloc.setBeschreibung(destinations.getString(DB_Location_NoeC.KEY_BESCHREIBUNG));
-            newloc.setAussersonder(destinations.getString(DB_Location_NoeC.KEY_AUSSERSONDER));
-            newloc.setEintritt(destinations.getString(DB_Location_NoeC.KEY_EINTRITT));
-            newloc.setErsparnis(destinations.getString(DB_Location_NoeC.KEY_ERSPARNIS));
-            newloc.setTop_ausflugsziel(destinations.getBoolean(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL));
 
-            newloc.setChanged_date(destinations.getString(DB_Location_NoeC.KEY_CHANGED_DATE));
-            newloc.setChange_index(destinations.getInt(DB_Location_NoeC.KEY_CHANGE_INDEX));
-            db.updateLocation(newloc);
-            //mCallbacks.onDownloadCompleted(id);
 
-        } catch (JSONException e) {
-            Log.e("Exception3", String.valueOf(e));
-            e.printStackTrace();
-        }
-    }
 
 }

@@ -18,10 +18,12 @@ if (project.hasProperty("NoeFinderlein.properties")
         buildTypes {
             debug {
                 resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
+                resValue "string", "google_photo_key", props['noefinderlein_photokey']
                 resValue "string", "api_path", props['noefinderlein_apipath_debug']
             }
             release {
                 resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
+                resValue "string", "google_photo_key", props['noefinderlein_photokey']
                 resValue "string", "api_path", props['noefinderlein_apipath']
             }
         }
@@ -36,8 +38,8 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 65
-        versionName "1.1.2"
+        versionCode 76
+        versionName "1.2.1"
         multiDexEnabled true
         /*vectorDrawables.useSupportLibrary = true*/
     }
@@ -83,22 +85,42 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    compile "com.android.support:cardview-v7:$rootProject.ext.support_library_version"
+    compile "com.android.support:support-v4:$rootProject.ext.support_library_version"
+    compile "com.android.support:design:$rootProject.ext.support_library_version"
+    compile "com.android.support:appcompat-v7:$rootProject.ext.support_library_version"
+    // compile "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
+    //debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
+    compile "com.google.android.gms:play-services-auth:$rootProject.ext.gms_library_version"
+    compile "com.google.android.gms:play-services-maps:$rootProject.ext.gms_library_version"
+    compile "com.google.android.gms:play-services-location:$rootProject.ext.gms_library_version"
+    compile "com.google.android.gms:play-services-games:$rootProject.ext.gms_library_version"
+    compile "com.google.android.gms:play-services-plus:$rootProject.ext.gms_library_version"
+    compile "com.google.android.gms:play-services-places:$rootProject.ext.gms_library_version"
+    compile "com.google.firebase:firebase-storage:$rootProject.ext.gms_library_version"
+    compile "com.google.firebase:firebase-auth:$rootProject.ext.gms_library_version"
+    compile "com.google.firebase:firebase-database:$rootProject.ext.gms_library_version"
+    // compile 'com.github.hanuor:pearl:0.0.8'
+    compile("com.github.aviadmini:quickimagepick:2.1.7") {
+        // Uncomment next line if you have dependency conflict with AppCompat v7
+        // exclude group: 'com.android.support', module: 'appcompat-v7'
+    }
 
-    ext.gms_library_version = '10.2.1'
-    ext.support_library_version = '25.3.1'
-    compile "com.android.support:cardview-v7:${support_library_version}"
-    compile "com.android.support:support-v4:${support_library_version}"
-    compile "com.android.support:design:${support_library_version}"
-    compile "com.android.support:appcompat-v7:${support_library_version}"
-    // compile "com.android.support:support-vector-drawable:${support_library_version}"
-    // debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
-    compile "com.google.android.gms:play-services-auth:${gms_library_version}"
-    compile "com.google.android.gms:play-services-maps:${gms_library_version}"
-    compile "com.google.android.gms:play-services-location:${gms_library_version}"
-    compile "com.google.android.gms:play-services-games:${gms_library_version}"
-    compile "com.google.android.gms:play-services-plus:${gms_library_version}"
+    compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+
     compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     compile 'com.google.maps.android:android-maps-utils:0.4'
-    compile 'joda-time:joda-time:2.9.2'
+    // compile 'joda-time:joda-time:2.9.9'
+
+    compile 'com.koushikdutta.ion:ion:2.1.9'
+    compile 'com.gjiazhe:scrollparallaximageview:1.0'
+    compile 'com.github.piasy:BigImageViewer:1.2.9'
+    compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
+
     testCompile 'junit:junit:4.12'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    compile project(":glideimageloader")
 }
+apply plugin: 'com.google.gms.google-services'

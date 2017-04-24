@@ -69,6 +69,7 @@
     <string name="desc_aussersonder">*außer Sonderveranstaltungen</string>
     <string name="title_menu_to_destination">Zum Ziel navigieren</string>
     <string name="title_menu_show_on_map">Auf der Karte anzeigen</string>
+    <string name="title_menu_add_photo">Ein Foto hochladen</string>
     <string name="title_menu_show_current_on_map">Aktuelle Liste auf der Karte anzeigen</string>
     <string name="toast_no_geo_app_found">Keine App für GEO Daten gefunden - Bitte Google Maps installieren</string>
     <string name="title_menu_filter">Liste Filtern</string>
@@ -290,4 +291,13 @@
     <string name="gamehelper_app_misconfigured">The application is incorrectly configured. Check that the package name and signing certificate match the client ID created in Developer Console. Also, if the application is not yet published, check that the account you are trying to sign in with is listed as a tester account. See logs for more information.</string>
     <string name="gamehelper_license_failed">License check failed.</string>
     <string name="gamehelper_unknown_error">Unknown error.</string>
+
+    <string name="consent">OK</string>
+    <string name="imgupconsentthank">Danke für die Mithilfe! Upload läuft...</string>
+    <string name="imgupcomplete">Upload vollständig</string>
+    <string name="imgupconsent">Ich erkläre mich einverstanden, dass das dargestellte Bild in die Public Domain übergeht <a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode">(CC0 Lizenztext)</a> und im Nö Finderlein verwendet werden darf.\nDas Bild wird begutachtet und anschließend für alle anderen Nö Finderlein Nutzer veröffentlicht.</string>
+    <string name="imgupconosenttitle">Uploadlizenz</string>
+
+    <string name="title_activity__picture">Activity_Picture</string>
+
 </resources>

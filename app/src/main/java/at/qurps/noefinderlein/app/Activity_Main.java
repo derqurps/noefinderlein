@@ -50,8 +50,10 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
+import com.squareup.leakcanary.LeakCanary;
 
-import org.joda.time.DateTime;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
@@ -207,7 +209,12 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
 
-
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(getApplication());
     }
 
     private void buildGoogleApiClient() {
@@ -642,9 +649,6 @@ public class Activity_Main extends AppCompatActivity implements
         Intent intent = new Intent(mContext, Activity_Detail.class);
         intent.putExtras(arguments);
         mContext.startActivity(intent);
-
-
-
     }
 
 
@@ -660,11 +664,13 @@ public class Activity_Main extends AppCompatActivity implements
                 updateDB();
             }
         }else{
-            DateTime dt = new DateTime();
-            year = dt.getYear();
+            Calendar currentDay = Calendar.getInstance();
+            year = currentDay.get(Calendar.YEAR);
             Log.d(TAG, String.valueOf(year));
-            DateTime endOfMarch = new DateTime(year, 3, 31, 1, 1);
-            if(!dt.isAfter(endOfMarch)){
+            Calendar endOfMarch = Calendar.getInstance();
+            endOfMarch.set(year, 3, 1);
+
+            if(currentDay.before(endOfMarch)){
                 year = year-1;
             }
             Log.d(TAG, String.valueOf(year));

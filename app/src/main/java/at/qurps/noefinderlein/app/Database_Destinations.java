@@ -10,8 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 7;
-    public static final String DATABASE_NAME = "NoecardData.db";
+    private static Database_Destinations sInstance;
+    private static final int DATABASE_VERSION = 10;
+    private static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String TEXT_TYPE_0 = " TEXT DEFAULT (null)";
@@ -54,7 +55,9 @@ public class Database_Destinations extends SQLiteOpenHelper {
                     DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL + BOOL_TYPE_0 + COMMA_SEP +
                     DB_Location_NoeC.KEY_CHANGED_DATE + TEXT_TYPE_0 + COMMA_SEP +
                     DB_Location_NoeC.KEY_CHANGE_INDEX + INT_TYPE_0 + COMMA_SEP +
-                    DB_Location_NoeC.KEY_FAVORIT + BOOL_TYPE_0 +
+                    DB_Location_NoeC.KEY_FAVORIT + BOOL_TYPE_0 + COMMA_SEP +
+                    DB_Location_NoeC.KEY_NOEC_IDX + TEXT_TYPE_0 + COMMA_SEP +
+                    DB_Location_NoeC.KEY_GOOGLE_PLACE_ID+ TEXT_TYPE_0 +
             " )";
 
     private static final String SQL_DELETE_LOCATIONS =
@@ -92,6 +95,16 @@ public class Database_Destinations extends SQLiteOpenHelper {
     public Database_Destinations(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
+    public static synchronized Database_Destinations getInstance(Context context) {
+
+        // Use the application context, which will ensure that you
+        // don't accidentally leak an Activity's context.
+        // See this article for more information: http://bit.ly/6LRzfx
+        if (sInstance == null) {
+            sInstance = new Database_Destinations(context.getApplicationContext());
+        }
+        return sInstance;
+    }
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_LOCATIONS);
         db.execSQL(SQL_CREATE_VISITED);
@@ -122,6 +135,15 @@ public class Database_Destinations extends SQLiteOpenHelper {
                 db.execSQL("UPDATE " + DB_Visited_Locations.TABLE_NAME + " SET " + DB_Visited_Locations.KEY_ACCEPTED + "=1;");
                 db.execSQL("DROP TABLE TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
             case 7:
+                db.execSQL("ALTER TABLE " + DB_Location_NoeC.TABLE_NAME + " ADD " + DB_Location_NoeC.KEY_NOEC_IDX + " " + TEXT_TYPE_0 + ";");
+            case 8:
+                db.execSQL("ALTER TABLE " + DB_Location_NoeC.TABLE_NAME + " ADD " + DB_Location_NoeC.KEY_GOOGLE_PLACE_ID + " " + TEXT_TYPE_0 + ";");
+                db.execSQL("DELETE FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + "=2017;");
+                db.execSQL("DELETE FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + "=2017;");
+            case 9:
+                db.execSQL("DELETE FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + "=2017;");
+                db.execSQL("DELETE FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + "=2017;");
+            case 10:
         }
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
