@@ -300,48 +300,52 @@ public class DestinationsDB {
     // Getting All Menu locations
     public List<DB_Location_NoeC> getAllMenuLocations(int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        try {
+            String fDate = Util.getDBDateString(mContext);
 
-        String fDate = Util.getDBDateString(mContext);
 
-    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+            String dbl = DB_Location_NoeC.TABLE_NAME;
+            String dbd = DB_Days.TABLE_NAME;
+            String dbv = DB_Visited_Locations.TABLE_NAME;
 
-        String dbl = DB_Location_NoeC.TABLE_NAME;
-        String dbd = DB_Days.TABLE_NAME;
-        String dbv = DB_Visited_Locations.TABLE_NAME;
+            Cursor cursor = db.rawQuery("select "
+                            + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET + ","
+                            + " case when exists (select * from " + dbv + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbv + "." + DB_Visited_Locations.KEY_LOC_ID + " and " + DB_Visited_Locations.KEY_YEAR + "=?) then 1 else 0 end AS " + DB_Location_NoeC.KEY_VISITED
+                            + " from " + dbl
+                            + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
+                            + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
+                    , new String[]{fDate, String.valueOf(jahr), String.valueOf(jahr)});
 
-        Cursor cursor = db.rawQuery("select "
-                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET + ","
-                        + " case when exists (select * from " + dbv + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbv + "." + DB_Visited_Locations.KEY_LOC_ID + " and " + DB_Visited_Locations.KEY_YEAR + "=?) then 1 else 0 end AS " + DB_Location_NoeC.KEY_VISITED
-                        + " from " + dbl
-                        + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
-                        + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
-            , new String[]{fDate, String.valueOf(jahr), String.valueOf(jahr)});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    DB_Location_NoeC location = new DB_Location_NoeC();
+                    location.setId(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)));
+                    location.setNummer(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_NUMMER)));
+                    location.setJahr(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR)));
+                    location.setName(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NAME)));
+                    location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
+                    location.setKat(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KAT)));
+                    location.setAdr_ort(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ADR_ORT)));
 
-    	if (cursor != null && cursor.moveToFirst()) {
-    		do {
-    			DB_Location_NoeC location = new DB_Location_NoeC();
-                location.setId(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)));
-    			location.setNummer(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_NUMMER)));
-                location.setJahr(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR)));
-    			location.setName(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NAME)));
-    			location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
-    			location.setKat(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KAT)));
-    			location.setAdr_ort(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ADR_ORT)));
+                    location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_HUND))));
+                    location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
+                    location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
+                    location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
+                    location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
+                    location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
+                    location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
+                    locationList.add(location);
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+        } catch(Exception ex) {
 
-                location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_HUND))));
-                location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
-                location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
-                location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
-                location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
-                location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
-    			locationList.add(location);
-    		} while (cursor.moveToNext());
-    	}
-        if(cursor != null) {
-            cursor.close();
+        } finally {
+            db.close(); // Closing database connection
         }
-    	db.close(); // Closing database connection
     	// return location list
     	return locationList;
     }
@@ -518,20 +522,26 @@ public class DestinationsDB {
 
     public boolean isYearInDatabase(int year) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME,
-                null,
-                DB_Location_NoeC.KEY_JAHR + "=?",
-                new String[] { String.valueOf(year) },
-                null, null, null, null);
         Boolean result = false;
-        if (cursor != null && cursor.getCount()>10)
-        {
-            result = true; // return count
+        Cursor cursor = null;
+        try {
+            cursor = db.query(DB_Location_NoeC.TABLE_NAME,
+                    null,
+                    DB_Location_NoeC.KEY_JAHR + "=?",
+                    new String[]{String.valueOf(year)},
+                    null, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 10) {
+                result = true; // return count
+            }
+        }catch(Exception e) {
+
+        } finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+            db.close();
         }
-        if(cursor != null) {
-            cursor.close();
-        }
-        db.close();
         return result;
     }
 

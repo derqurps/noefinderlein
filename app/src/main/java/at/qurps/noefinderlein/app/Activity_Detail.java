@@ -171,6 +171,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     private FloatingActionButton fab;
     private Toolbar toolbar;
     private List<CloudPicture> uploadsCP;
+    private boolean loadPictures;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,11 +183,21 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         toolbar = (Toolbar) findViewById(R.id.detailtoolbar);
         setSupportActionBar(toolbar);
 
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        loadPictures = prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_PICTURES, true);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         TextView copyrightText = (TextView) findViewById(R.id.copyright_text);
         im = (ImageView)findViewById(R.id.header_logo);
-        addStandardPicture();
+        if(loadPictures) {
+            fabAddStandardPicture();
+        } else {
+            im.setImageResource(android.R.color.transparent);
+            fabAddNavigationPicture();
+        }
         //toolbar = (Toolbar) rootView.findViewById(R.id.detailtoolbar);
+
 
         uploadsCP = new ArrayList<CloudPicture>();
 
@@ -235,24 +246,24 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         DatabaseReference mDatabaseLiveRef = FirebaseDatabase.getInstance().getReference(DATABASE_PATH_LIVE).child(String.valueOf(location.getNoecIndex()));
 
 
+        if(loadPictures) {
+            mDatabaseLiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
 
-        mDatabaseLiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-
-                List<CloudPicture> uploadsOwn = new ArrayList<>();
-                //iterating through all the values in database
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    CloudPicture upload = postSnapshot.getValue(CloudPicture.class);
-                    uploadsOwn.add(upload);
-                }
-                if(uploadsOwn.size()>0){
-                    // uploadsCP
-                    uploadsOwn.addAll(uploadsCP);
-                    uploadsCP = uploadsOwn;
-                    redrawPictures();
-                    // copyrightText.setVisibility(View.VISIBLE);
-                    //Glide.with(mContext).load(uploads.get(0).getUrl()).centerCrop().into(im);
+                    List<CloudPicture> uploadsOwn = new ArrayList<>();
+                    //iterating through all the values in database
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        CloudPicture upload = postSnapshot.getValue(CloudPicture.class);
+                        uploadsOwn.add(upload);
+                    }
+                    if (uploadsOwn.size() > 0) {
+                        // uploadsCP
+                        uploadsOwn.addAll(uploadsCP);
+                        uploadsCP = uploadsOwn;
+                        redrawPictures();
+                        // copyrightText.setVisibility(View.VISIBLE);
+                        //Glide.with(mContext).load(uploads.get(0).getUrl()).centerCrop().into(im);
 
                     /*
                     //creating adapter
@@ -261,17 +272,17 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                     //adding adapter to recyclerview
                     recyclerView.setAdapter(adapter);
                     */
+                    }
+
                 }
 
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                }
+            });
 
-            }
-        });
-
-
+        }
 
         mGameSignInClicked = Util.getPreferencesBoolean(this, Activity_Main.KEY_GAME_SIGN_IN_CLICKED, false);
 
@@ -307,13 +318,24 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         LeakCanary.install(getApplication());
     }
 
-    private void addStandardPicture(){
+    private void fabAddStandardPicture(){
         fab.setImageResource(R.drawable.ic_add_a_photo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // start image picker
                 startPicker();
+
+            }
+        });
+    }
+    private void fabAddNavigationPicture(){
+        fab.setImageResource(R.drawable.ic_navigation);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // start image picker
+                startNavigate();
 
             }
         });
@@ -578,7 +600,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
             }
 
 
-            if(ziel.getGooglePlaceId()!=null){
+            if(ziel.getGooglePlaceId()!=null && loadPictures){
 
                 //"https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key)
                 String loadUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key);

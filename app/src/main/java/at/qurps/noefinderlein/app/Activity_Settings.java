@@ -50,6 +50,7 @@ public class Activity_Settings extends Activity_AppCompatPreference {
     public static final String KEY_PREF_OFFLINE_MODE = "pref_offline_mode";
     public static final String KEY_PREF_FILTER_VISITED = "pref_filter_visited";
     public static final String KEY_PREF_LOAD_OPEN_DATA = "pref_load_open_data";
+    public static final String KEY_PREF_LOAD_PICTURES = "pref_load_pictures";
 
     private static Context mContext;
     /**

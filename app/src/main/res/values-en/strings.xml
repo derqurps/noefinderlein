@@ -172,6 +172,8 @@
     <string name="pref_dialog_delete_year_title">Delete</string>
     <string name="pref_dialog_delete_year_message">All data from that year wil be deleted. If it is the curent year it will be resync\'t if you completely restart the app</string>
 
+    <string name="pref_title_load_pictures">Show Pictures?</string>
+    <string name="pref_load_pictures">Loads Pictures in the Detail View from Internet</string>
 
     <string name="achievement">Achievement</string>
     <string name="your_progress_will_be_uploaded">Your existing achievements and score will be uploaded shortly.</string>
