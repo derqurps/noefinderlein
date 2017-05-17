@@ -25,5 +25,11 @@
         noecard:showAsAction="ifRoom|collapseActionView"
         android:title="@string/title_menu_show_on_map"
         />
+    <item
+        android:id="@+id/actionb_upload_picture"
+        android:icon="@drawable/ic_add_a_photo"
+        noecard:showAsAction="ifRoom|collapseActionView"
+        android:title="@string/title_menu_add_photo"
+        />
 
 </menu>

@@ -32,18 +32,18 @@
                 android:title="Sign in with Google"/>
             <item
                 android:id="@+id/game_logout"
-                android:icon="@drawable/google_gamepad"
+                android:icon="@mipmap/google_gamepad"
                 android:title="Logout"
                 android:visible="false"
                 />
             <item
                 android:id="@+id/game_achievements"
-                android:icon="@drawable/game_achievements"
+                android:icon="@mipmap/game_achievements"
                 android:title="Achievements"
                 android:visible="false"/>
             <item
                 android:id="@+id/game_leaderboard"
-                android:icon="@drawable/game_leaderboards"
+                android:icon="@mipmap/game_leaderboards"
                 android:title="Highscores"
                 android:visible="false"/>
             <item

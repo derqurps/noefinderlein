@@ -36,6 +36,8 @@ public class DB_Location_NoeC implements ClusterItem {
 	public static final String KEY_TOP_AUSFLUGSZIEL = "top_ausflugsziel";
 	public static final String KEY_CHANGED_DATE = "changed_date";
 	public static final String KEY_CHANGE_INDEX = "change_index";
+	public static final String KEY_NOEC_IDX = "noecardwebsiteid";
+    public static final String KEY_GOOGLE_PLACE_ID = "googleplaceid";
 	public static final String KEY_FAVORIT = "favorit";
 	public static final String KEY_VISITED = "visited";
 
@@ -70,6 +72,8 @@ public class DB_Location_NoeC implements ClusterItem {
     int _change_index;
     String _changed_date;
     boolean _favorit;
+	String _noec_index;
+    String _google_place_id;
 
 
 	double _distance;
@@ -473,4 +477,23 @@ public class DB_Location_NoeC implements ClusterItem {
 	public void setSearchStr(String searchstr){
 		this._searchstr = searchstr;
 	}
+
+	public String getNoecIndex(){
+		return this._noec_index;
+	}
+
+	public void setNoecIndex(String noec_index){
+		this._noec_index = noec_index;
+	}
+
+    public String getGooglePlaceId(){
+        return this._google_place_id;
+    }
+
+    public void setGooglePlaceId(String google_place_id){
+        this._google_place_id = google_place_id;
+    }
+
+
+
 }

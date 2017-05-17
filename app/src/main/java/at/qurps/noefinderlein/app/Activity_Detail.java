@@ -1,5 +1,6 @@
 package at.qurps.noefinderlein.app;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,11 +21,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.Spannable;
@@ -39,6 +43,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aviadmini.quickimagepick.PickCallback;
+import com.aviadmini.quickimagepick.PickSource;
+import com.aviadmini.quickimagepick.PickTriggerResult;
+import com.aviadmini.quickimagepick.QiPick;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.load.model.LazyHeaderFactory;
+import com.bumptech.glide.load.model.LazyHeaders;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -48,24 +61,63 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.PlacePhotoMetadata;
+import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
+import com.google.android.gms.location.places.PlacePhotoMetadataResult;
+import com.google.android.gms.location.places.Places;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.squareup.leakcanary.LeakCanary;
+
+
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.UUID;
 
 import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
 public class Activity_Detail extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-DialogFragment_ChooseCheckinDate.Callbacks{
+DialogFragment_ChooseCheckinDate.Callbacks,
+DialogFragment_PictureConsent.NoticeDialogListener{
 
     public static final String ARG_ITEM_ID = "item_id" ;
     public static final String ARG_ITEM_JAHR = "item_jahr" ;
     public static final String ARG_MTWOPANE ="mTwoPane" ;
     public static final String TAG = "Activity_Detail";
+
+    public static final String STORAGE_PATH_UPLOADS = "picuploads/";
+    public static final String DATABASE_PATH_UPLOADS = "picuploads";
+
+    public static final String DATABASE_PATH_LIVE = "piclive";
 
     static final int REQUEST_IMAGE_CAPTURE = 101;
     private Context mContext;
@@ -102,32 +154,135 @@ DialogFragment_ChooseCheckinDate.Callbacks{
     private static final int RC_RESOLVE = 5000;
     private static final int RC_UNUSED = 5001;
     private static final int RC_SIGN_IN = 9001;
+    private static final int PICK_IMAGE = 9156;
+    private static final int UPLOAD_NOTIFICATION = 9584;
 
     AccomplishmentsOutbox mOutbox;
+    private StorageReference mStorageRef;
+    private FirebaseAuth mAuth;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference mDatabaseRef;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private ImageView im;
+    private NotificationManager mNotifyManager;
 
+    private RecyclerView.Adapter adapter;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
+    private Toolbar toolbar;
+    private List<CloudPicture> uploadsCP;
+    private boolean loadPictures;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext=this;
+        mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         setContentView(R.layout.activity_detail);
         rootView = getWindow().getDecorView().getRootView();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detailtoolbar);
-        /*ImageView im = (ImageView)findViewById(R.id.header_logo);
-        im.setImageResource(R.drawable.example);*/
+        toolbar = (Toolbar) findViewById(R.id.detailtoolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                startNavigate();
-            }
-        });
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+
+        loadPictures = prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_PICTURES, true);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        TextView copyrightText = (TextView) findViewById(R.id.copyright_text);
+        im = (ImageView)findViewById(R.id.header_logo);
+        if(loadPictures) {
+            fabAddStandardPicture();
+        } else {
+            im.setImageResource(android.R.color.transparent);
+            fabAddNavigationPicture();
+        }
+        //toolbar = (Toolbar) rootView.findViewById(R.id.detailtoolbar);
+
+
+        uploadsCP = new ArrayList<CloudPicture>();
+
         setupActionBar();
         this.db = new DestinationsDB(this);
+        mAuth = FirebaseAuth.getInstance();
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+                // ...
+            }
+        };
+
+
+        mAuth.signInAnonymously()
+        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
+
+                // If sign in fails, display a message to the user. If sign in succeeds
+                // the auth state listener will be notified and logic to handle the
+                // signed in user can be handled in the listener.
+                if (!task.isSuccessful()) {
+                    Log.w(TAG, "signInAnonymously", task.getException());
+                    Toast.makeText(Activity_Detail.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                // ...
+            }
+        });
+        mStorageRef = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(DATABASE_PATH_UPLOADS);
+        aktID = getIntent().getIntExtra(ARG_ITEM_ID, 0);
+        DB_Location_NoeC location = this.db.getLocationToId(aktID);
+        DatabaseReference mDatabaseLiveRef = FirebaseDatabase.getInstance().getReference(DATABASE_PATH_LIVE).child(String.valueOf(location.getNoecIndex()));
+
+
+        if(loadPictures) {
+            mDatabaseLiveRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+
+                    List<CloudPicture> uploadsOwn = new ArrayList<>();
+                    //iterating through all the values in database
+                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                        CloudPicture upload = postSnapshot.getValue(CloudPicture.class);
+                        uploadsOwn.add(upload);
+                    }
+                    if (uploadsOwn.size() > 0) {
+                        // uploadsCP
+                        uploadsOwn.addAll(uploadsCP);
+                        uploadsCP = uploadsOwn;
+                        redrawPictures();
+                        // copyrightText.setVisibility(View.VISIBLE);
+                        //Glide.with(mContext).load(uploads.get(0).getUrl()).centerCrop().into(im);
+
+                    /*
+                    //creating adapter
+                    adapter = new ArrayAdapter_Pictures(getApplicationContext(), uploads);
+
+                    //adding adapter to recyclerview
+                    recyclerView.setAdapter(adapter);
+                    */
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
 
         mGameSignInClicked = Util.getPreferencesBoolean(this, Activity_Main.KEY_GAME_SIGN_IN_CLICKED, false);
 
@@ -153,8 +308,38 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         aktjahr = getIntent().getIntExtra(ARG_ITEM_JAHR, 0);
         mOutbox = new AccomplishmentsOutbox(this, aktjahr, this.db);
         mOutbox.loadLocal();
+
+
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+        LeakCanary.install(getApplication());
     }
 
+    private void fabAddStandardPicture(){
+        fab.setImageResource(R.drawable.ic_add_a_photo);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // start image picker
+                startPicker();
+
+            }
+        });
+    }
+    private void fabAddNavigationPicture(){
+        fab.setImageResource(R.drawable.ic_navigation);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // start image picker
+                startNavigate();
+
+            }
+        });
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -264,6 +449,9 @@ DialogFragment_ChooseCheckinDate.Callbacks{
                 }
                 //db.updateAngesehen(ziel);*/
                 return true;
+            case R.id.actionb_upload_picture:
+                startPicker();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -325,6 +513,23 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         }
 
     }
+    private void showOnMap() {
+        String uri = String.format(Locale.ENGLISH, "geo:0,0?q=%f,%f(%s)", ziel.getLatitude(), ziel.getLongitude(), ziel.getName().replace("&","-"));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(uri));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    private void startPicker() {
+
+        @PickTriggerResult final int triggerResult;
+        triggerResult = QiPick.in(this)
+                .allowOnlyLocalContent(true)
+                .fromMultipleSources("All sources", PickSource.CAMERA, PickSource.GALLERY);
+        this.solveTriggerResult(triggerResult);
+    }
     public DestinationsDB getDb(){
         return this.db;
     }
@@ -337,6 +542,13 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         return mCurrentLocation;
     }
 
+    private void redrawPictures() {
+        RecyclerView rvMoving = (RecyclerView) findViewById(R.id.header_logo_gall);
+        rvMoving.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+
+
+        rvMoving.setAdapter(new ArrayAdapter_Pictures(getApplicationContext(), uploadsCP, findViewById(R.id.toolbar_layout).getHeight()));
+    }
     private void updateView(){
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -357,7 +569,7 @@ DialogFragment_ChooseCheckinDate.Callbacks{
             ((TextView) rootView.findViewById(R.id.detail_text_name))
                     .setText(String.valueOf(ziel.getName()));*/
 
-            Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.detailtoolbar);
+
             //toolbar.setTitle(ziel.getBeschreibung().toString());
             String title = "";
             if(ziel.getNummer()!=0){
@@ -387,8 +599,47 @@ DialogFragment_ChooseCheckinDate.Callbacks{
                 }
             }
 
+
+            if(ziel.getGooglePlaceId()!=null && loadPictures){
+
+                //"https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key)
+                String loadUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key);
+                Log.d(TAG, loadUrl);
+                Ion.with(mContext)
+                    .load(loadUrl )
+                    .setHeader("Referer", "https://noecard.reitschmied.at")
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                        // do stuff with the result or error
+                            try {
+
+                                JsonObject newresult = result.getAsJsonObject("result");
+                                JsonArray photos = newresult.getAsJsonArray("photos");
+                                for (int i = 0; i < photos.size(); i++) {
+                                    JsonObject photo = photos.get(i).getAsJsonObject();
+                                    String photo_reference = photo.get("photo_reference").getAsString();
+
+                                    uploadsCP.add(new CloudPicture(photo_reference, ziel.getName()));
+                                }
+
+
+                                /*GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
+                                    .addHeader("Referer", "https://noecard.reitschmied.at")
+                                    .build());
+                                Glide.with(mContext).load(glideUrl).centerCrop().into(im);*/
+                                redrawPictures();
+                                // toolbar.setBackgroundResource(R.drawable.detailmenubackground);
+                            }catch(Exception exce){}
+                        }
+                    });
+
+            } else {
+                // toolbar.setBackgroundResource(android.R.color.transparent);
+            }
             TextView name=((TextView) rootView.findViewById(R.id.detail_text_title));
-            name.setText(String.valueOf(ziel.getName().toString()));
+            name.setText(String.valueOf(ziel.getName().toString() ));
 
             beschreibung.setText(String.valueOf(Html.fromHtml(ziel.getBeschreibung().toString())));
 
@@ -547,7 +798,7 @@ DialogFragment_ChooseCheckinDate.Callbacks{
 
                 ((ImageView) rootView.findViewById(R.id.detail_navigatetopicture)).setOnClickListener(new View.OnClickListener(){
                     public void onClick(View v) {
-                        startNavigate();
+                        showOnMap();
                     }
                 });
                 ((RelativeLayout) rootView.findViewById(R.id.detail_location)).setOnClickListener(new View.OnClickListener(){
@@ -581,6 +832,13 @@ DialogFragment_ChooseCheckinDate.Callbacks{
                         format++;
                     }
                 });
+                ((RelativeLayout) rootView.findViewById(R.id.detail_navi_rellay)).setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        startNavigate();
+                    }
+                });
+            } else {
+                ((RelativeLayout) rootView.findViewById(R.id.detail_navi_rellay)).setVisibility(View.GONE);
             }
             if (checkifnull(ziel.getTipp()))
             {
@@ -670,6 +928,7 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         if(!isGameSignedIn()) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }
+        mAuth.addAuthStateListener(mAuthListener);
     }
     @Override
     protected void onStop() {
@@ -677,6 +936,9 @@ DialogFragment_ChooseCheckinDate.Callbacks{
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
+        }
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
         }
     }
 
@@ -821,4 +1083,127 @@ DialogFragment_ChooseCheckinDate.Callbacks{
             }
         }
     }
+
+    @Override
+    protected void onActivityResult(final int pRequestCode, final int pResultCode, final Intent pData) {
+        super.onActivityResult(pRequestCode, pResultCode, pData);
+        QiPick.handleActivityResult(getApplicationContext(), pRequestCode, pResultCode, pData, this.mCallback);
+    }
+
+    private final PickCallback mCallback = new PickCallback() {
+
+        @Override
+        public void onImagePicked(@NonNull final PickSource pPickSource, final int pRequestType, @NonNull final Uri pImageUri) {
+            // Do something with Uri, for example load image into an ImageView
+            displayConsentDialog(pImageUri);
+        }
+
+        @Override
+        public void onMultipleImagesPicked(final int pRequestType, @NonNull final List<Uri> pImageUris) {
+            // meh whatever, just show first picked ;D
+            for (int i=0; i<pImageUris.size(); i++) {
+                this.onImagePicked(PickSource.DOCUMENTS, pRequestType, pImageUris.get(i));
+            }
+
+        }
+
+        @Override
+        public void onError(@NonNull final PickSource pPickSource, final int pRequestType, @NonNull final String pErrorString) {
+            Log.e(TAG, "Err: " + pErrorString);
+        }
+
+        @Override
+        public void onCancel(@NonNull final PickSource pPickSource, final int pRequestType) {
+            Log.d(TAG, "Cancel: " + pPickSource.name());
+        }
+
+    };
+
+    private void solveTriggerResult(final @PickTriggerResult int pTriggerResult) {
+
+    }
+
+    private void displayConsentDialog(Uri pImageUri) {
+
+        DialogFragment_PictureConsent dialog = new DialogFragment_PictureConsent();
+        dialog.show(getSupportFragmentManager(), "DialogFragment_PictureConsent");
+
+        Bundle args = new Bundle();
+        args.putString("imageUri", pImageUri.toString());
+        dialog.setArguments(args);
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(Uri pImageUri) {
+        final String uuid = UUID.randomUUID().toString();
+        Log.d(TAG, "uuid: " + uuid);
+        String bucketPath = STORAGE_PATH_UPLOADS + uuid + ".png";
+        StorageReference fireUpRef = mStorageRef.child(bucketPath);
+
+        String locationId = String.valueOf(ziel.getId());
+        String locationName = String.valueOf(ziel.getName());
+        String locationnoecIndex = String.valueOf(ziel.getNoecIndex());
+
+        StorageMetadata meta = new StorageMetadata.Builder()
+                .setCustomMetadata("id", locationId)
+                .setCustomMetadata("num", String.valueOf(ziel.getNummer()))
+                .setCustomMetadata("name", String.valueOf(locationName))
+                .setCustomMetadata("noec_idx", String.valueOf(locationnoecIndex))
+                .build();
+
+        final NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this);
+        mBuilder.setContentTitle("Picture Upload")
+                .setContentText("Upload in progress")
+                .setSmallIcon(R.drawable.noefinderlein_outline_white);
+
+        UploadTask uploadTask = fireUpRef.putFile(pImageUri, meta);
+        Util.setToast(mContext, getString(R.string.imgupconsentthank),Toast.LENGTH_LONG);
+
+        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                @SuppressWarnings("VisibleForTests") double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                mBuilder.setProgress(100, (int)progress, false);
+
+                // Displays the progress bar for the first time.
+                mNotifyManager.notify(UPLOAD_NOTIFICATION, mBuilder.build());
+                System.out.println("Upload is " + progress + "% done");
+            }
+        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                System.out.println("Upload is paused");
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                mBuilder.setContentText("Download complete").setProgress(0,0,false);
+                mNotifyManager.notify(UPLOAD_NOTIFICATION, mBuilder.build());
+                mNotifyManager.cancel(UPLOAD_NOTIFICATION);
+                System.out.println("Upload is complete");
+                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                @SuppressWarnings("VisibleForTests") String locationnoecIndex = taskSnapshot.getMetadata().getCustomMetadata("noec_idx");
+                @SuppressWarnings("VisibleForTests") String locationName = taskSnapshot.getMetadata().getCustomMetadata("name");
+                @SuppressWarnings("VisibleForTests") String locationId = taskSnapshot.getMetadata().getCustomMetadata("id");
+                // mDatabaseRef.setValue(downloadUrl.toString());
+
+                String key = mDatabase.getReference().child(DATABASE_PATH_UPLOADS).push().getKey();
+
+                CloudPicture upload = new CloudPicture(locationId, downloadUrl.toString(), locationnoecIndex, locationName);
+                Map<String, Object> postValues = upload.toMap();
+                Map<String, Object> childUpdates = new HashMap<>();
+                childUpdates.put("/" + DATABASE_PATH_UPLOADS + "/" + key, postValues);
+                mDatabase.getReference().updateChildren(childUpdates);
+                Util.setToast(mContext, getString(R.string.imgupcomplete) ,Toast.LENGTH_LONG);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(Exception e) {
+                System.out.println("Upload is failed");
+            }
+        });
+    }
+
+
 }

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/glideimageloader/glideimageloader.iml" filepath="$PROJECT_DIR$/glideimageloader/glideimageloader.iml" />
       <module fileurl="file://$PROJECT_DIR$/noefinderlein.iml" filepath="$PROJECT_DIR$/noefinderlein.iml" />
     </modules>
   </component>

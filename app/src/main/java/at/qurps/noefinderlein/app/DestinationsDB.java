@@ -28,7 +28,7 @@ public class DestinationsDB {
 
     public DestinationsDB(Context context) {
         mContext = context;
-        mDbHelper = new Database_Destinations(context);
+        mDbHelper = Database_Destinations.getInstance(context);
     }
 
 
@@ -300,48 +300,52 @@ public class DestinationsDB {
     // Getting All Menu locations
     public List<DB_Location_NoeC> getAllMenuLocations(int jahr) {
     	List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        try {
+            String fDate = Util.getDBDateString(mContext);
 
-        String fDate = Util.getDBDateString(mContext);
 
-    	SQLiteDatabase db = mDbHelper.getReadableDatabase();
+            String dbl = DB_Location_NoeC.TABLE_NAME;
+            String dbd = DB_Days.TABLE_NAME;
+            String dbv = DB_Visited_Locations.TABLE_NAME;
 
-        String dbl = DB_Location_NoeC.TABLE_NAME;
-        String dbd = DB_Days.TABLE_NAME;
-        String dbv = DB_Visited_Locations.TABLE_NAME;
+            Cursor cursor = db.rawQuery("select "
+                            + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET + ","
+                            + " case when exists (select * from " + dbv + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbv + "." + DB_Visited_Locations.KEY_LOC_ID + " and " + DB_Visited_Locations.KEY_YEAR + "=?) then 1 else 0 end AS " + DB_Location_NoeC.KEY_VISITED
+                            + " from " + dbl
+                            + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
+                            + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
+                    , new String[]{fDate, String.valueOf(jahr), String.valueOf(jahr)});
 
-        Cursor cursor = db.rawQuery("select "
-                        + dbl + ".*, case when exists (select * from " + dbd + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbd + "." + DB_Days.KEY_LOCKEY + " and " + DB_Days.KEY_DAY + " = ? and " + dbd + "." + DB_Days.KEY_ACTIVE + " = 1) then 1 else 0 end AS " + DB_Location_NoeC.KEY_GEOEFFNET + ","
-                        + " case when exists (select * from " + dbv + " where " + dbl + "." + DB_Location_NoeC.KEY_ID + " = " + dbv + "." + DB_Visited_Locations.KEY_LOC_ID + " and " + DB_Visited_Locations.KEY_YEAR + "=?) then 1 else 0 end AS " + DB_Location_NoeC.KEY_VISITED
-                        + " from " + dbl
-                        + " where " + DB_Location_NoeC.KEY_JAHR + " = ?"
-                        + " order by " + DB_Location_NoeC.KEY_NUMMER + " asc"
-            , new String[]{fDate, String.valueOf(jahr), String.valueOf(jahr)});
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    DB_Location_NoeC location = new DB_Location_NoeC();
+                    location.setId(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)));
+                    location.setNummer(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_NUMMER)));
+                    location.setJahr(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR)));
+                    location.setName(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NAME)));
+                    location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
+                    location.setKat(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KAT)));
+                    location.setAdr_ort(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ADR_ORT)));
 
-    	if (cursor != null && cursor.moveToFirst()) {
-    		do {
-    			DB_Location_NoeC location = new DB_Location_NoeC();
-                location.setId(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)));
-    			location.setNummer(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_NUMMER)));
-                location.setJahr(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR)));
-    			location.setName(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NAME)));
-    			location.setTop_ausflugsziel(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL))));
-    			location.setKat(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KAT)));
-    			location.setAdr_ort(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ADR_ORT)));
+                    location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_HUND))));
+                    location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
+                    location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
+                    location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
+                    location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
+                    location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
+                    location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
+                    locationList.add(location);
+                } while (cursor.moveToNext());
+            }
+            if (cursor != null) {
+                cursor.close();
+            }
+        } catch(Exception ex) {
 
-                location.setHund(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_HUND))));
-                location.setRollstuhl(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_ROLLSTUHL))));
-                location.setKinderwagen(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_KINDERWAGEN))));
-                location.setGruppe(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GRUPPE))));
-                location.setTodayActive(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET))));
-                location.setVisited(getBooleanfromInt(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_VISITED))));
-                location.setSearchStr(location.getName() + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_BESCHREIBUNG)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GEOEFFNET)) + " " + cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EINTRITT)));
-    			locationList.add(location);
-    		} while (cursor.moveToNext());
-    	}
-        if(cursor != null) {
-            cursor.close();
+        } finally {
+            db.close(); // Closing database connection
         }
-    	db.close(); // Closing database connection
     	// return location list
     	return locationList;
     }
@@ -518,20 +522,26 @@ public class DestinationsDB {
 
     public boolean isYearInDatabase(int year) {
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor = db.query(DB_Location_NoeC.TABLE_NAME,
-                null,
-                DB_Location_NoeC.KEY_JAHR + "=?",
-                new String[] { String.valueOf(year) },
-                null, null, null, null);
         Boolean result = false;
-        if (cursor != null && cursor.getCount()>10)
-        {
-            result = true; // return count
+        Cursor cursor = null;
+        try {
+            cursor = db.query(DB_Location_NoeC.TABLE_NAME,
+                    null,
+                    DB_Location_NoeC.KEY_JAHR + "=?",
+                    new String[]{String.valueOf(year)},
+                    null, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 10) {
+                result = true; // return count
+            }
+        }catch(Exception e) {
+
+        } finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+            db.close();
         }
-        if(cursor != null) {
-            cursor.close();
-        }
-        db.close();
         return result;
     }
 
@@ -557,37 +567,8 @@ public class DestinationsDB {
     public int updateLocation(DB_Location_NoeC location) {
     	SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-    	ContentValues values = new ContentValues();
-        values.put(DB_Location_NoeC.KEY_ID,location.getId());
-        values.put(DB_Location_NoeC.KEY_NUMMER, location.getNummer());
-        values.put(DB_Location_NoeC.KEY_JAHR, location.getJahr());
-    	values.put(DB_Location_NoeC.KEY_KAT,location.getKat());
-    	values.put(DB_Location_NoeC.KEY_REG,location.getReg());
-    	values.put(DB_Location_NoeC.KEY_NAME, location.getName());
-    	values.put(DB_Location_NoeC.KEY_EMAIL, location.getEmail());
-    	values.put(DB_Location_NoeC.KEY_LAT,location.getLatitude());
-    	values.put(DB_Location_NoeC.KEY_LON,location.getLongitude());
-    	values.put(DB_Location_NoeC.KEY_ADR_PLZ,location.getAdr_plz());
-    	values.put(DB_Location_NoeC.KEY_TEL,location.getTel());
-    	values.put(DB_Location_NoeC.KEY_FAX,location.getFax());
-    	values.put(DB_Location_NoeC.KEY_ANREISE,location.getAnreise());
-    	values.put(DB_Location_NoeC.KEY_GEOEFFNET,location.getGeoeffnet());
-    	values.put(DB_Location_NoeC.KEY_ADR_ORT,location.getAdr_ort());
-    	values.put(DB_Location_NoeC.KEY_ADR_STREET,location.getAdr_street());
-    	values.put(DB_Location_NoeC.KEY_TIPP, location.getTipp());
-    	values.put(DB_Location_NoeC.KEY_ROLLSTUHL,location.getRollstuhl());
-    	values.put(DB_Location_NoeC.KEY_KINDERWAGEN,location.getKinderwagen());
-    	values.put(DB_Location_NoeC.KEY_HUND, location.getHund());
-    	values.put(DB_Location_NoeC.KEY_GRUPPE,location.getGruppe());
-    	values.put(DB_Location_NoeC.KEY_WEBSEITE,location.getWebseite());
-    	values.put(DB_Location_NoeC.KEY_BESCHREIBUNG,location.getBeschreibung());
-    	values.put(DB_Location_NoeC.KEY_AUSSERSONDER,location.getAussersonder());
-    	values.put(DB_Location_NoeC.KEY_EINTRITT,location.getEintritt());
-    	values.put(DB_Location_NoeC.KEY_ERSPARNIS,location.getErsparnis());
-        values.put(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL,location.getTop_ausflugsziel());
-        values.put(DB_Location_NoeC.KEY_CHANGED_DATE,location.getChanged_date());
-        values.put(DB_Location_NoeC.KEY_CHANGE_INDEX,location.getChange_index());
-        
+        ContentValues values = getAllContentValuesFromObject(location);
+
     	// updating row
         int updateInt = db.update(DB_Location_NoeC.TABLE_NAME,
                 values,
@@ -659,13 +640,25 @@ public class DestinationsDB {
     }
     public void removeYear(int year) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.delete(DB_Location_NoeC.TABLE_NAME,
-                DB_Location_NoeC.KEY_JAHR + " = ?",
-                new String[] { String.valueOf(year) });
-        db.delete(DB_Changeval.TABLE_NAME,
-                DB_Changeval.KEY_YEAR + " = ?",
-                new String[] { String.valueOf(year) });
-        db.close();
+        db.beginTransaction();
+        try {
+            db.delete(DB_Location_NoeC.TABLE_NAME,
+                    DB_Location_NoeC.KEY_JAHR + " = ?",
+                    new String[] { String.valueOf(year) });
+            db.delete(DB_Changeval.TABLE_NAME,
+                    DB_Changeval.KEY_YEAR + " = ?",
+                    new String[] { String.valueOf(year) });
+            db.delete(DB_Days.TABLE_NAME,
+                    DB_Days.KEY_YEAR + " = ?",
+                    new String[] { String.valueOf(year) });
+            db.setTransactionSuccessful();
+
+        } catch(Exception e){
+
+        } finally {
+            db.endTransaction();
+            db.close(); // Closing database connection
+        }
     }
     // Delete all location but location in list
     public void deleteAllButArrayLocations(ArrayList<Integer> locationlist) {
@@ -698,6 +691,9 @@ public class DestinationsDB {
         location.setReg(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_REG)));
         location.setEmail(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_EMAIL)));
         location.setName(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NAME)));
+
+        location.setNoecIndex(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NOEC_IDX)));
+        location.setGooglePlaceId(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_GOOGLE_PLACE_ID)));
 
         location.setAdr_plz(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ADR_PLZ)));
         location.setTel(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_TEL)));
@@ -794,21 +790,137 @@ public class DestinationsDB {
         }
 
     }
-    /*public boolean insertOrReplaceDays(String day, int locationId, int year, int active, int changeId) {
+
+    public void insertOrReplaceLocations(JSONArray jsonDays){
+
+        List<ContentValues> updateList = new ArrayList<ContentValues>();
+        List<ContentValues> insertList = new ArrayList<ContentValues>();
+        for (int i = 0; i < jsonDays.length(); i++) {
+            try {
+                JSONObject locationObj = jsonDays.getJSONObject(i);
+
+                int id = locationObj.getInt(DB_Location_NoeC.KEY_ID);
+                boolean update = updateornewForItemNeeded(id);
+                if (update) {
+                    ContentValues values = getAllContentValuesFromObject(getLocationFromJson(locationObj, getLocationToId(id)));
+                    updateList.add(values);
+
+
+                } else {
+                    // insert
+                    ContentValues values = getAllContentValuesFromObject(getLocationFromJson(locationObj));
+                    insertList.add(values);
+                }
+            } catch(JSONException ex) {
+
+            }
+        }
 
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
+        db.beginTransaction();
+        try {
+            for (int i = 0; i < updateList.size(); i++) {
+                db.update(DB_Location_NoeC.TABLE_NAME,
+                        updateList.get(i),
+                        DB_Location_NoeC.KEY_ID + " = ? ",
+                        new String[]{String.valueOf(updateList.get(i).get(DB_Location_NoeC.KEY_ID))});
+            }
+            for (int i = 0; i < insertList.size(); i++) {
+                db.insert(DB_Location_NoeC.TABLE_NAME, null, insertList.get(i));
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+            db.close(); // Closing database connection
+        }
+    }
+    private ContentValues getAllContentValuesFromObject(DB_Location_NoeC location) {
         ContentValues values = new ContentValues();
-        values.put(DB_Days.KEY_DAY, day);
-        values.put(DB_Days.KEY_LOCKEY, locationId);
-        values.put(DB_Days.KEY_YEAR, year);
-        values.put(DB_Days.KEY_ACTIVE, active);
-        values.put(DB_Days.KEY_CHANGE, changeId);
 
-        db.replace(DB_Days.TABLE_NAME, null, values);
-        db.close(); // Closing database connection
-        return true;
-    }*/
+        values.put(DB_Location_NoeC.KEY_ID,location.getId());
+        values.put(DB_Location_NoeC.KEY_NUMMER, location.getNummer());
+        values.put(DB_Location_NoeC.KEY_JAHR, location.getJahr());
+        values.put(DB_Location_NoeC.KEY_KAT,location.getKat());
+        values.put(DB_Location_NoeC.KEY_REG,location.getReg());
+        values.put(DB_Location_NoeC.KEY_NAME, location.getName());
+        values.put(DB_Location_NoeC.KEY_EMAIL, location.getEmail());
+        values.put(DB_Location_NoeC.KEY_LAT,location.getLatitude());
+        values.put(DB_Location_NoeC.KEY_LON,location.getLongitude());
+        values.put(DB_Location_NoeC.KEY_ADR_PLZ,location.getAdr_plz());
+        values.put(DB_Location_NoeC.KEY_TEL,location.getTel());
+        values.put(DB_Location_NoeC.KEY_FAX,location.getFax());
+        values.put(DB_Location_NoeC.KEY_ANREISE,location.getAnreise());
+        values.put(DB_Location_NoeC.KEY_GEOEFFNET,location.getGeoeffnet());
+        values.put(DB_Location_NoeC.KEY_ADR_ORT,location.getAdr_ort());
+        values.put(DB_Location_NoeC.KEY_ADR_STREET,location.getAdr_street());
+        values.put(DB_Location_NoeC.KEY_TIPP, location.getTipp());
+        values.put(DB_Location_NoeC.KEY_ROLLSTUHL,location.getRollstuhl());
+        values.put(DB_Location_NoeC.KEY_KINDERWAGEN,location.getKinderwagen());
+        values.put(DB_Location_NoeC.KEY_HUND, location.getHund());
+        values.put(DB_Location_NoeC.KEY_GRUPPE,location.getGruppe());
+        values.put(DB_Location_NoeC.KEY_WEBSEITE,location.getWebseite());
+        values.put(DB_Location_NoeC.KEY_BESCHREIBUNG,location.getBeschreibung());
+        values.put(DB_Location_NoeC.KEY_AUSSERSONDER,location.getAussersonder());
+        values.put(DB_Location_NoeC.KEY_EINTRITT,location.getEintritt());
+        values.put(DB_Location_NoeC.KEY_ERSPARNIS,location.getErsparnis());
+        values.put(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL,location.getTop_ausflugsziel());
+        values.put(DB_Location_NoeC.KEY_CHANGED_DATE,location.getChanged_date());
+        values.put(DB_Location_NoeC.KEY_CHANGE_INDEX,location.getChange_index());
+        values.put(DB_Location_NoeC.KEY_NOEC_IDX,location.getNoecIndex());
+        values.put(DB_Location_NoeC.KEY_GOOGLE_PLACE_ID,location.getGooglePlaceId());
+        return values;
+    }
+    private DB_Location_NoeC getLocationFromJson(JSONObject location) {
+        return getLocationFromJson(location, null);
+    }
+
+    private DB_Location_NoeC getLocationFromJson(JSONObject location, DB_Location_NoeC newloc) {
+        if(newloc == null){
+            newloc = new DB_Location_NoeC();
+        }
+        try {
+            newloc.setId(location.getInt(DB_Location_NoeC.KEY_ID));
+            newloc.setNummer(location.getInt(DB_Location_NoeC.KEY_NUMMER));
+            newloc.setJahr(location.getInt(DB_Location_NoeC.KEY_JAHR));
+            newloc.setKat(location.getInt(DB_Location_NoeC.KEY_KAT));
+            newloc.setReg(location.getInt(DB_Location_NoeC.KEY_REG));
+            newloc.setName(location.getString(DB_Location_NoeC.KEY_NAME));
+            newloc.setEmail(location.getString(DB_Location_NoeC.KEY_EMAIL));
+            newloc.setLatitude(location.getDouble(DB_Location_NoeC.KEY_LAT));
+            newloc.setLongitude(location.getDouble(DB_Location_NoeC.KEY_LON));
+            newloc.setAdr_plz(location.getString(DB_Location_NoeC.KEY_ADR_PLZ));
+            newloc.setTel(location.getString(DB_Location_NoeC.KEY_TEL));
+            newloc.setFax(location.getString(DB_Location_NoeC.KEY_FAX));
+            newloc.setAnreise(location.getString(DB_Location_NoeC.KEY_ANREISE));
+            newloc.setGeoeffnet(location.getString(DB_Location_NoeC.KEY_GEOEFFNET));
+            newloc.setAdr_ort(location.getString(DB_Location_NoeC.KEY_ADR_ORT));
+            newloc.setAdr_street(location.getString(DB_Location_NoeC.KEY_ADR_STREET));
+            newloc.setTipp(location.getString(DB_Location_NoeC.KEY_TIPP));
+            newloc.setRollstuhl(location.getBoolean(DB_Location_NoeC.KEY_ROLLSTUHL));
+            newloc.setKinderwagen(location.getBoolean(DB_Location_NoeC.KEY_KINDERWAGEN));
+            newloc.setHund(location.getBoolean(DB_Location_NoeC.KEY_HUND));
+            newloc.setGruppe(location.getBoolean(DB_Location_NoeC.KEY_GRUPPE));
+            newloc.setWebseite(location.getString(DB_Location_NoeC.KEY_WEBSEITE));
+            newloc.setBeschreibung(location.getString(DB_Location_NoeC.KEY_BESCHREIBUNG));
+            newloc.setAussersonder(location.getString(DB_Location_NoeC.KEY_AUSSERSONDER));
+            newloc.setEintritt(location.getString(DB_Location_NoeC.KEY_EINTRITT));
+            newloc.setErsparnis(location.getString(DB_Location_NoeC.KEY_ERSPARNIS));
+            newloc.setTop_ausflugsziel(location.getBoolean(DB_Location_NoeC.KEY_TOP_AUSFLUGSZIEL));
+
+            newloc.setNoecIndex(location.getString(DB_Location_NoeC.KEY_NOEC_IDX));
+            newloc.setGooglePlaceId(location.getString(DB_Location_NoeC.KEY_GOOGLE_PLACE_ID));
+
+            newloc.setChanged_date(location.getString(DB_Location_NoeC.KEY_CHANGED_DATE));
+            newloc.setChange_index(location.getInt(DB_Location_NoeC.KEY_CHANGE_INDEX));
+
+
+        } catch (JSONException e) {
+            Log.e("Exception3", String.valueOf(e));
+            e.printStackTrace();
+        }
+        return newloc;
+    }
+
 
     public int updateChangeId(int year, int changedcount) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();

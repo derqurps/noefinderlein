@@ -48,6 +48,11 @@
         android:title="@string/pref_title_filter_visited"
         android:summary="@string/pref_filter_visited"
         android:defaultValue="false" />
+    <CheckBoxPreference
+        android:key="pref_load_pictures"
+        android:title="@string/pref_title_load_pictures"
+        android:summary="@string/pref_load_pictures"
+        android:defaultValue="true" />
 
     <!--<PreferenceCategory
         android:title="Ziele löschen"

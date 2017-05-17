@@ -250,6 +250,30 @@
                         android:layout_centerHorizontal="true"/>
                 </RelativeLayout>
 
+                <RelativeLayout
+                    android:id="@+id/detail_navi_rellay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/contact_button">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:id="@+id/detail_navi_img"
+                        android:src="@drawable/ic_navigation"
+                        android:tint="@color/noecard_text_grey"
+                        android:layout_centerHorizontal="true"
+                        />
+                    <TextView
+                        android:id="@+id/detail_navi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NAVI"
+                        android:textSize="16sp"
+                        android:layout_below="@+id/detail_navi_img"
+                        android:layout_centerHorizontal="true"/>
+                </RelativeLayout>
+
 
             </LinearLayout>
 
@@ -515,7 +539,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_below="@+id/detail_new_compl"
-                android:layout_marginTop="5dip"
+                android:layout_marginTop="10dip"
                 android:layout_marginBottom="5dip"
                 android:background="@drawable/border" >
 

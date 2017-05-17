@@ -40,6 +40,7 @@
     <string name="desc_aussersonder">*except special events</string>
     <string name="title_menu_to_destination">Navigate to destination</string>
     <string name="title_menu_show_on_map">Show on map</string>
+    <string name="title_menu_add_photo">Upload a picture</string>
     <string name="title_menu_show_current_on_map">Show current list on map</string>
     <string name="toast_no_geo_app_found">No app for GEO data found - please install Google Maps</string>
     <string name="title_menu_filter">Filter list</string>
@@ -171,6 +172,8 @@
     <string name="pref_dialog_delete_year_title">Delete</string>
     <string name="pref_dialog_delete_year_message">All data from that year wil be deleted. If it is the curent year it will be resync\'t if you completely restart the app</string>
 
+    <string name="pref_title_load_pictures">Show Pictures?</string>
+    <string name="pref_load_pictures">Loads Pictures in the Detail View from Internet</string>
 
     <string name="achievement">Achievement</string>
     <string name="your_progress_will_be_uploaded">Your existing achievements and score will be uploaded shortly.</string>
@@ -191,4 +194,8 @@
     <string name="gamehelper_license_failed">License check failed.</string>
     <string name="gamehelper_unknown_error">Unknown error.</string>
 
+    <string name="imgupconsentthank">Thank you for your help! Tha upload is running...</string>
+    <string name="imgupcomplete">Upload complete</string>
+    <string name="imgupconsent">I agree that the following pictures can be used in this app (Nö Finderlein) and that i give them to the public domain under the following license<a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode">(CC0 Licensetext)</a>.</string>
+    <string name="imgupconosenttitle">Uploadlicense</string>
 </resources>
