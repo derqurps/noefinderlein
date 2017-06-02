@@ -7,6 +7,9 @@ It additionaly provides an easy way to keep track of the visited locations and c
 <a  href='https://play.google.com/store/apps/details?id=at.qurps.noefinderlein.app&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-ap-PartBadge-Mar2515-1'><img height="60" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/apps/en-play-badge.png'/></a>
 
 
+### Status
+The backend status can be found here: [Status](https://stats.uptimerobot.com/x6jonFDyA)
+
 ### Development
 
 If you want to help, pull requests are welcome.
