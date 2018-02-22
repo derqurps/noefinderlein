@@ -303,4 +303,5 @@
 
     <string name="title_activity__picture">Activity_Picture</string>
 
+    <string name="backButtonExit">Nochmal drücken um die App zu beenden</string>
 </resources>

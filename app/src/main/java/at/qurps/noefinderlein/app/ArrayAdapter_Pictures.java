@@ -4,24 +4,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.LazyHeaders;
-import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.SimpleTarget;
 
+import com.bumptech.glide.request.transition.Transition;
 import com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView;
 import com.gjiazhe.scrollparallaximageview.parallaxstyle.HorizontalMovingStyle;
 
@@ -78,38 +78,23 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
                 .addHeader("Referer", "https://noecard.reitschmied.at")
                 .build());
         Glide.with(context)
+            //.asBitmap()
             .load(glideUrl)
-            .asBitmap()
-            .into(new SimpleTarget<Bitmap>() {
-                @Override
-                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            .into(innerVH.imageView);
+        innerVH.imageView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
 
-                    //Bitmap googleBM = BitmapFactory.decodeResource(context.getResources(), R.mipmap.powered_by_google_on_non_white);
-                    int width = (height* resource.getWidth())/resource.getHeight();
-                    Bitmap newBit = Bitmap.createScaledBitmap(resource, width, height, false);
-                    Drawable shape =  context.getResources().getDrawable(R.drawable.detailmenubackground);
-                    Canvas c = new Canvas(newBit);
-                    //c.drawBitmap(googleBM, ((newBit.getWidth()/2)-(googleBM.getWidth()/2)), (newBit.getHeight()-googleBM.getHeight()-50), null);
-                    shape.setBounds( 0, 0, newBit.getWidth(), getActionBarHeight()*3 );
-                    shape.draw(c);
-                    innerVH.imageView.setImageBitmap(newBit);
-                    innerVH.imageView.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View v) {
-
-                            Intent myIntent = new Intent(context, Activity_Picture.class);
-                            myIntent.putExtra(Activity_Picture.ARG_LOCATION_NAME, locationName);
-                            myIntent.putExtra(Activity_Picture.ARG_PICTURE_REFERENCE, photoreference);
-                            if(locationUrl != null) {
-                                myIntent.putExtra(Activity_Picture.ARG_LOCATIONURL, locationUrl);
-                            }
-                            context.startActivity(myIntent);
-                        }
-                    });
-
+                Intent myIntent = new Intent(context, Activity_Picture.class);
+                myIntent.putExtra(Activity_Picture.ARG_LOCATION_NAME, locationName);
+                myIntent.putExtra(Activity_Picture.ARG_PICTURE_REFERENCE, photoreference);
+                if(locationUrl != null) {
+                    myIntent.putExtra(Activity_Picture.ARG_LOCATIONURL, locationUrl);
                 }
-            });//.into(holder.imageView);
+                context.startActivity(myIntent);
+            }
+        });
     }
-    public int getActionBarHeight() {
+    private int getActionBarHeight() {
         final TypedArray ta = context.getTheme().obtainStyledAttributes(
                 new int[] {android.R.attr.actionBarSize});
         int actionBarHeight = (int) ta.getDimension(0, 0);
@@ -124,9 +109,9 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
     class ViewHolder extends RecyclerView.ViewHolder {
 
 
-        public ScrollParallaxImageView imageView;
+        private ScrollParallaxImageView imageView;
 
-        public ViewHolder(View itemView) {
+        private ViewHolder(View itemView) {
             super(itemView);
 
 

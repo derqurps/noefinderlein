@@ -1,45 +1,23 @@
 apply plugin: 'com.android.application'
 
-if (project.hasProperty("NoeFinderlein.properties")
-        && new File(project.property("NoeFinderlein.properties")).exists()) {
+def keystorePropertiesFile = rootProject.file("Noefinderlein_Keystore.txt")
 
-    Properties props = new Properties()
-    props.load(new FileInputStream(file(project.property("NoeFinderlein.properties"))))
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
 
-    android {
-        signingConfigs {
-            release {
-                storeFile file(props['noefinderlein_keystore'])
-                storePassword props['noefinderlein_keystore_pw']
-                keyAlias props['noefinderlein_alias']
-                keyPassword props['noefinderlein_alias_pw']
-            }
-        }
-        buildTypes {
-            debug {
-                resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
-                resValue "string", "google_photo_key", props['noefinderlein_photokey']
-                resValue "string", "api_path", props['noefinderlein_apipath_debug']
-            }
-            release {
-                resValue "string", "google_maps_api_key", props['noefinderlein_gmapsapikey']
-                resValue "string", "google_photo_key", props['noefinderlein_photokey']
-                resValue "string", "api_path", props['noefinderlein_apipath']
-            }
-        }
-    }
-}
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "at.qurps.noefinderlein.app"
-        minSdkVersion 14
-        targetSdkVersion 25
-        versionCode 78
-        versionName "1.3.1"
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 79
+        versionName "1.3.2"
         multiDexEnabled true
         /*vectorDrawables.useSupportLibrary = true*/
     }
@@ -48,10 +26,17 @@ android {
             storeFile file('debug.keystore')
         }
         release {
+            storeFile file(keystoreProperties['noefinderlein_keystore'])
+            storePassword keystoreProperties['noefinderlein_keystore_pw']
+            keyAlias keystoreProperties['noefinderlein_alias']
+            keyPassword keystoreProperties['noefinderlein_alias_pw']
         }
     }
     buildTypes {
         debug {
+            resValue "string", "google_maps_api_key", keystoreProperties['noefinderlein_gmapsapikey']
+            resValue "string", "google_photo_key", keystoreProperties['noefinderlein_photokey']
+            resValue "string", "api_path", keystoreProperties['noefinderlein_apipath_debug']
             debuggable true
             signingConfig signingConfigs.debug
             applicationIdSuffix ".debug"
@@ -59,6 +44,9 @@ android {
             shrinkResources false
         }
         release {
+            resValue "string", "google_maps_api_key", keystoreProperties['noefinderlein_gmapsapikey']
+            resValue "string", "google_photo_key", keystoreProperties['noefinderlein_photokey']
+            resValue "string", "api_path", keystoreProperties['noefinderlein_apipath']
             debuggable false
             jniDebuggable false
 
@@ -83,44 +71,40 @@ android {
 
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    compile "com.android.support:cardview-v7:$rootProject.ext.support_library_version"
-    compile "com.android.support:support-v4:$rootProject.ext.support_library_version"
-    compile "com.android.support:design:$rootProject.ext.support_library_version"
-    compile "com.android.support:appcompat-v7:$rootProject.ext.support_library_version"
-    // compile "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "com.android.support:cardview-v7:$rootProject.ext.support_library_version"
+    implementation "com.android.support:support-v4:$rootProject.ext.support_library_version"
+    implementation "com.android.support:design:$rootProject.ext.support_library_version"
+    implementation "com.android.support:appcompat-v7:$rootProject.ext.support_library_version"
+    implementation "com.android.support:exifinterface:$rootProject.ext.support_library_version"
+    // implementation "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
     //debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
-    compile "com.google.android.gms:play-services-auth:$rootProject.ext.gms_library_version"
-    compile "com.google.android.gms:play-services-maps:$rootProject.ext.gms_library_version"
-    compile "com.google.android.gms:play-services-location:$rootProject.ext.gms_library_version"
-    compile "com.google.android.gms:play-services-games:$rootProject.ext.gms_library_version"
-    compile "com.google.android.gms:play-services-plus:$rootProject.ext.gms_library_version"
-    compile "com.google.android.gms:play-services-places:$rootProject.ext.gms_library_version"
-    compile "com.google.firebase:firebase-storage:$rootProject.ext.gms_library_version"
-    compile "com.google.firebase:firebase-auth:$rootProject.ext.gms_library_version"
-    compile "com.google.firebase:firebase-database:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-auth:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-maps:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-location:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-games:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-plus:$rootProject.ext.gms_library_version"
+    implementation "com.google.android.gms:play-services-places:$rootProject.ext.gms_library_version"
+    implementation "com.google.firebase:firebase-storage:$rootProject.ext.gms_library_version"
+    implementation "com.google.firebase:firebase-auth:$rootProject.ext.gms_library_version"
+    implementation "com.google.firebase:firebase-database:$rootProject.ext.gms_library_version"
     // compile 'com.github.hanuor:pearl:0.0.8'
-    compile("com.github.aviadmini:quickimagepick:2.1.7") {
+    implementation('com.github.aviadmini:quickimagepick:2.1.7') {
         // Uncomment next line if you have dependency conflict with AppCompat v7
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
-
-    compile "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
-
-    compile 'com.github.ksoichiro:android-observablescrollview:1.6.0'
-    compile 'com.google.maps.android:android-maps-utils:0.4'
+    implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    implementation 'com.github.ksoichiro:android-observablescrollview:1.6.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.5'
     // compile 'joda-time:joda-time:2.9.9'
-
-    compile 'com.koushikdutta.ion:ion:2.1.9'
-    compile 'com.gjiazhe:scrollparallaximageview:1.0'
-    compile 'com.github.piasy:BigImageViewer:1.2.9'
-    compile 'com.github.piasy:ProgressPieIndicator:1.2.9'
-
+    implementation 'com.koushikdutta.ion:ion:2.1.9'
+    implementation 'com.gjiazhe:scrollparallaximageview:1.0'
+    implementation 'com.github.piasy:ProgressPieIndicator:1.2.9'
     testCompile 'junit:junit:4.12'
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    compile project(":glideimageloader")
+    /*testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+        debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+        releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
+    implementation 'com.github.piasy:BigImageViewer:1.4.6'
+    implementation 'com.github.piasy:GlideImageLoader:1.4.6'
 }
 apply plugin: 'com.google.gms.google-services'

@@ -143,7 +143,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             }
             mClusterManager = new ClusterManager<DB_Location_NoeC>(mContext, mMap);
             mClusterManager.setRenderer(new LocationRenderer());
-            mMap.setOnCameraChangeListener(mClusterManager);
+            //mMap.setOnCameraChangeListener((GoogleMap.OnCameraChangeListener) mClusterManager);
             mMap.setOnMarkerClickListener(mClusterManager);
             mMap.setOnInfoWindowClickListener(mClusterManager);
             mClusterManager.setOnClusterClickListener(this);

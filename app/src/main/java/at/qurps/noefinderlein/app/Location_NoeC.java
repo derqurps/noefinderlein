@@ -443,4 +443,14 @@ public class Location_NoeC implements ClusterItem {
 			return new LatLng(0, 0);
 		}
 	}
+
+	@Override
+	public String getTitle() {
+		return getName();
+	}
+
+	@Override
+	public String getSnippet() {
+		return getBeschreibung();
+	}
 }

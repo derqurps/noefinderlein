@@ -198,4 +198,6 @@
     <string name="imgupcomplete">Upload complete</string>
     <string name="imgupconsent">I agree that the following pictures can be used in this app (Nö Finderlein) and that i give them to the public domain under the following license<a href="https://creativecommons.org/publicdomain/zero/1.0/legalcode">(CC0 Licensetext)</a>.</string>
     <string name="imgupconosenttitle">Uploadlicense</string>
+
+    <string name="backButtonExit">Please click BACK again to exit</string>
 </resources>

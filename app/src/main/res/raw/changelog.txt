@@ -17,6 +17,11 @@
     </style>
   </head>
   <body>
+$ 1.3.2
+  % Version 1.3.2
+  _ 2018-02-22
+    * Back/Up Navigation endlich gefixt
+    * Libraries upgedated & Build Target erhöht
 $ 1.3.1
   % Version 1.3.1
   _ 2017-04-24

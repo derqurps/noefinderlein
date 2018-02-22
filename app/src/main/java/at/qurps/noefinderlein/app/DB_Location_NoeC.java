@@ -452,6 +452,16 @@ public class DB_Location_NoeC implements ClusterItem {
 		}
 	}
 
+	@Override
+	public String getTitle() {
+		return getName();
+	}
+
+	@Override
+	public String getSnippet() {
+		return getBeschreibung();
+	}
+
 
 	public boolean getTodayActive(){
 		return this._todayActive;

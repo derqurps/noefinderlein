@@ -15,6 +15,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -50,7 +51,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.location.LocationServices;
-import com.squareup.leakcanary.LeakCanary;
+// import com.squareup.leakcanary.LeakCanary;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -73,6 +74,8 @@ public class Activity_Main extends AppCompatActivity implements
     public static final String KEY_GAME_SIGN_IN_CLICKED = "game_sign_in_clicked_v2";
 
     private SharedPreferences mPrefs;
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
+    private long mBackPressed;
 
     private SharedPreferences.Editor mEditor;
     public DestinationsDB db;
@@ -209,12 +212,12 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(getApplication());
+        LeakCanary.install(getApplication());*/
     }
 
     private void buildGoogleApiClient() {
@@ -312,7 +315,20 @@ public class Activity_Main extends AppCompatActivity implements
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackEntryCount == 0) {
+                if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+                    super.onBackPressed();
+                    return;
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.backButtonExit), Toast.LENGTH_SHORT).show();
+                }
+
+                mBackPressed = System.currentTimeMillis();
+            } else {
+                super.onBackPressed();
+                return;
+            }
         }
     }
 
