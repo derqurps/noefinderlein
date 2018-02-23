@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.widget.DatePicker;
 
 import java.text.SimpleDateFormat;
@@ -25,15 +26,16 @@ import java.util.Date;
  */
 public class DialogFragment_ChooseCheckinDate extends DialogFragment {
 
+    private Callbacks mCallbacks;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
-
-    private  Context mContext;
+    private Context mContext;
     private DestinationsDB db;
     public static final String ARG_ITEMID = "item_id" ;
     public static final String ARG_YEAR = "item_year" ;
     public static final String ARG_LAT = "item_lat" ;
     public static final String ARG_LON = "item_lon" ;
+
+    private static final String TAG = "DF_ChooseCheckinDate";
 
     private int year = -1;
     private int id = -1;
@@ -41,21 +43,8 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
     private double lon = -1;
 
     public interface Callbacks {
-        /**
-         * Callback for when an item has been selected.
-         */
         void onItemSelected_DialogFragment_ChooseCheckinDate(int id);
     }
-
-    /**
-     * A dummy implementation of the {@link DialogFragment_ChooseCheckinDate.Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
-        }
-    };
 
     public DialogFragment_ChooseCheckinDate() {
 
@@ -98,9 +87,6 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
     }
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -162,6 +148,7 @@ public class DialogFragment_ChooseCheckinDate extends DialogFragment {
             DB_Visited_Locations visited = new DB_Visited_Locations(this.id, this.year, date, (float)this.lat, (float)this.lon);
             if(db.insertVisitedData(visited)){
                 Util.setToast(mContext, mContext.getResources().getString(R.string.visitedChecked), 0);
+                Log.d(TAG, "setVisited() calling callback: " );
                 mCallbacks.onItemSelected_DialogFragment_ChooseCheckinDate(this.id);
             }else{
                 Util.setToast(mContext, mContext.getResources().getString(R.string.visitedNotChecked), 0);

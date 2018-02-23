@@ -259,10 +259,6 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
                 list.get(i).setDistance(Util.distance_between(zwischenloc,actuallocation));
             }
         }
-        else
-        {
-            Toast.makeText(context, R.string.hint_no_network_location, Toast.LENGTH_LONG).show();
-        }
         this.filteredData = list ;
         notifyDataSetChanged();
 

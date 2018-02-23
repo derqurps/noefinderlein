@@ -30,7 +30,7 @@ public class Fragment_LocationVisited extends ListFragment {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
 
 
@@ -58,15 +58,6 @@ public class Fragment_LocationVisited extends ListFragment {
         public void onItemSelected_Fragment_LocationVisited(int i, int year);
     }
 
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected_Fragment_LocationVisited(int id, int year) {
-        }
-    };
 
     public Fragment_LocationVisited() {
     }

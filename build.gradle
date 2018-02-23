@@ -35,4 +35,5 @@ ext {
     glideVersion = '4.6.1'
     gms_library_version = '11.8.0'
     support_library_version = '27.0.2'
+    glide_slider_version = '1.3.1'
 }

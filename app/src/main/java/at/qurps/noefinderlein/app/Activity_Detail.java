@@ -54,13 +54,16 @@ import com.bumptech.glide.load.model.LazyHeaderFactory;
 import com.bumptech.glide.load.model.LazyHeaders;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
@@ -84,6 +87,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -102,13 +106,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
 public class Activity_Detail extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-DialogFragment_ChooseCheckinDate.Callbacks,
-DialogFragment_PictureConsent.NoticeDialogListener{
+        DialogFragment_ChooseCheckinDate.Callbacks,
+        DialogFragment_PictureConsent.NoticeDialogListener,
+        ArrayAdapter_Pictures.ClickThumbPictureCallback {
 
     public static final String ARG_ITEM_ID = "item_id" ;
     public static final String ARG_ITEM_JAHR = "item_jahr" ;
@@ -143,7 +146,8 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     private SharedPreferences prefs;
     private String fDate;
 
-    private GoogleApiClient mGoogleApiClient;
+    // private GoogleApiClient mGoogleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
     private boolean mGameSignInClicked = false;
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
@@ -167,7 +171,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     private ImageView im;
     private NotificationManager mNotifyManager;
 
-    private RecyclerView.Adapter adapter;
+    private ArrayAdapter_Pictures adapter;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private Toolbar toolbar;
@@ -220,6 +224,8 @@ DialogFragment_PictureConsent.NoticeDialogListener{
             }
         };
 
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         mAuth.signInAnonymously()
         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -287,24 +293,15 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
         mGameSignInClicked = Util.getPreferencesBoolean(this, Activity_Main.KEY_GAME_SIGN_IN_CLICKED, false);
 
-        if(mGoogleApiClient == null ) {
+        /*if(mGoogleApiClient == null ) {
             GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
             mGoogleApiClientBuilder.addConnectionCallbacks(this);
-            mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
             mGoogleApiClientBuilder.addApi(LocationServices.API);
             mGoogleApiClientBuilder.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             mGoogleApiClientBuilder.setViewForPopups(rootView);
-            if(mGameSignInClicked) {
-
-                GoogleSignInOptions options = new GoogleSignInOptions
-                        .Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                        .build();
-                mGoogleApiClientBuilder.addApi(Auth.GOOGLE_SIGN_IN_API, options);
-                mGoogleApiClientBuilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
-            }
             mGoogleApiClient = mGoogleApiClientBuilder.build();
 
-        }
+        }*/
         changeView(getIntent().getExtras());
         aktjahr = getIntent().getIntExtra(ARG_ITEM_JAHR, 0);
         mOutbox = new AccomplishmentsOutbox(this, aktjahr, this.db);
@@ -370,6 +367,9 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     public void onResume() {
 
         super.onResume();
+        if (mGameSignInClicked) {
+            signInSilently();
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -548,8 +548,9 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         RecyclerView rvMoving = (RecyclerView) findViewById(R.id.header_logo_gall);
         rvMoving.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 
-
-        rvMoving.setAdapter(new ArrayAdapter_Pictures(getApplicationContext(), uploadsCP, findViewById(R.id.toolbar_layout).getHeight()));
+        adapter = new ArrayAdapter_Pictures(getApplicationContext(), uploadsCP, findViewById(R.id.toolbar_layout).getHeight());
+        adapter.setCallback(this);
+        rvMoving.setAdapter(adapter);
     }
     private void updateView(){
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -916,140 +917,63 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         }
     }
     private boolean isGameSignedIn() {
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
-            return true;
-        } else {
-            return false;
-        }
+        return GoogleSignIn.getLastSignedInAccount(this) != null;
     }
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart()");
         super.onStart();
 
-        if(!isGameSignedIn()) {
+        /*if(!isGameSignedIn()) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
-        }
+        }*/
         mAuth.addAuthStateListener(mAuthListener);
     }
     @Override
     protected void onStop() {
         Log.d(TAG, "onStop()");
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
+        /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
-        }
+        }*/
     }
 
     @Override
     public void onConnected(@Nullable final Bundle connectionHint) {
-        if (mGoogleApiClient.hasConnectedApi(LocationServices.API)) {
+        /*if (mGoogleApiClient.hasConnectedApi(LocationServices.API)) {
             getLastKnownLocation();
 
-        }
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
-                new ResultCallback<GoogleSignInResult>() {
-                    @Override
-                    public void onResult(
-                            @NonNull GoogleSignInResult googleSignInResult) {
-                        if (googleSignInResult.isSuccess()) {
-                            onSignedIn(googleSignInResult.getSignInAccount(),
-                                    connectionHint);
-                        } else {
-                            Log.e(TAG, "Error with silentSignIn: " +
-                                    googleSignInResult.getStatus());
-                            // Don't show a message here, this only happens
-                            // when the user can be authenticated, but needs
-                            // to accept consent requests.
-                            handleSignOut();
-                        }
-                    }
-                }
-            );
-            if (!mOutbox.isEmpty()) {
-                mOutbox.pushAccomplishments(mGoogleApiClient, 0);
-                Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
-                        Toast.LENGTH_LONG).show();
-            }
-        } else {
-            handleSignOut();
-        }
+        }*/
+
         isGameSignedIn();
     }
 
-    private void handleSignOut() {
-        // sign out.
-        Log.d(TAG, "Sign-out button clicked");
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Games.signOut(mGoogleApiClient);
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        }
-        isGameSignedIn();
-
-    }
-
-    public void onSignedIn(GoogleSignInAccount acct, @Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected() called. Sign in successful!");
-
-        //serverAuthCode = acct.getServerAuthCode();
-
-    }
 
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "onConnectionSuspended() called: " );
 
-        mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        //mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
 
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
-        if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed(): already resolving");
-            // already resolving
-            return;
-        }
-
-        // if the sign-in button was clicked or if auto sign-in is enabled,
-        // launch the sign-in flow
-        if (mGameSignInClicked || mAutoStartSignInflow) {
-            mAutoStartSignInflow = false;
-            mGameSignInClicked = false;
-            mResolvingConnectionFailure = true;
-
-            // Attempt to resolve the connection failure using BaseGameUtils.
-            // The R.string.signin_other_error value should reference a generic
-            // error string in your strings.xml file, such as "There was
-            // an issue with sign-in, please try again later."
-            if (!BaseGameUtils.resolveConnectionFailure(this,
-                    mGoogleApiClient, connectionResult,
-                    RC_SIGN_IN, getString(R.string.signin_other_error))) {
-                mResolvingConnectionFailure = false;
-            }
-        }
-
-        // Put code here to display the sign-in button
-        isGameSignedIn();
     }
 
     @Override
     public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
+        Log.d(TAG, "onItemSelected_DialogFragment_ChooseCheckinDate() called: " );
         checkAchievements(id);
     }
 
     private void checkAchievements(int id) {
+        Log.d(TAG, "checkAchievements() called: " );
+        Util.setToast(this, "check achievements", 0);
+        mOutbox.checkForAchievements(id);
 
-        mOutbox.checkForAchievements(mGoogleApiClient, id);
+        mOutbox.updateLeaderboards(id);
 
-        mOutbox.updateLeaderboards(mGoogleApiClient, id);
-
-        mOutbox.pushAccomplishments(mGoogleApiClient, id);
+        mOutbox.pushAccomplishments(id);
     }
 
     @Override
@@ -1070,20 +994,25 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     }
 
     protected void getLastKnownLocation(){
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
-            if(ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(Activity_Detail.this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
-                return;
-            }
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                mLatitude = mLastLocation.getLatitude();
-                mLongitude = mLastLocation.getLongitude();
-            }
+            ActivityCompat.requestPermissions(Activity_Detail.this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+            return;
         }
+        mFusedLocationClient.getLastLocation()
+            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        mLastLocation = location;
+                        mLatitude = mLastLocation.getLatitude();
+                        mLongitude = mLastLocation.getLongitude();
+                    }
+                }
+            });
     }
 
     @Override
@@ -1206,6 +1135,35 @@ DialogFragment_PictureConsent.NoticeDialogListener{
             }
         });
     }
+    private void signInSilently() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+            GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        signInClient.silentSignIn().addOnCompleteListener(this,
+            new OnCompleteListener<GoogleSignInAccount>() {
+                @Override
+                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                    if (task.isSuccessful()) {
+                        // The signed in account is stored in the task's result.
+                        GoogleSignInAccount signedInAccount = task.getResult();
+                    } else {
+                        // Player will need to sign-in explicitly using via UI
+                    }
+                }
+            });
+    }
 
 
+    @Override
+    public void thumbPictureClicked(int position) {
+
+        ArrayList<CloudPicture> upList = adapter.getSortedList(position);
+
+        Bundle arguments = new Bundle();
+        arguments.putParcelableArrayList("upList", upList);
+        arguments.putInt("position", position);
+
+        Intent intent = new Intent(mContext, Activity_PictureSlider.class);
+        intent.putExtras(arguments);
+        mContext.startActivity(intent);
+    }
 }

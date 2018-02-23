@@ -21,6 +21,7 @@
 # https://code.google.com/p/android/issues/detail?id=78377#c188
 -keepattributes **
 -keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
   **[] $VALUES;
   public *;

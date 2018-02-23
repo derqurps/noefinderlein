@@ -97,6 +97,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="at.qurps.noefinderlein.app.Activity_Detail" />
         </activity>
+        <activity
+            android:name=".Activity_PictureSlider"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity__picture_slider"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="at.qurps.noefinderlein.app.Activity_Detail" />
+        </activity>
     </application>
 
 </manifest>

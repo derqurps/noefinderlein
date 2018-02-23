@@ -1,5 +1,8 @@
 package at.qurps.noefinderlein.app;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.DataSnapshot;
 
 import java.util.HashMap;
@@ -9,7 +12,7 @@ import java.util.Map;
  * Created by roman on 17.04.17.
  */
 
-public class CloudPicture {
+public class CloudPicture implements Parcelable {
 
     private String locationid = null;
     private String pictureurl = null;
@@ -66,4 +69,38 @@ public class CloudPicture {
 
         return result;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.locationid);
+        dest.writeString(this.pictureurl);
+        dest.writeString(this.noecidx);
+        dest.writeString(this.locationname);
+        dest.writeString(this.photoreference);
+    }
+
+    protected CloudPicture(Parcel in) {
+        this.locationid = in.readString();
+        this.pictureurl = in.readString();
+        this.noecidx = in.readString();
+        this.locationname = in.readString();
+        this.photoreference = in.readString();
+    }
+
+    public static final Parcelable.Creator<CloudPicture> CREATOR = new Parcelable.Creator<CloudPicture>() {
+        @Override
+        public CloudPicture createFromParcel(Parcel source) {
+            return new CloudPicture(source);
+        }
+
+        @Override
+        public CloudPicture[] newArray(int size) {
+            return new CloudPicture[size];
+        }
+    };
 }

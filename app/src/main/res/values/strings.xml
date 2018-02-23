@@ -302,6 +302,7 @@
     <string name="imgupconosenttitle">Uploadlizenz</string>
 
     <string name="title_activity__picture">Activity_Picture</string>
+    <string name="title_activity__picture_slider">Activity_PictureSlider</string>
 
     <string name="backButtonExit">Nochmal drücken um die App zu beenden</string>
 </resources>

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView;
 import com.gjiazhe.scrollparallaximageview.parallaxstyle.HorizontalMovingStyle;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,11 +34,22 @@ import java.util.List;
 
 public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pictures.ViewHolder> {
 
+    private ClickThumbPictureCallback callback;
+
     public static final String TAG = "ArrayAdapter_Pictures";
     private Context context;
     private List<CloudPicture> uploads;
     private int height;
     private ScrollParallaxImageView.ParallaxStyle parallaxStyle;
+
+    public void setCallback(ClickThumbPictureCallback callback){
+        this.callback = callback;
+    }
+
+
+    public interface ClickThumbPictureCallback {
+        void thumbPictureClicked(int position);
+    }
 
 
     public ArrayAdapter_Pictures(Context context, List<CloudPicture> uploads, int height) {
@@ -59,10 +71,9 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final ViewHolder innerVH = holder;
+    public void onBindViewHolder(ViewHolder innerVH, final int position) {
 
-        holder.imageView.setParallaxStyles(parallaxStyle);
+        innerVH.imageView.setParallaxStyles(parallaxStyle);
         CloudPicture upload = uploads.get(position);
         final String photoreference = upload.getPhotoreference();
         final String locationName = upload.getLocationname();
@@ -77,20 +88,23 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
         GlideUrl glideUrl = new GlideUrl(url, new LazyHeaders.Builder()
                 .addHeader("Referer", "https://noecard.reitschmied.at")
                 .build());
+
         Glide.with(context)
             //.asBitmap()
             .load(glideUrl)
             .into(innerVH.imageView);
         innerVH.imageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                Intent myIntent = new Intent(context, Activity_Picture.class);
+                Log.d(TAG, "position " + String.valueOf(position));
+                callback.thumbPictureClicked(position);
+                /*Intent myIntent = new Intent(context, Activity_Picture.class);
+                myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 myIntent.putExtra(Activity_Picture.ARG_LOCATION_NAME, locationName);
                 myIntent.putExtra(Activity_Picture.ARG_PICTURE_REFERENCE, photoreference);
                 if(locationUrl != null) {
                     myIntent.putExtra(Activity_Picture.ARG_LOCATIONURL, locationUrl);
                 }
-                context.startActivity(myIntent);
+                context.startActivity(myIntent);*/
             }
         });
     }
@@ -120,5 +134,9 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
             imageView.requestLayout();
 
         }
+    }
+    public ArrayList<CloudPicture> getSortedList(int position) {
+        ArrayList<CloudPicture> arrayList = new ArrayList<CloudPicture>(uploads);
+        return arrayList;
     }
 }

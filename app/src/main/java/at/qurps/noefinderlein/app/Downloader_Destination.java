@@ -52,7 +52,7 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
     private int dayPkgCount = 500;
     private static SharedPreferences prefs;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
     public Downloader_Destination(Context context, Activity_Main acti) {
         super();
@@ -74,13 +74,7 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
         public void onDownloadCompleted();
         public void onDownloadCompleted(int id);
     }
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onDownloadCompleted() {
-        }
-        public void onDownloadCompleted(int id) {
-        }
-    };
+
 
     @Override
     protected void onPreExecute() {
