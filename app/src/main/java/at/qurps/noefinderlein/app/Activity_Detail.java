@@ -63,6 +63,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
@@ -1145,6 +1146,9 @@ public class Activity_Detail extends AppCompatActivity implements
                     if (task.isSuccessful()) {
                         // The signed in account is stored in the task's result.
                         GoogleSignInAccount signedInAccount = task.getResult();
+                        GamesClient gamesClient = Games.getGamesClient(Activity_Detail.this, signedInAccount);
+                        gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                        gamesClient.setViewForPopups(rootView);
                     } else {
                         // Player will need to sign-in explicitly using via UI
                     }

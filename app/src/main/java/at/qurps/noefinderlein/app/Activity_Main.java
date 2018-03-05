@@ -51,6 +51,7 @@ import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -69,6 +70,7 @@ public class Activity_Main extends AppCompatActivity implements
         Fragment_LocationList.Callbacks,
         Fragment_LocationNear.Callbacks,
         Fragment_LocationFavorits.Callbacks,
+        Fragment_LocationVisited.Callbacks,
         Fragment_Regions.Callbacks,
         Downloader_Destination.Callbacks {
 
@@ -847,7 +849,11 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     public void onItemSelected_Fragment_LocationFavorits(int id,int year) {
-
+        detailItemChosen(id, year);
+    }
+    @Override
+    public void onItemSelected_Fragment_LocationVisited(int id, int year) {
+        Log.d(TAG, String.valueOf(id) + ' ' + String.valueOf(year));
         detailItemChosen(id, year);
     }
     @Override
@@ -938,7 +944,7 @@ public class Activity_Main extends AppCompatActivity implements
         if(mDownloadDone) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }
-    }
+    }*/
 
     /*@Override
     public void onConnected(Bundle connectionHint) {
@@ -967,6 +973,9 @@ public class Activity_Main extends AppCompatActivity implements
             if (result.isSuccess()) {
                 // The signed in account is stored in the result.
                 GoogleSignInAccount signedInAccount = result.getSignInAccount();
+                GamesClient gamesClient = Games.getGamesClient(Activity_Main.this, signedInAccount);
+                gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                gamesClient.setViewForPopups(mainView);
             } else {
                 String message = result.getStatus().getStatusMessage();
                 if (message == null || message.isEmpty()) {
@@ -1039,6 +1048,10 @@ public class Activity_Main extends AppCompatActivity implements
                     if (task.isSuccessful()) {
                         // The signed in account is stored in the task's result.
                         GoogleSignInAccount signedInAccount = task.getResult();
+
+                        GamesClient gamesClient = Games.getGamesClient(Activity_Main.this, signedInAccount);
+                        gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                        gamesClient.setViewForPopups(mainView);
                         showGameLogout();
                     } else {
                         // Player will need to sign-in explicitly using via UI
@@ -1047,6 +1060,7 @@ public class Activity_Main extends AppCompatActivity implements
                 }
             });
     }
+
     private void startSignInIntent() {
         GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
                 GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
@@ -1065,4 +1079,5 @@ public class Activity_Main extends AppCompatActivity implements
                 }
             });
     }
+
 }

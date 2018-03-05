@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 1.4.1
+  % Version 1.4.1
+  _ 2018-03-04
+    * add Adaptive Icon
 $ 1.4.0
   % Version 1.4.0
   _ 2018-02-22

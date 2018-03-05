@@ -24,7 +24,8 @@
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_noefinderlein"
+        android:roundIcon="@mipmap/ic_launcher_noefinderlein_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
