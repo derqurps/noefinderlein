@@ -58,8 +58,8 @@ public class Fragment_LocationVisited extends ListFragment {
         public void onItemSelected_Fragment_LocationVisited(int i, int year);
     }
 
+    public Fragment_LocationVisited () {
 
-    public Fragment_LocationVisited() {
     }
 
     @Override
@@ -72,6 +72,18 @@ public class Fragment_LocationVisited extends ListFragment {
         if (mMenu != null) {
             onPrepareOptionsMenu(mMenu);
         }
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        // Activities containing this fragment must implement its callbacks.
+        if (!(context instanceof Fragment_LocationList.Callbacks)) {
+            throw new IllegalStateException(
+                    "Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) context;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -141,6 +153,7 @@ public class Fragment_LocationVisited extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
+        Log.d(TAG, String.valueOf(adapter.getIdtoPosition(position)) + String.valueOf(adapter.getJahrtoPosition(position)));
         mCallbacks.onItemSelected_Fragment_LocationVisited(adapter.getIdtoPosition(position), adapter.getJahrtoPosition(position));
     }
 
