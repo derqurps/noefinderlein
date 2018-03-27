@@ -119,6 +119,7 @@ public class Activity_Main extends AppCompatActivity implements
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
     private boolean mGameSignInClicked = false;
+    private int mGameSignInTry = 0;
     private boolean mRequestingLocationUpdates = false;
 
     private NavigationView nav_view;
@@ -145,7 +146,7 @@ public class Activity_Main extends AppCompatActivity implements
             nav_view.setNavigationItemSelectedListener(this);
             yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
         }
-
+        mGameSignInTry = 0;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
@@ -420,6 +421,7 @@ public class Activity_Main extends AppCompatActivity implements
         } else if (id == R.id.game_login) {
             Log.d(TAG, "Sign-in button clicked");
 
+            mGameSignInTry = 0;
             mGameSignInClicked = true;
             Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
             startSignInIntent();
@@ -1054,8 +1056,14 @@ public class Activity_Main extends AppCompatActivity implements
                         gamesClient.setViewForPopups(mainView);
                         showGameLogout();
                     } else {
-                        // Player will need to sign-in explicitly using via UI
-                        startSignInIntent();
+                        mGameSignInTry++;
+                        if (mGameSignInTry > 0) {
+                            mGameSignInClicked = false;
+                            Util.setPreferencesBoolean(Activity_Main.this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
+                        } else {
+                            // Player will need to sign-in explicitly using via UI
+                            startSignInIntent();
+                        }
                     }
                 }
             });

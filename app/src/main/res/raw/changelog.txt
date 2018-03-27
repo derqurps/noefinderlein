@@ -17,6 +17,10 @@
     </style>
   </head>
   <body>
+$ 1.4.2
+  % Version 1.4.2
+  _ 2018-03-26
+    * fix login error when play games is not installed
 $ 1.4.1
   % Version 1.4.1
   _ 2018-03-04
