@@ -93,6 +93,9 @@ public class AccomplishmentsOutbox {
             case 2017:
                 pushAccomplishments2017();
                 break;
+            case 2018:
+                pushAccomplishments2018();
+                break;
         }
         this.saveLocal();
     }
@@ -148,6 +151,60 @@ public class AccomplishmentsOutbox {
         if (this.mScoreSavings >= 0) {
             Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
                     .submitScore(mContext.getString(R.string.leaderboard_2017_savings), (long)(this.mScoreSavings*1000000));
+            this.mScoreSavings = -1;
+        }
+    }
+    private void pushAccomplishments2018() {
+        if (this.mfirstLocation) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .unlock(mContext.getString(R.string.achievement_2018_first_location));
+            this.mfirstLocation = false;
+        }
+        if (this.m3in1) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .unlock(mContext.getString(R.string.achievement_2018_3in1));
+            this.m3in1 = false;
+        }
+        if (this.m7in1) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .unlock(mContext.getString(R.string.achievement_2018_7in1));
+            this.m7in1 = false;
+        }
+
+        if(this.malllocations != 0){
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .setSteps(mContext.getString(R.string.achievement_2018_all), this.malllocations);
+            this.malllocations = 0;
+        }
+        if (this.m50locations != 0) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .setSteps(mContext.getString(R.string.achievement_2018_50), this.m50locations);
+            this.m50locations = 0;
+        }
+        if (this.m10locations != 0) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .setSteps(mContext.getString(R.string.achievement_2018_10), this.m10locations);
+            this.m10locations = 0;
+        }
+        if (this.m5locations != 0) {
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .setSteps(mContext.getString(R.string.achievement_2018_5), this.m5locations);
+            this.m5locations = 0;
+        }
+        if(this.mtoplocations != 0){
+            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .setSteps(mContext.getString(R.string.achievement_2018_top), this.mtoplocations);
+            this.mtoplocations = 0;
+        }
+
+        if (this.mScoreCount >= 0) {
+            Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .submitScore(mContext.getString(R.string.leaderboard_2018_count), this.mScoreCount);
+            this.mScoreCount = -1;
+        }
+        if (this.mScoreSavings >= 0) {
+            Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
+                    .submitScore(mContext.getString(R.string.leaderboard_2018_savings), (long)(this.mScoreSavings*1000000));
             this.mScoreSavings = -1;
         }
     }

@@ -284,7 +284,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		//Log.d(TAG," --- size "+String.valueOf(listItems.get(0).getName()));
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         int sortByWhat = sharedPref.getInt(PREF_SORT_STRING,0);
-		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+		adapter=new ArrayAdapter_Mainlist(mContext, listItems, mRegionItemJahr);
         filterWithNewData(getFilterliste(), getOpenFilter());
         sortBy(sortByWhat);
 		setListAdapter(adapter);

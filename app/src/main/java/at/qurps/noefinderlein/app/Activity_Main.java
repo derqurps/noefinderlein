@@ -707,7 +707,9 @@ public class Activity_Main extends AppCompatActivity implements
             year = currentDay.get(Calendar.YEAR);
             Log.d(TAG, String.valueOf(year));
             Calendar endOfMarch = Calendar.getInstance();
-            endOfMarch.set(year, 3, 1);
+            endOfMarch.set(year, 2, 31);
+
+            Log.d(TAG, String.valueOf(endOfMarch) + String.valueOf(currentDay));
 
             if(currentDay.before(endOfMarch)){
                 year = year-1;

@@ -75,7 +75,7 @@ public class Fragment_LocationFavorits extends ListFragment {
     }
     private void dbContentChanged(){
         listItems = db.getAllFavoritLocations(mRegionItemJahr);
-        adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+        adapter=new ArrayAdapter_Mainlist(mContext, listItems, mRegionItemJahr);
         adapter.setCallingFragment(TAG);
         setListAdapter(adapter);
     }

@@ -21,7 +21,7 @@
         android:dialogTitle="@string/str_dialog_jahr_waehlen"
         android:entries="@array/pref_year"
         android:entryValues="@array/pref_year_val"
-        android:defaultValue="2016" />
+        android:defaultValue="2018" />
 
     <CheckBoxPreference
         android:key="pref_offline_mode"
