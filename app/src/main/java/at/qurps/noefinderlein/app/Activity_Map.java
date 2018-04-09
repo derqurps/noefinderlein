@@ -124,7 +124,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             mMap.setInfoWindowAdapter(new Adapter_GMapInfoWindow());
 
 
-            /*Log.d("ACMD1: ", String.valueOf(ziel.getLatitude())+" "+String.valueOf(ziel.getLongitude()));
+            /*HyperLog.d("ACMD1: ", String.valueOf(ziel.getLatitude())+" "+String.valueOf(ziel.getLongitude()));
             LatLng ziellocation = new LatLng(ziel.getLatitude(), ziel.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ziellocation, 14));
 

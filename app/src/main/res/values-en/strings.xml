@@ -162,6 +162,13 @@
     <string name="pref_filter_visited">Filter visited locations from lists</string>
     <string name="pref_title_load_open_data">Use and update open days</string>
     <string name="pref_open_data">Also use and download opening days of locations</string>
+
+    <string name="pref_title_logging">Activate Logging</string>
+    <string name="pref_summary_logging">If active, some log messages will be saved for exporting</string>
+
+    <string name="pref_title_show_log">Show/send Log</string>
+    <string name="pref_summary_show_log">Show/send accumulated Logs</string>
+
     <string name="toast_offline">Updates disabled - see settings</string>
     <string name="not_open_today">Not open today</string>
     <string name="not_open_on">Not open on:</string>

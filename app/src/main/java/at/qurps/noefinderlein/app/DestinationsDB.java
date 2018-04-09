@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -342,7 +344,7 @@ public class DestinationsDB {
                 cursor.close();
             }
         } catch(Exception ex) {
-
+            HyperLog.e("DestDB General Exception 1", ex.toString());
         } finally {
             db.close(); // Closing database connection
         }
@@ -381,7 +383,7 @@ public class DestinationsDB {
             }
             db.close();
         }catch (JSONException e) {
-            Log.d("DDBERR1: ",  String.valueOf(e) );
+            HyperLog.e("DDBERR1: ",  String.valueOf(e) );
             e.printStackTrace();
         }
         return returnObj.toString();
@@ -395,7 +397,7 @@ public class DestinationsDB {
 
         String fDate = Util.getDBDateString(mContext);
 
-        Log.d("nummer + jahr : ", String.valueOf(regionnumber)+" "+String.valueOf(jahr));
+        HyperLog.d("nummer + jahr : ", String.valueOf(regionnumber)+" "+String.valueOf(jahr));
     	SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         String dbl = DB_Location_NoeC.TABLE_NAME;
@@ -535,7 +537,7 @@ public class DestinationsDB {
                 result = true; // return count
             }
         }catch(Exception e) {
-
+            HyperLog.e("DestDB General Exception 2", e.toString());
         } finally {
             if(cursor != null) {
                 cursor.close();
@@ -616,6 +618,7 @@ public class DestinationsDB {
                 try {
                     serverList.add(numbers.getInt(i));
                 } catch (JSONException e) {
+                    HyperLog.e("DestDB General Exception 3", e.toString());
                     e.printStackTrace();
                 }
             }
@@ -654,7 +657,7 @@ public class DestinationsDB {
             db.setTransactionSuccessful();
 
         } catch(Exception e){
-
+            HyperLog.e("DestDB General Exception 5", e.toString());
         } finally {
             db.endTransaction();
             db.close(); // Closing database connection
@@ -725,20 +728,20 @@ public class DestinationsDB {
             location.setVisited_id(cursor.getInt(cursor.getColumnIndex(DB_Visited_Locations.KEY_ID)));
             location.setVisited_date(cursor.getString(cursor.getColumnIndex(DB_Visited_Locations.KEY_LOGGED_DATE)));
         }catch(Exception e){
-            Log.d("DDBERR2: ",  String.valueOf(e) );
+            HyperLog.e("DDBERR2: ",  String.valueOf(e) );
         }
     	return location;
     }
     public int updateForYearNeeded(int year, int changedcount)
     {
         String Query = "SELECT " + DB_Changeval.KEY_COUNT + " FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + " = " + year + " AND " + DB_Changeval.KEY_COUNT + " >= "+String.valueOf(changedcount);
-        Log.d("DDBQU: ",Query);
+        HyperLog.d("DDBQU: ",Query);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
-        Log.d("WEB_Count: ",  String.valueOf(changedcount) );
+        HyperLog.d("WEB_Count: ",  String.valueOf(changedcount) );
         int returnInt = 1;
         if (cursor != null && cursor.moveToFirst()) {
-            Log.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Changeval.KEY_COUNT))));
+            HyperLog.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Changeval.KEY_COUNT))));
             returnInt = 0;
             cursor.close();
         }
@@ -748,12 +751,12 @@ public class DestinationsDB {
     }
     public int getCurrentLastChangeId(int year) {
         String Query = "SELECT " + DB_Days.KEY_CHANGE + " FROM " + DB_Days.TABLE_NAME + " WHERE " + DB_Days.KEY_YEAR + " = " + year + " ORDER BY " + DB_Days.KEY_CHANGE + " DESC LIMIT 1";
-        Log.d("DDBQU: ",Query);
+        HyperLog.d("DDBQU: ",Query);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
         int returnInt = 0;
         if (cursor != null && cursor.moveToFirst()) {
-            Log.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Days.KEY_CHANGE))));
+            HyperLog.d("DB_Count: ", String.valueOf(cursor.getInt(cursor.getColumnIndex(DB_Days.KEY_CHANGE))));
             returnInt = cursor.getInt(cursor.getColumnIndex(DB_Days.KEY_CHANGE));
             cursor.close();
         }
@@ -812,7 +815,7 @@ public class DestinationsDB {
                     insertList.add(values);
                 }
             } catch(JSONException ex) {
-
+                HyperLog.e("DestDB JSON Exception 10", ex.toString());
             }
         }
 
@@ -915,7 +918,7 @@ public class DestinationsDB {
 
 
         } catch (JSONException e) {
-            Log.e("Exception3", String.valueOf(e));
+            HyperLog.e("JSON Exception3", String.valueOf(e));
             e.printStackTrace();
         }
         return newloc;
@@ -942,10 +945,10 @@ public class DestinationsDB {
         String Query = "SELECT " + DB_Location_NoeC.KEY_ID + " FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_ID + " = " + id + "";
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query,null);
-        //Log.d("cursor: ",DatabaseUtils.dumpCursorToString(cursor));
+        //HyperLog.d("cursor: ",DatabaseUtils.dumpCursorToString(cursor));
         int count = 0;
         count=cursor.getCount();
-        //Log.d("updateornew: ",  String.valueOf(count) );
+        //HyperLog.d("updateornew: ",  String.valueOf(count) );
         cursor.close();
         db.close();
         if (count>0) {
@@ -961,7 +964,7 @@ public class DestinationsDB {
         String Query = "SELECT " + DB_Location_NoeC.KEY_ID + " FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + " = " + String.valueOf(year) + " AND "+DB_Location_NoeC.KEY_NUMMER+"!=0";
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(Query,null);
-        //Log.d("cursor: ",DatabaseUtils.dumpCursorToString(cursor));
+        //HyperLog.d("cursor: ",DatabaseUtils.dumpCursorToString(cursor));
         int count = 0;
         count=cursor.getCount();
         cursor.close();
@@ -994,48 +997,48 @@ public class DestinationsDB {
             mCursor.close();
         }
         db.close();
-        //Log.d("isOpen: ", String.valueOf(locId) + " " + day + " " + String.valueOf(returnVal));
+        //HyperLog.d("isOpen: ", String.valueOf(locId) + " " + day + " " + String.valueOf(returnVal));
         return returnVal;
     }
     public float getSavingsToYear(int year, boolean filterAccepted) {
         float ersparnis = 0;
         String query = "SELECT " + DB_Location_NoeC.TABLE_NAME + "." + DB_Location_NoeC.KEY_ERSPARNIS + " AS " + DB_Location_NoeC.KEY_ERSPARNIS + " FROM " + DB_Visited_Locations.TABLE_NAME + " LEFT JOIN " + DB_Location_NoeC.TABLE_NAME + " ON " + DB_Visited_Locations.TABLE_NAME + "." + DB_Visited_Locations.KEY_LOC_ID + " = " + DB_Location_NoeC.TABLE_NAME + "." + DB_Location_NoeC.KEY_ID + " WHERE " + DB_Visited_Locations.TABLE_NAME + "."+DB_Visited_Locations.KEY_YEAR+"=" + String.valueOf(year) + (filterAccepted ? " AND " + DB_Visited_Locations.TABLE_NAME + "." + DB_Visited_Locations.KEY_ACCEPTED+"=1" : "");
 
-        Log.d(TAG, String.valueOf(query));
+        HyperLog.d(TAG, String.valueOf(query));
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, new String[]{});
 
         if (cursor != null && cursor.moveToFirst()) {
-            Log.d(TAG,String.valueOf(cursor.getCount()));
+            HyperLog.d(TAG,String.valueOf(cursor.getCount()));
             do {
                 try{
                     String ersparnis_str = cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ERSPARNIS));
-                    Log.d(TAG,String.valueOf(ersparnis_str ));
+                    HyperLog.d(TAG,String.valueOf(ersparnis_str ));
                     String[] splitResult = ersparnis_str.split("€");
                     float[] zwischarr = new float[splitResult.length-1];
                     float zwischenwert = 0;
                     for(int j = 1; j < splitResult.length; j++)
                     {
-                        Log.d(TAG,String.valueOf(splitResult[j]));
+                        HyperLog.d(TAG,String.valueOf(splitResult[j]));
                         if(splitResult[j].contains("-")){
                             splitResult[j]=splitResult[j].substring(0,splitResult[j].indexOf("-"));
                         }
                         splitResult[j]=splitResult[j].replace("€","").replace(" " ,"").replace("-","").replace(".","");
                         splitResult[j]=splitResult[j].replace(",",".");
                         zwischarr[j-1]=Float.valueOf(splitResult[j]).floatValue();
-                        Log.d(TAG,String.valueOf(zwischarr[j-1]));
+                        HyperLog.d(TAG,String.valueOf(zwischarr[j-1]));
                     }
 
                     for(int j = 0; j < zwischarr.length; j++) {
                         zwischenwert = zwischenwert + zwischarr[j];
                     }
                     zwischenwert = zwischenwert / zwischarr.length;
-                    Log.d(TAG,String.valueOf(zwischenwert ));
+                    HyperLog.d(TAG,String.valueOf(zwischenwert ));
 
                     ersparnis = ersparnis + zwischenwert;
                 }
                 catch (Exception e) {
-                    Log.e(TAG,e.toString());
+                    HyperLog.e(TAG,e.toString());
                 }
 
             } while (cursor.moveToNext());
@@ -1080,7 +1083,7 @@ public class DestinationsDB {
     public int getMaxOnOneDayVisitedLocationsCount(int year, boolean filterAccepted, boolean distinct) {
         int count = 0;
         String query = "SELECT count(" + DB_Visited_Locations.KEY_LOGGED_DATE + ") as anz, " + DB_Visited_Locations.KEY_LOGGED_DATE + " FROM (SELECT " + DB_Visited_Locations.KEY_LOGGED_DATE + ", " + DB_Visited_Locations.KEY_LOC_ID + " FROM " + DB_Visited_Locations.TABLE_NAME + " WHERE " + DB_Visited_Locations.KEY_YEAR + "=" + String.valueOf(year) + " GROUP BY " + DB_Visited_Locations.KEY_LOC_ID + ", " + DB_Visited_Locations.KEY_LOGGED_DATE + " ) GROUP BY " + DB_Visited_Locations.KEY_LOGGED_DATE + " ORDER BY anz DESC LIMIT 1";
-        Log.d(TAG, String.valueOf(query));
+        HyperLog.d(TAG, String.valueOf(query));
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, new String[]{});
         if (cursor != null && cursor.moveToFirst()) {
@@ -1095,7 +1098,7 @@ public class DestinationsDB {
     public int getNumToId(int id) {
         int num = 0;
         String query = "SELECT " + DB_Location_NoeC.KEY_NUMMER + " FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_ID + "=" + String.valueOf(id);
-        Log.d(TAG, String.valueOf(query));
+        HyperLog.d(TAG, String.valueOf(query));
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, new String[]{});
         if (cursor != null && cursor.moveToFirst()) {

@@ -53,7 +53,16 @@
         android:title="@string/pref_title_load_pictures"
         android:summary="@string/pref_load_pictures"
         android:defaultValue="true" />
-
+    <CheckBoxPreference
+        android:key="pref_load_logging"
+        android:title="@string/pref_title_logging"
+        android:summary="@string/pref_summary_logging"
+        android:defaultValue="false" />
+    <Preference
+        android:dependency="pref_load_logging"
+        android:key="pref_show_log"
+        android:title="@string/pref_title_show_log"
+        android:summary="@string/pref_summary_show_log"/>
     <!--<PreferenceCategory
         android:title="Ziele löschen"
         android:key="pref_key_storage_settings">

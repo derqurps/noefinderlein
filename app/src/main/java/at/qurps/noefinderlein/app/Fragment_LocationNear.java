@@ -30,6 +30,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -217,7 +219,7 @@ public class Fragment_LocationNear extends ListFragment implements DialogFragmen
             if (arguments.containsKey(ARG_ITEM_JAHR)) {
                 mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
             }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+            HyperLog.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
         }
     }
     public class LocationUpdate extends BroadcastReceiver {

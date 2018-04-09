@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,7 +155,7 @@ public class Fragment_LocationVisited extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        Log.d(TAG, String.valueOf(adapter.getIdtoPosition(position)) + String.valueOf(adapter.getJahrtoPosition(position)));
+        HyperLog.d(TAG, String.valueOf(adapter.getIdtoPosition(position)) + String.valueOf(adapter.getJahrtoPosition(position)));
         mCallbacks.onItemSelected_Fragment_LocationVisited(adapter.getIdtoPosition(position), adapter.getJahrtoPosition(position));
     }
 
@@ -185,7 +187,7 @@ public class Fragment_LocationVisited extends ListFragment {
             if (arguments.containsKey(ARG_ITEM_JAHR)) {
                 mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
             }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+            HyperLog.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
         }
     }
     private void setActivatedPosition(int position) {

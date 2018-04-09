@@ -91,6 +91,7 @@ import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.hypertrack.hyperlog.HyperLog;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 //import com.squareup.leakcanary.LeakCanary;
@@ -216,10 +217,10 @@ public class Activity_Detail extends AppCompatActivity implements
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    HyperLog.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    HyperLog.d(TAG, "onAuthStateChanged:signed_out");
                 }
                 // ...
             }
@@ -232,13 +233,13 @@ public class Activity_Detail extends AppCompatActivity implements
         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
+                HyperLog.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
 
                 // If sign in fails, display a message to the user. If sign in succeeds
                 // the auth state listener will be notified and logic to handle the
                 // signed in user can be handled in the listener.
                 if (!task.isSuccessful()) {
-                    Log.w(TAG, "signInAnonymously", task.getException());
+                    HyperLog.w(TAG, "signInAnonymously", task.getException());
                     Toast.makeText(Activity_Detail.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -397,20 +398,20 @@ public class Activity_Detail extends AppCompatActivity implements
                 return true;
 
             case R.id.actionb_favorit_star:
-                //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
-                //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
+                //HyperLog.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
+                //HyperLog.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
                 Drawable drawable;
                 if(ziel.getFavorit())
                 {
                     drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star_outline);
                     ziel.setFavorit(false);
-                    Log.d(TAG +"false",String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG +"false",String.valueOf(ziel.getFavorit()));
                 }
                 else
                 {
                     drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
                     ziel.setFavorit(true);
-                    Log.d(TAG +"true",String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG +"true",String.valueOf(ziel.getFavorit()));
 
                 }
                 drawable = DrawableCompat.wrap(drawable);
@@ -434,20 +435,20 @@ public class Activity_Detail extends AppCompatActivity implements
 
 
 
-                //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
-                //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
+                //HyperLog.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
+                //HyperLog.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
 
                 /*if(ziel.getAngesehen())
                 {
                     mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick);
                     ziel.setAngesehen(false);
-                    //Log.d(TAG +"false",String.valueOf(ziel.getAngesehen()));
+                    //HyperLog.d(TAG +"false",String.valueOf(ziel.getAngesehen()));
                 }
                 else
                 {
                     mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick_grey);
                     ziel.setAngesehen(true);
-                    //Log.d(TAG +"true",String.valueOf(ziel.getAngesehen()));
+                    //HyperLog.d(TAG +"true",String.valueOf(ziel.getAngesehen()));
 
                 }
                 //db.updateAngesehen(ziel);*/
@@ -463,7 +464,7 @@ public class Activity_Detail extends AppCompatActivity implements
 
     private boolean updateOptionsMenu(){
         if(ziel != null) {
-            Log.d(TAG , String.valueOf(ziel.getFavorit()));
+            HyperLog.d(TAG , String.valueOf(ziel.getFavorit()));
             Drawable drawable;
             if (mMenu != null && ziel.getFavorit()) {
                 drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
@@ -608,7 +609,7 @@ public class Activity_Detail extends AppCompatActivity implements
 
                 //"https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key)
                 String loadUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key);
-                Log.d(TAG, loadUrl);
+                HyperLog.d(TAG, loadUrl);
                 Ion.with(mContext)
                     .load(loadUrl )
                     .setHeader("Referer", "https://noecard.reitschmied.at")
@@ -891,7 +892,7 @@ public class Activity_Detail extends AppCompatActivity implements
 
     public void changeView(Bundle arguments){
         getNewLocationArguments(arguments);
-        Log.d("da","da");
+        HyperLog.d("da","da");
         updateView();
         updateOptionsMenu();
     }
@@ -903,12 +904,12 @@ public class Activity_Detail extends AppCompatActivity implements
                 // to load content from a content provider.
                 //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
                 //		ARG_ITEM_NUMMER));
-                Log.d("nr + jahr: ", String.valueOf(arguments.getInt(ARG_ITEM_ID))+" " + String.valueOf(arguments.getInt(ARG_ITEM_JAHR)));
+                HyperLog.d("nr + jahr: ", String.valueOf(arguments.getInt(ARG_ITEM_ID))+" " + String.valueOf(arguments.getInt(ARG_ITEM_JAHR)));
                 aktID = arguments.getInt(ARG_ITEM_ID);
                 aktjahr = arguments.getInt(ARG_ITEM_JAHR);
                 if(db != null) {
                     ziel = db.getLocationToId(aktID);
-                    Log.d(TAG, String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG, String.valueOf(ziel.getFavorit()));
                 }
 
             }
@@ -922,7 +923,7 @@ public class Activity_Detail extends AppCompatActivity implements
     }
     @Override
     protected void onStart() {
-        Log.d(TAG, "onStart()");
+        HyperLog.d(TAG, "onStart()");
         super.onStart();
 
         /*if(!isGameSignedIn()) {
@@ -932,7 +933,7 @@ public class Activity_Detail extends AppCompatActivity implements
     }
     @Override
     protected void onStop() {
-        Log.d(TAG, "onStop()");
+        HyperLog.d(TAG, "onStop()");
         super.onStop();
         /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
@@ -955,7 +956,7 @@ public class Activity_Detail extends AppCompatActivity implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(TAG, "onConnectionSuspended() called: " );
+        HyperLog.d(TAG, "onConnectionSuspended() called: " );
 
         //mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
 
@@ -963,12 +964,12 @@ public class Activity_Detail extends AppCompatActivity implements
 
     @Override
     public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
-        Log.d(TAG, "onItemSelected_DialogFragment_ChooseCheckinDate() called: " );
+        HyperLog.d(TAG, "onItemSelected_DialogFragment_ChooseCheckinDate() called: " );
         checkAchievements(id);
     }
 
     private void checkAchievements(int id) {
-        Log.d(TAG, "checkAchievements() called: " );
+        HyperLog.d(TAG, "checkAchievements() called: " );
         Util.setToast(this, "check achievements", 0);
         mOutbox.checkForAchievements(id);
 
@@ -1041,12 +1042,12 @@ public class Activity_Detail extends AppCompatActivity implements
 
         @Override
         public void onError(@NonNull final PickSource pPickSource, final int pRequestType, @NonNull final String pErrorString) {
-            Log.e(TAG, "Err: " + pErrorString);
+            HyperLog.e(TAG, "Err: " + pErrorString);
         }
 
         @Override
         public void onCancel(@NonNull final PickSource pPickSource, final int pRequestType) {
-            Log.d(TAG, "Cancel: " + pPickSource.name());
+            HyperLog.d(TAG, "Cancel: " + pPickSource.name());
         }
 
     };
@@ -1069,7 +1070,7 @@ public class Activity_Detail extends AppCompatActivity implements
     @Override
     public void onDialogPositiveClick(Uri pImageUri) {
         final String uuid = UUID.randomUUID().toString();
-        Log.d(TAG, "uuid: " + uuid);
+        HyperLog.d(TAG, "uuid: " + uuid);
         String bucketPath = STORAGE_PATH_UPLOADS + uuid + ".png";
         StorageReference fireUpRef = mStorageRef.child(bucketPath);
 

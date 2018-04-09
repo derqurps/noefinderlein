@@ -24,6 +24,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.gjiazhe.scrollparallaximageview.ScrollParallaxImageView;
 import com.gjiazhe.scrollparallaximageview.parallaxstyle.HorizontalMovingStyle;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +96,7 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
             .into(innerVH.imageView);
         innerVH.imageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d(TAG, "position " + String.valueOf(position));
+                HyperLog.d(TAG, "position " + String.valueOf(position));
                 callback.thumbPictureClicked(position);
                 /*Intent myIntent = new Intent(context, Activity_Picture.class);
                 myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -112,7 +113,7 @@ public class ArrayAdapter_Pictures extends RecyclerView.Adapter<ArrayAdapter_Pic
         final TypedArray ta = context.getTheme().obtainStyledAttributes(
                 new int[] {android.R.attr.actionBarSize});
         int actionBarHeight = (int) ta.getDimension(0, 0);
-        Log.d(TAG, String.valueOf(actionBarHeight));
+        HyperLog.d(TAG, String.valueOf(actionBarHeight));
         return actionBarHeight;
     }
     @Override

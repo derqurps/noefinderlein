@@ -15,6 +15,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,10 +119,10 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                 int changeid = jsonObj.getInt("changeid");
                 int daysChangeId = jsonObj.getInt("daysChngId");
                 int daysChangeCount = jsonObj.getInt("daysChangeCount");
-                Log.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(daysChangeId) + " " + String.valueOf(year) );
+                HyperLog.d("Response: ", "> " + String.valueOf(changeid) + " " + String.valueOf(daysChangeId) + " " + String.valueOf(year) );
                 int updateneeded = db.updateForYearNeeded(year, changeid);
                 int currentChangeIdInDB = db.getCurrentLastChangeId(year);
-                Log.d("Update neeeded?: ", String.valueOf(updateneeded));
+                HyperLog.d("Update neeeded?: ", String.valueOf(updateneeded));
                 if(updateneeded == 1 ){
                     mBuilder = new NotificationCompat.Builder(mContext);
                     mBuilder.setContentTitle("Data Download")
@@ -146,10 +148,10 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                     ServiceHandler_GETPOSTPUT shput = new ServiceHandler_GETPOSTPUT();
 
                     String putBody = db.getStringAktDates(year);
-                    Log.d(TAG, putBody);
+                    HyperLog.d(TAG, putBody);
 
                     jsonStrakt = shput.makeServiceCall(mContext.getResources().getString(R.string.api_path)+"Locations/getChangedDestinationIds", ServiceHandler_GETPOSTPUT.PUT, null, putBody);
-                    Log.d(TAG, String.valueOf(jsonStrakt));
+                    HyperLog.d(TAG, String.valueOf(jsonStrakt));
 
                     if (jsonStrakt != null) {
                         try {
@@ -158,18 +160,19 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                             db.updateChangeId(year,changeid);
 
                         } catch (JSONException e) {
+                            HyperLog.e("JSONException 3", e.toString());
                             e.printStackTrace();
                         }
                     } else {
-                        Log.e("ServiceHandler", "Couldn't get any data from the url");
+                        HyperLog.e("ServiceHandler", "Couldn't get any data from the url");
                     }
 
                 }
-                Log.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
+                HyperLog.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(daysChangeId) +" "+ String.valueOf(currentChangeIdInDB < daysChangeId));
                 if(loadOpenData && currentChangeIdInDB < daysChangeId) {
                     int downloadChangeAnz = daysChangeCount;
                     int anzPackages = (downloadChangeAnz / dayPkgCount) + 1;
-                    Log.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " +String.valueOf(anzPackages)  );
+                    HyperLog.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " +String.valueOf(anzPackages)  );
                     progress.setMax(downloadChangeAnz);
                     progress.setProgress(Integer.valueOf(0));
 
@@ -177,6 +180,7 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                     downloadSegment(year, daysChangeId, anzPackages, 0, 0);
                 }
             } catch (JSONException e) {
+                HyperLog.e("JSONException 1", e.toString());
                 e.printStackTrace();
             }
             try{
@@ -191,16 +195,18 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                         }
 
                     } catch (JSONException e) {
+                        HyperLog.e("JSONException 2", e.toString());
                         e.printStackTrace();
                     }
                 } else {
-                    Log.e("ServiceHandler", "Couldn't get any data from the url");
+                    HyperLog.e("ServiceHandler", "Couldn't get any data from the url");
                 }
             } catch (Exception e) {
+                HyperLog.e("General Exception 1", e.toString());
                 e.printStackTrace();
             }
         }else {
-            Log.e("ServiceHandler", "Couldn't get any data from the url");
+            HyperLog.e("ServiceHandler", "Couldn't get any data from the url");
         }
         return null;
     }
@@ -238,16 +244,16 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
             try {
                 String jsonDays = sh.makeServiceCall(mContext.getResources().getString(R.string.api_path) + "Days/getChangeSegmentCount?year=" + String.valueOf(year) + "&changeStart=" + String.valueOf(beginsegment) + "&count=" + String.valueOf(dayPkgCount), ServiceHandler_GETPOSTPUT.GET);
                 JSONArray jsonDay = new JSONArray(jsonDays);
-                Log.d(TAG, " got anz changes " + String.valueOf(jsonDay.length()) );
+                HyperLog.d(TAG, " got anz changes " + String.valueOf(jsonDay.length()) );
                 int inserted = updateOrInsertJsondata(jsonDay, year, progressC);
                 progress.setProgress(Integer.valueOf((progressC+inserted)));
-                Log.d(TAG, String.valueOf(year) + " " +String.valueOf(completeEndChangeId) + " " +String.valueOf(pkgCount) + " " +String.valueOf((progressC+inserted)) + " " + String.valueOf((counter+1)) );
+                HyperLog.d(TAG, String.valueOf(year) + " " +String.valueOf(completeEndChangeId) + " " +String.valueOf(pkgCount) + " " +String.valueOf((progressC+inserted)) + " " + String.valueOf((counter+1)) );
                 downloadSegment(year, completeEndChangeId, pkgCount, (progressC+inserted), (counter+1));
             } catch (JSONException e) {
-                Log.e("Exception1", String.valueOf(e));
+                HyperLog.e("JSONException 4", String.valueOf(e));
                 e.printStackTrace();
             } catch (Exception e) {
-                Log.e("DaySaveException", String.valueOf(e));
+                HyperLog.e("DaySaveException", String.valueOf(e));
                 e.printStackTrace();
             }
         }
@@ -256,7 +262,9 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
         String currentDay = "";
         try{
             currentDay = jsonDay.getJSONObject(0).getString("d");
-        } catch (Exception e){}
+        } catch (Exception e){
+            HyperLog.e("General Exception 2", e.toString());
+        }
         publishProgress("Updating opening days ...\n"+currentDay);
         db.insertOrReplaceDays(jsonDay, year);
         return jsonDay.length();
@@ -297,10 +305,10 @@ public class Downloader_Destination extends AsyncTask<Integer, String, Void> {
                 publishProgress("Updating Location Data ...\n" + currentLocationName);*/
             }
         } catch (JSONException e) {
-            Log.e("Exception1", String.valueOf(e));
+            HyperLog.e("JSONException 5", String.valueOf(e));
             e.printStackTrace();
         } catch (Exception e) {
-            Log.e("LocationSaveException", String.valueOf(e));
+            HyperLog.e("LocationSaveException", String.valueOf(e));
             e.printStackTrace();
         }
     }

@@ -60,6 +60,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.hypertrack.hyperlog.HyperLog;
 // import com.squareup.leakcanary.LeakCanary;
 
 import java.util.Calendar;
@@ -129,6 +130,8 @@ public class Activity_Main extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+
         //JodaTimeAndroid.init(this);
         if (savedInstanceState != null && savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
             mRequestingLocationUpdates = savedInstanceState.getBoolean(
@@ -137,17 +140,17 @@ public class Activity_Main extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        mainView = (FrameLayout) findViewById(R.id.region_list_container);
+        mainView = findViewById(R.id.region_list_container);
 
-        nav_view = (NavigationView) findViewById(R.id.nav_view);
+        nav_view = findViewById(R.id.nav_view);
 
         if(nav_view!=null) {
             View headerLayout = nav_view.getHeaderView(0);
             nav_view.setNavigationItemSelectedListener(this);
-            yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
+            yeartext = headerLayout.findViewById(R.id.text_noecardyear);
         }
         mGameSignInTry = 0;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
 
@@ -157,7 +160,7 @@ public class Activity_Main extends AppCompatActivity implements
 
 
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         if(fab!=null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -169,7 +172,7 @@ public class Activity_Main extends AppCompatActivity implements
             fab.hide();
         }
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         if(mDrawer!=null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -190,6 +193,16 @@ public class Activity_Main extends AppCompatActivity implements
         Boolean opendata = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
         mEditor.putBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, opendata);
         mEditor.apply();
+
+        Boolean logginEnabled = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_LOGGING, false);
+
+        HyperLog.initialize(this);
+        if (logginEnabled) {
+
+            HyperLog.setLogLevel(Log.VERBOSE);
+        } else {
+            HyperLog.setLogLevel(Log.ERROR);
+        }
 
         initYear();
 
@@ -419,7 +432,7 @@ public class Activity_Main extends AppCompatActivity implements
         } else if (id == R.id.nav_near) {
             startNearScreen();
         } else if (id == R.id.game_login) {
-            Log.d(TAG, "Sign-in button clicked");
+            HyperLog.d(TAG, "Sign-in button clicked");
 
             mGameSignInTry = 0;
             mGameSignInClicked = true;
@@ -535,7 +548,7 @@ public class Activity_Main extends AppCompatActivity implements
             FragmentManager man = getSupportFragmentManager();
 
             if (man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -550,9 +563,9 @@ public class Activity_Main extends AppCompatActivity implements
             }
             transABla.commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -568,7 +581,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -579,9 +592,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -598,7 +611,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -609,9 +622,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -628,7 +641,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -639,9 +652,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -658,7 +671,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -669,9 +682,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -696,7 +709,7 @@ public class Activity_Main extends AppCompatActivity implements
         Integer year;
         if(overwriteyear) {
             year = Integer.valueOf(mPrefs.getString(Activity_Settings.KEY_PREF_OVERWRITE_YEAR_MAN, "2014"));
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             setYear(year);
             if(!(db.isYearInDatabase(year))) {
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
@@ -705,16 +718,16 @@ public class Activity_Main extends AppCompatActivity implements
         } else {
             Calendar currentDay = Calendar.getInstance();
             year = currentDay.get(Calendar.YEAR);
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             Calendar endOfMarch = Calendar.getInstance();
             endOfMarch.set(year, 2, 31);
 
-            Log.d(TAG, String.valueOf(endOfMarch) + String.valueOf(currentDay));
+            HyperLog.d(TAG, String.valueOf(endOfMarch) + String.valueOf(currentDay));
 
             if(currentDay.before(endOfMarch)){
                 year = year-1;
             }
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             setYear(year);
             if(!(db.isYearInDatabase(year))){
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
@@ -786,7 +799,7 @@ public class Activity_Main extends AppCompatActivity implements
             return;
         }
         mRequestingLocationUpdates = true;
-        LocationRequest request = new LocationRequest();
+        LocationRequest request = LocationRequest.create();
         request.setSmallestDisplacement(20);
         request.setInterval(2000);
         mFusedLocationClient.requestLocationUpdates(request,
@@ -834,9 +847,9 @@ public class Activity_Main extends AppCompatActivity implements
     protected void updateDB(boolean force){
         Boolean offlinemode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OFFLINE_MODE, false);
         if(!offlinemode) {
-            Log.d("Response1: ", String.valueOf(mActiveyear));
+            HyperLog.d("Response1: ", String.valueOf(mActiveyear));
             Integer[] myTaskParams = {mActiveyear};
-            Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
+            HyperLog.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
             new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
         }else{
             Util.setToast(this, getString(R.string.toast_offline),0);
@@ -857,7 +870,7 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     public void onItemSelected_Fragment_LocationVisited(int id, int year) {
-        Log.d(TAG, String.valueOf(id) + ' ' + String.valueOf(year));
+        HyperLog.d(TAG, String.valueOf(id) + ' ' + String.valueOf(year));
         detailItemChosen(id, year);
     }
     @Override
@@ -912,9 +925,9 @@ public class Activity_Main extends AppCompatActivity implements
     }
     /*@Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + result);
+        HyperLog.d(TAG, "onConnectionFailed() called, result: " + result);
         if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed(): already resolving");
+            HyperLog.d(TAG, "onConnectionFailed(): already resolving");
             // already resolving
             return;
         }
@@ -944,7 +957,7 @@ public class Activity_Main extends AppCompatActivity implements
 
     /*@Override
     public void onConnectionSuspended(int cause) {
-        Log.d(TAG, "onConnectionSuspended() called: " + cause);
+        HyperLog.d(TAG, "onConnectionSuspended() called: " + cause);
         if(mDownloadDone) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }
@@ -954,10 +967,10 @@ public class Activity_Main extends AppCompatActivity implements
     public void onConnected(Bundle connectionHint) {
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
-        Log.d(TAG, "onconnected");
+        HyperLog.d(TAG, "onconnected");
 
         if(isGameSignedIn()){
-            Log.d(TAG, "Connected successful to games");
+            HyperLog.d(TAG, "Connected successful to games");
         }
     }*/
 
@@ -971,7 +984,7 @@ public class Activity_Main extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Log.d(TAG, "onActivityResult RC_SIGN_IN, responseCode="
+            HyperLog.d(TAG, "onActivityResult RC_SIGN_IN, responseCode="
                     + resultCode + ", intent=" + data);
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {

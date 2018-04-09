@@ -17,10 +17,15 @@
     </style>
   </head>
   <body>
+$ 1.5.0
+  % Version 1.5.0
+  _ 2018-05-09
+    * Danke an alle Mithelfer beim alljährlichen Nummer zuordnen!
+    * Und Danke für die vielen netten Bewertungen
+    * die Möglichkeit zum Download-Error-Debugging in den Einstellungen hinzugefügt
 $ 1.4.3
   % Version 1.4.3
   _ 2018-04-01
-    <b>MITHILFE BENÖTIGT</b>: Nachdem ich leider von den Betreibern der NÖ-Card keine Daten zu Verfügung gestellt bekomme, muss ich diese jedes Jahr halb automatisch generieren.<br />Dabei bekomme ich aber aus keiner maschinenlesbaren Quelle die Nummer zum Ziel. Im Buch sind diese diese Jahr im blauen Kreis neben dem Namen zu finden.<br />Um diese zuzuordnen und nachdem ich derzeit nicht viel Zeit (und auch keine NöCard) habe, bitte ich wie die letzten Jahre auch, um die Mithilfe unter<br><b><a href="https://docs.google.com/spreadsheets/d/1O_O42D3jhqWtgdCooI0_jcAdQbm5_bfzjc2hR1wCYWc/edit?usp=sharing">diesem Google Calc Link</a></b>.<br \><br /> Danke schon im Voraus! :)
     * some new year fixes
 $ 1.4.2
   % Version 1.4.2

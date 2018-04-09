@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,7 +155,7 @@ public class Fragment_LocationFavorits extends ListFragment {
             if (arguments.containsKey(ARG_ITEM_JAHR)) {
                 mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
             }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+            HyperLog.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
         }
     }
 }

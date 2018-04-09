@@ -16,8 +16,8 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 88
-        versionName "1.4.3"
+        versionCode 90
+        versionName "1.5.0"
         multiDexEnabled true
         /*vectorDrawables.useSupportLibrary = true*/
     }
@@ -88,12 +88,15 @@ dependencies {
     implementation "com.google.firebase:firebase-storage:$rootProject.ext.gms_library_version"
     implementation "com.google.firebase:firebase-auth:$rootProject.ext.gms_library_version"
     implementation "com.google.firebase:firebase-database:$rootProject.ext.gms_library_version"
+    implementation 'com.hypertrack:hyperlog:0.0.9'
     // implementation 'com.github.hanuor:pearl:0.0.8'
     implementation('com.github.aviadmini:quickimagepick:2.1.7') {
         // Uncomment next line if you have dependency conflict with AppCompat v7
         // exclude group: 'com.android.support', module: 'appcompat-v7'
     }
+    implementation 'de.cketti.mailto:email-intent-builder:1.0.0'
     implementation "com.github.bumptech.glide:glide:$rootProject.ext.glideVersion"
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.ext.glideVersion"
     implementation "com.github.firdausmaulan:GlideSlider:$rootProject.ext.glide_slider_version"
 
@@ -109,5 +112,6 @@ dependencies {
         releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
     implementation 'com.github.piasy:BigImageViewer:1.4.6'
     implementation 'com.github.piasy:GlideImageLoader:1.4.6'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 apply plugin: 'com.google.gms.google-services'

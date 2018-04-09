@@ -52,9 +52,9 @@ public class Activity_PictureSlider extends AppCompatActivity
         boolean isImmersiveModeEnabled =
                 ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
         if (isImmersiveModeEnabled) {
-            //Log.i(TAG, "Turning immersive mode mode off. ");
+            //HyperLog.i(TAG, "Turning immersive mode mode off. ");
         } else {
-            //Log.i(TAG, "Turning immersive mode mode on.");
+            //HyperLog.i(TAG, "Turning immersive mode mode on.");
         }
 
         // Navigation bar hiding:  Backwards compatible to ICS.

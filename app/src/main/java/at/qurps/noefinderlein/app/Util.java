@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -78,7 +79,7 @@ public class Util {
 		File file = new File(context.getExternalFilesDir(
 				Environment.DIRECTORY_PICTURES), albumName);
 		if (!file.mkdirs()) {
-			Log.e(TAG, "Directory not created");
+			HyperLog.e(TAG, "Directory not created");
 		}
 		return file;
 	}

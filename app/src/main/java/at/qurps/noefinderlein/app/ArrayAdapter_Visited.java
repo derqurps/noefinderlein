@@ -61,7 +61,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
             //((ViewHolder) view.getTag()).checkbox.setTag(list.get(position));
         }
         ViewHolder holder = (ViewHolder) view.getTag();
-        //Log.d(TAG,String.valueOf(list.get(position).getSort()));
+        //HyperLog.d(TAG,String.valueOf(list.get(position).getSort()));
         int nummer = filteredData.get(position).getNummer();
         if(nummer!= 0) {
             holder.sortnumber.setVisibility(View.VISIBLE);
