@@ -23,6 +23,7 @@ $ 1.5.0
     * Danke an alle Mithelfer beim alljährlichen Nummer zuordnen!
     * Und Danke für die vielen netten Bewertungen
     * die Möglichkeit zum Download-Error-Debugging in den Einstellungen hinzugefügt
+    * Downloader auf neue Library umgebaut für niedrigere Android Versionen
 $ 1.4.3
   % Version 1.4.3
   _ 2018-04-01

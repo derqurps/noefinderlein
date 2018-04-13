@@ -29,14 +29,20 @@ public class Activity_PictureSlider extends AppCompatActivity
         ViewPagerEx.OnPageChangeListener {
 
     private SliderLayout mSlider;
+    private Bundle data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        data = getIntent().getExtras();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_pictureslider);
         mSlider = findViewById(R.id.slider);
-
-        Bundle data = getIntent().getExtras();
         ArrayList<CloudPicture> upList = data.getParcelableArrayList("upList");
         int position = data.getInt("position");
 
@@ -139,11 +145,13 @@ public class Activity_PictureSlider extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
+    protected void onPause() {
+        super.onPause();
         // To prevent a memory leak on rotation, make sure to call stopAutoCycle() on the slider before activity or fragment is destroyed
         mSlider.stopAutoCycle();
-        super.onStop();
+        mSlider.removeAllSliders();
     }
+
 
     @Override
     public void onSliderClick(BaseSliderView slider) {

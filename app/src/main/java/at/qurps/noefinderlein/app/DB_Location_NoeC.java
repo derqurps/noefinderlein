@@ -42,46 +42,47 @@ public class DB_Location_NoeC implements ClusterItem {
 	public static final String KEY_VISITED = "visited";
 
 	//private variables
-    int _id;
-	int _nummer;
-    int _jahr;
-	int _kat;
-	int _reg;
-	String _name;
-	String _email;
-	double _latitude;
-	double _longitude;
-	String _adr_plz;
-	String _tel;
-	String _fax;
-	String _anreise;
-	String _geoeffnet;
-	String _adr_ort;
-	String _adr_street;
-	String _tipp;
-	boolean _rollstuhl;
-	boolean _kinderwagen;
-	boolean _hund;
-	boolean _gruppe;
-	String _webseite;
-	String _beschreibung;
-	String _aussersonder;
-	String _eintritt;
-	String _ersparnis;
-	boolean _top_ausflugsziel;
-    int _change_index;
-    String _changed_date;
-    boolean _favorit;
-	String _noec_index;
-    String _google_place_id;
+	private int id;
+	private int nummer;
+	private int jahr;
+	private int kat;
+	private int reg;
+	private String name;
+	private String email;
+	private double latitude;
+	private double longitude;
+	private String adr_plz;
+	private String tel;
+	private String fax;
+	private String anreise;
+	private String geoeffnet;
+	private String adr_ort;
+	private String adr_street;
+	private String tipp;
+	private boolean rollstuhl;
+	private boolean kinderwagen;
+	private boolean hund;
+	private boolean gruppe;
+	private String webseite;
+	private String beschreibung;
+	private String aussersonder;
+	private String eintritt;
+	private String ersparnis;
+	private boolean top_ausflugsziel;
+	private int change_index;
+	private String changed_date;
+	private String noecardwebsiteid;
+	private String googleplaceid;
+
+	private boolean _favorit;
 
 
-	double _distance;
-	String _visited_date;
-	int _visited_id;
-	boolean _todayActive;
-	boolean _visited;
-	String _searchstr;
+	private double _distance;
+	private String _visited_date;
+	private int _visited_id;
+	private boolean _todayActive;
+	private boolean _visited;
+	private String _searchstr;
 	
 	
 	// Empty constructor
@@ -119,35 +120,35 @@ public class DB_Location_NoeC implements ClusterItem {
 						 String changed_date,
 						 int change_index,
 						 boolean favorit){
-        this._id= id;
-		this._nummer = nummer;
-        this._jahr = jahr;
-		this._kat=kat;
-		this._reg=reg;
-		this._name=name;
-		this._email=email;
-		this._latitude=latitude;
-		this._longitude=longitude;
-		this._adr_plz=adr_plz;
-		this._tel=tel;
-		this._fax=fax;
-		this._anreise=anreise;
-		this._geoeffnet=geoeffnet;
-		this._adr_ort=adr_ort;
-		this._adr_street=adr_street;
-		this._tipp=tipp;
-		this._rollstuhl=rollstuhl;
-		this._kinderwagen=kinderwagen;
-		this._hund=hund;
-		this._gruppe=gruppe;
-		this._webseite=webseite;
-		this._beschreibung=beschreibung;
-		this._aussersonder=aussersonder;
-		this._eintritt=eintritt;
-		this._ersparnis=ersparnis;
-		this._top_ausflugsziel=top_ausflugsziel;
-        this._change_index=change_index;
-        this._changed_date=changed_date;
+        this.id= id;
+		this.nummer = nummer;
+        this.jahr = jahr;
+		this.kat=kat;
+		this.reg=reg;
+		this.name=name;
+		this.email=email;
+		this.latitude=latitude;
+		this.longitude=longitude;
+		this.adr_plz=adr_plz;
+		this.tel=tel;
+		this.fax=fax;
+		this.anreise=anreise;
+		this.geoeffnet=geoeffnet;
+		this.adr_ort=adr_ort;
+		this.adr_street=adr_street;
+		this.tipp=tipp;
+		this.rollstuhl=rollstuhl;
+		this.kinderwagen=kinderwagen;
+		this.hund=hund;
+		this.gruppe=gruppe;
+		this.webseite=webseite;
+		this.beschreibung=beschreibung;
+		this.aussersonder=aussersonder;
+		this.eintritt=eintritt;
+		this.ersparnis=ersparnis;
+		this.top_ausflugsziel=top_ausflugsziel;
+        this.change_index=change_index;
+        this.changed_date=changed_date;
         this._favorit=favorit;
 		
 	}
@@ -159,252 +160,252 @@ public class DB_Location_NoeC implements ClusterItem {
 						 int kat,
 						 int reg,
 						 String name){
-		this._id= id;
-		this._nummer = nummer;
-        this._jahr = jahr;
-		this._kat=kat;
-		this._reg=reg;
-		this._name=name;
+		this.id= id;
+		this.nummer = nummer;
+        this.jahr = jahr;
+		this.kat=kat;
+		this.reg=reg;
+		this.name=name;
 	}
     // getting ID
     public int getId(){
-        return this._id;
+        return this.id;
     }
     // setting ID
     public void setId(int id){
-        this._id = id;
+        this.id = id;
     }
 
     // getting Nummer
 	public int getNummer(){
-	    return this._nummer;
+	    return this.nummer;
 	}
 	// setting Nummer
 	public void setNummer(int nummer){
-	    this._nummer = nummer;
+	    this.nummer = nummer;
 	}
 
     // getting Jahr
     public int getJahr(){
-        return this._jahr;
+        return this.jahr;
     }
     // setting Nummer
     public void setJahr(int jahr){
-        this._jahr = jahr;
+        this.jahr = jahr;
     }
 
 	
 	// getting kat
 	public int getKat(){
-		return this._kat;
+		return this.kat;
 	}
 	// setting kat
 	public void setKat(int kat){
-		this._kat = kat;
+		this.kat = kat;
 	}
 	// getting reg
 	public int getReg(){
-		return this._reg;
+		return this.reg;
 	}
 	// setting reg
 	public void setReg(int reg){
-		this._reg = reg;
+		this.reg = reg;
 	}
 	// getting name
 	public String getName(){
-		return this._name;
+		return this.name;
 	}
 	// setting name
 	public void setName(String name){
-		this._name = name;
+		this.name = name;
 	}
 	// getting email
 	public String getEmail(){
-		return this._email;
+		return this.email;
 	}
 	// setting email
 	public void setEmail(String email){
-		this._email = email;
+		this.email = email;
 	}
 	// getting latitude
 	public double getLatitude(){
-		return this._latitude;
+		return this.latitude;
 	}
 	// setting latitude
 	public void setLatitude(double latitude){
-		this._latitude = latitude;
+		this.latitude = latitude;
 	}
 	// getting longitude
 	public double getLongitude(){
-		return this._longitude;
+		return this.longitude;
 	}
 	// setting longitude
 	public void setLongitude(double longitude){
-		this._longitude = longitude;
+		this.longitude = longitude;
 	}
 	// getting adr_plz
 	public String getAdr_plz(){
-		return this._adr_plz;
+		return this.adr_plz;
 	}
 	// setting adr_plz
 	public void setAdr_plz(String adr_plz){
-		this._adr_plz = adr_plz;
+		this.adr_plz = adr_plz;
 	}
 	// getting tel
 	public String getTel(){
-		return this._tel;
+		return this.tel;
 	}
 	// setting tel
 	public void setTel(String tel){
-		this._tel = tel;
+		this.tel = tel;
 	}
 	// getting fax
 	public String getFax(){
-		return this._fax;
+		return this.fax;
 	}
 	// setting fax
 	public void setFax(String fax){
-		this._fax = fax;
+		this.fax = fax;
 	}
 	// getting anreise
 	public String getAnreise(){
-		return this._anreise;
+		return this.anreise;
 	}
 	// setting anreise
 	public void setAnreise(String anreise){
-		this._anreise = anreise;
+		this.anreise = anreise;
 	}
 	// getting geoeffnet
 	public String getGeoeffnet(){
-		return this._geoeffnet;
+		return this.geoeffnet;
 	}
 	// setting geoeffnet
 	public void setGeoeffnet(String geoeffnet){
-		this._geoeffnet = geoeffnet;
+		this.geoeffnet = geoeffnet;
 	}
 	// getting adr_ort
 	public String getAdr_ort(){
-		return this._adr_ort;
+		return this.adr_ort;
 	}
 	// setting adr_ort
 	public void setAdr_ort(String adr_ort){
-		this._adr_ort = adr_ort;
+		this.adr_ort = adr_ort;
 	}
 	// getting adr_street
 	public String getAdr_street(){
-		return this._adr_street;
+		return this.adr_street;
 	}
 	// setting adr_street
 	public void setAdr_street(String adr_street){
-		this._adr_street = adr_street;
+		this.adr_street = adr_street;
 	}
 	// getting tipp
 	public String getTipp(){
-		return this._tipp;
+		return this.tipp;
 	}
 	// setting tipp
 	public void setTipp(String tipp){
-		this._tipp = tipp;
+		this.tipp = tipp;
 	}
 	// getting rollstuhl
 	public boolean getRollstuhl(){
-		return this._rollstuhl;
+		return this.rollstuhl;
 	}
 	// setting rollstuhl
 	public void setRollstuhl(boolean rollstuhl){
-		this._rollstuhl = rollstuhl;
+		this.rollstuhl = rollstuhl;
 	}
 	// getting kinderwagen
 	public boolean getKinderwagen(){
-		return this._kinderwagen;
+		return this.kinderwagen;
 	}
 	// setting kinderwagen
 	public void setKinderwagen(boolean kinderwagen){
-		this._kinderwagen = kinderwagen;
+		this.kinderwagen = kinderwagen;
 	}
 	// getting hund
 	public boolean getHund(){
-		return this._hund;
+		return this.hund;
 	}
 	// setting hund
 	public void setHund(boolean hund){
-		this._hund = hund;
+		this.hund = hund;
 	}
 	// getting gruppe
 	public boolean getGruppe(){
-		return this._gruppe;
+		return this.gruppe;
 	}
 	// setting gruppe
 	public void setGruppe(boolean gruppe){
-		this._gruppe = gruppe;
+		this.gruppe = gruppe;
 	}
 
 	// getting webseite
 	public String getWebseite(){
-		return this._webseite;
+		return this.webseite;
 	}
 	// setting webseite
 	public void setWebseite(String webseite){
-		this._webseite = webseite;
+		this.webseite = webseite;
 	}
 
 	// getting beschreibung
 	public String getBeschreibung(){
-		return this._beschreibung;
+		return this.beschreibung;
 	}
 	// setting beschreibung
 	public void setBeschreibung(String beschreibung){
-		this._beschreibung = beschreibung;
+		this.beschreibung = beschreibung;
 	}
 	// getting aussersonder
 	public String getAussersonder(){
-		return this._aussersonder;
+		return this.aussersonder;
 	}
 	// setting aussersonder
 	public void setAussersonder(String aussersonder){
-		this._aussersonder = aussersonder;
+		this.aussersonder = aussersonder;
 	}
 	// getting eintritt
 	public String getEintritt(){
-		return this._eintritt;
+		return this.eintritt;
 	}
 	// setting eintritt
 	public void setEintritt(String eintritt){
-		this._eintritt = eintritt;
+		this.eintritt = eintritt;
 	}
 	// getting ersparnis
 	public String getErsparnis(){
-		return this._ersparnis;
+		return this.ersparnis;
 	}
 	// setting ersparnis
 	public void setErsparnis(String ersparnis){
-		this._ersparnis = ersparnis;
+		this.ersparnis = ersparnis;
 	}
 	// getting top_ausflugsziel
 	public boolean getTop_ausflugsziel(){
-		return this._top_ausflugsziel;
+		return this.top_ausflugsziel;
 	}
 	// setting top_ausflugsziel
 	public void setTop_ausflugsziel(boolean top_ausflugsziel){
-		this._top_ausflugsziel = top_ausflugsziel;
+		this.top_ausflugsziel = top_ausflugsziel;
 	}
 
     // getting change_index
     public int getChange_index(){
-        return this._change_index;
+        return this.change_index;
     }
     // setting change_index
     public void setChange_index(int change_index){
-        this._change_index = change_index;
+        this.change_index = change_index;
     }
 
     // getting changed_date
     public String getChanged_date(){
-        return this._changed_date;
+        return this.changed_date;
     }
     // setting changed_date
     public void setChanged_date(String changed_date){
-        this._changed_date = changed_date;
+        this.changed_date = changed_date;
     }
 
 	// getting visited_date
@@ -446,7 +447,7 @@ public class DB_Location_NoeC implements ClusterItem {
 	@Override
 	public LatLng getPosition() {
 		try {
-			return new LatLng(_latitude, _longitude);
+			return new LatLng(this.latitude, this.longitude);
 		}catch(Exception e){
 			return new LatLng(0, 0);
 		}
@@ -489,19 +490,19 @@ public class DB_Location_NoeC implements ClusterItem {
 	}
 
 	public String getNoecIndex(){
-		return this._noec_index;
+		return this.noecardwebsiteid;
 	}
 
 	public void setNoecIndex(String noec_index){
-		this._noec_index = noec_index;
+		this.noecardwebsiteid = noec_index;
 	}
 
     public String getGooglePlaceId(){
-        return this._google_place_id;
+        return this.googleplaceid;
     }
 
     public void setGooglePlaceId(String google_place_id){
-        this._google_place_id = google_place_id;
+        this.googleplaceid = google_place_id;
     }
 
 

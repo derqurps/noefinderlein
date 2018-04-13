@@ -73,7 +73,7 @@ public class Activity_Main extends AppCompatActivity implements
         Fragment_LocationFavorits.Callbacks,
         Fragment_LocationVisited.Callbacks,
         Fragment_Regions.Callbacks,
-        Downloader_Destination.Callbacks {
+        Downloader_Destination_v2.Callbacks {
 
     private static final String TAG = "Activity_Main";
     public static final String KEY_LICENCE_ACCEPTED = "licence_accepted_v3";
@@ -196,12 +196,10 @@ public class Activity_Main extends AppCompatActivity implements
 
         Boolean logginEnabled = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_LOGGING, false);
 
-        HyperLog.initialize(this);
+        HyperLog.deleteLogs();
         if (logginEnabled) {
-
+            HyperLog.initialize(this);
             HyperLog.setLogLevel(Log.VERBOSE);
-        } else {
-            HyperLog.setLogLevel(Log.ERROR);
         }
 
         initYear();
@@ -850,7 +848,7 @@ public class Activity_Main extends AppCompatActivity implements
             HyperLog.d("Response1: ", String.valueOf(mActiveyear));
             Integer[] myTaskParams = {mActiveyear};
             HyperLog.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
-            new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
+            new Downloader_Destination_v2(getApplicationContext(), this).execute(myTaskParams);
         }else{
             Util.setToast(this, getString(R.string.toast_offline),0);
         }

@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 
 import com.hypertrack.hyperlog.HyperLog;
@@ -17,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import at.qurps.noefinderlein.app.APIData.OpenData;
 
 
 public class DestinationsDB {
@@ -623,6 +624,10 @@ public class DestinationsDB {
                 }
             }
         }
+        delItemsNotInArray(year, serverList);
+    }
+    // Deleting single location
+    public void delItemsNotInArray(int year, List<Integer> serverList) {
         String Query = "SELECT " + DB_Location_NoeC.KEY_ID + " FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + " = " + year + " ORDER BY " + DB_Location_NoeC.KEY_ID + "";
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         Cursor cursor = db.rawQuery(Query, null);
@@ -793,7 +798,35 @@ public class DestinationsDB {
         }
 
     }
+    public boolean insertOrReplaceDays(List<OpenData> jsonDays, int year) throws Exception {
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (int i = 0; i < jsonDays.size(); i++) {
+                OpenData dayObj = jsonDays.get(i);
 
+                ContentValues values = new ContentValues();
+                values.put(DB_Days.KEY_DAY, dayObj.getD());
+                values.put(DB_Days.KEY_LOCKEY, dayObj.getL());
+                values.put(DB_Days.KEY_YEAR, year);
+                values.put(DB_Days.KEY_ACTIVE, dayObj.getA());
+                values.put(DB_Days.KEY_CHANGE, dayObj.getC());
+
+                db.replace(DB_Days.TABLE_NAME, null, values);
+
+
+            }
+            db.setTransactionSuccessful();
+
+        } catch(Exception e){
+            throw new Exception();
+        } finally {
+            db.endTransaction();
+            db.close(); // Closing database connection
+            return true;
+        }
+
+    }
     public void insertOrReplaceLocations(JSONArray jsonDays){
 
         List<ContentValues> updateList = new ArrayList<ContentValues>();
@@ -818,7 +851,27 @@ public class DestinationsDB {
                 HyperLog.e("DestDB JSON Exception 10", ex.toString());
             }
         }
-
+        insOrRepl(updateList, insertList);
+    }
+    public void insertOrReplaceLocations(List<DB_Location_NoeC> jsonDays) {
+        List<ContentValues> updateList = new ArrayList<ContentValues>();
+        List<ContentValues> insertList = new ArrayList<ContentValues>();
+        for (int i = 0; i < jsonDays.size(); i++) {
+            DB_Location_NoeC locationObj = jsonDays.get(i);
+            int id = locationObj.getId();
+            boolean update = updateornewForItemNeeded(id);
+            ContentValues values = getAllContentValuesFromObject(locationObj);
+            // HyperLog.d(TAG, values.toString());
+            if (update) {
+                updateList.add(values);
+            } else {
+                // insert
+                insertList.add(values);
+            }
+        }
+        insOrRepl(updateList, insertList);
+    }
+    private void insOrRepl(List<ContentValues> updateList, List<ContentValues> insertList) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
