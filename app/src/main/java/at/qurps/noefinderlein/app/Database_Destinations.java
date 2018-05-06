@@ -5,6 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +152,7 @@ public class Database_Destinations extends SQLiteOpenHelper {
             case 9:
                 db.execSQL("DELETE FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + "=2017;");
                 db.execSQL("DELETE FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + "=2017;");
+
             case 10:
                 db.execSQL("ALTER TABLE " + DB_Visited_Locations.TABLE_NAME + " RENAME TO TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
                 db.execSQL(SQL_CREATE_VISITED);
@@ -184,19 +188,23 @@ public class Database_Destinations extends SQLiteOpenHelper {
         }
         return years;
     }
-    public void fillSavedDataOnDbConvert (SQLiteDatabase db) {
+    private void fillSavedDataOnDbConvert (SQLiteDatabase db) {
         List<Integer> years = getYearsInDB(db);
         for (int i = 0; i < years.size(); i++) {
             fillSavedDataOnDbConvert(db, years.get(i));
         }
     }
-    public void fillSavedDataOnDbConvert (SQLiteDatabase db, int year) {
-        String query = "SELECT a." + DB_Visited_Locations.KEY_ID + ", a." + DB_Visited_Locations.KEY_LOC_ID + ", c." + DB_Location_NoeC.KEY_ERSPARNIS + " FROM " + DB_Visited_Locations.TABLE_NAME + " a LEFT JOIN " + DB_Location_NoeC.TABLE_NAME + " c ON a." + DB_Visited_Locations.KEY_LOC_ID + "=c." + DB_Location_NoeC.KEY_ID + " WHERE a." + DB_Visited_Locations.KEY_YEAR + " = " + year;
+    private void fillSavedDataOnDbConvert (SQLiteDatabase db, int year) {
+        String query = "SELECT a." + DB_Visited_Locations.KEY_ID + ", a." + DB_Visited_Locations.KEY_LOC_ID + ", a." + DB_Visited_Locations.KEY_SAVED + ", c." + DB_Location_NoeC.KEY_ERSPARNIS + " FROM " + DB_Visited_Locations.TABLE_NAME + " a LEFT JOIN " + DB_Location_NoeC.TABLE_NAME + " c ON a." + DB_Visited_Locations.KEY_LOC_ID + "=c." + DB_Location_NoeC.KEY_ID + " WHERE a." + DB_Visited_Locations.KEY_YEAR + " = " + year;
+        Log.d("DBDEST", query);
         Cursor cursor = db.rawQuery(query, new String[]{});
         List<ContentValues> updateList = new ArrayList<ContentValues>();
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                float saved = (float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_SAVED));
+                float saved = 0;
+                try{
+                    saved = (float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_SAVED));
+                } catch(Exception e) {}
                 if (saved == 0) {
                     ContentValues values = new ContentValues();
                     values.put(DB_Visited_Locations.KEY_ID, cursor.getInt(cursor.getColumnIndex(DB_Visited_Locations.KEY_ID)));
