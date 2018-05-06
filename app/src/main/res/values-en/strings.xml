@@ -137,6 +137,7 @@
     <string name="visitedNotChecked">Entry already present</string>
     <string name="visitedChooseWhen">Tick off for which day?</string>
     <string name="deleteVisited">Delete visited entry?</string>
+    <string name="payedAmount">saved Amount:</string>
     <string name="visitedtoday">Today</string>
     <string name="visitedchoose">Choose Date</string>
 
@@ -156,6 +157,8 @@
     <string name="title_activity_activity__info">Info</string>
     <string name="title_activity_activity__about">About</string>
 
+    <string name="pref_only_wlan">Update WLAN-Only</string>
+    <string name="pref_only_wlan_desc">Update locations only if WLAN active</string>
     <string name="pref_offline">Offline mode</string>
     <string name="pref_offline_desc">Don\'t try to update on each App open</string>
     <string name="pref_title_filter_visited">Filter visited</string>
@@ -207,4 +210,8 @@
     <string name="imgupconosenttitle">Uploadlicense</string>
 
     <string name="backButtonExit">Please click BACK again to exit</string>
+
+    <string name="sumSavedText">savings sum:</string>
+
+
 </resources>

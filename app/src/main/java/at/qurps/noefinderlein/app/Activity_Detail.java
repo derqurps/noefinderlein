@@ -427,6 +427,7 @@ public class Activity_Detail extends AppCompatActivity implements
                 argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_YEAR, ziel.getJahr());
                 argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LAT, mLatitude);
                 argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LON, mLongitude);
+                argumentsa.putFloat(DialogFragment_ChooseCheckinDate.ARG_AMOUNT, Util.ersparnisStringToFloat(ziel.getErsparnis()));
 
                 DialogFragment_ChooseCheckinDate newFragment = new DialogFragment_ChooseCheckinDate();
                 newFragment.setArguments(argumentsa);
@@ -605,7 +606,7 @@ public class Activity_Detail extends AppCompatActivity implements
             }
 
 
-            if(ziel.getGooglePlaceId()!=null && loadPictures){
+            if(ziel.getGooglePlaceId()!=null && loadPictures && false){
 
                 //"https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key)
                 String loadUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key);

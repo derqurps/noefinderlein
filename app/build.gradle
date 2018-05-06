@@ -16,8 +16,8 @@ android {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 95
-        versionName "1.5.0"
+        versionCode 96
+        versionName "1.5.1"
         multiDexEnabled true
         /*vectorDrawables.useSupportLibrary = true*/
     }
@@ -77,8 +77,12 @@ dependencies {
     implementation "com.android.support:design:$rootProject.ext.support_library_version"
     implementation "com.android.support:appcompat-v7:$rootProject.ext.support_library_version"
     implementation "com.android.support:exifinterface:$rootProject.ext.support_library_version"
+
     // implementation "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
     //debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+
     implementation "com.google.android.gms:play-services-auth:$rootProject.ext.gms_library_version"
     implementation "com.google.android.gms:play-services-maps:$rootProject.ext.gms_library_version"
     implementation "com.google.android.gms:play-services-location:$rootProject.ext.gms_library_version"
@@ -112,8 +116,8 @@ dependencies {
         releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
     implementation 'com.github.piasy:BigImageViewer:1.4.6'
     implementation 'com.github.piasy:GlideImageLoader:1.4.6'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.github.faranjit:currency-edittext:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

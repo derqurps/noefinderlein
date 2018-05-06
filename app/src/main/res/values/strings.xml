@@ -238,6 +238,7 @@
     <string name="visitedNotChecked">Eintrag schon hinzugefügt</string>
     <string name="visitedChooseWhen">Für welchen Tag abhaken?</string>
     <string name="deleteVisited">Besichtigten Eintrag löschen?</string>
+    <string name="payedAmount">Gesparter Betrag:</string>
     <string name="visitedtoday">Heute</string>
     <string name="visitedchoose">Auswählen</string>
 
@@ -257,6 +258,8 @@
     <string name="title_activity_activity__about">Über</string>
     <string name="title_activity_activity_detail">Detail</string>
 
+    <string name="pref_only_wlan">Update WLAN-Only</string>
+    <string name="pref_only_wlan_desc">Ziele nur im WLAN updaten</string>
     <string name="pref_offline">Offline Modus</string>
     <string name="pref_offline_desc">Nicht bei jedem Öffnen der App ein Update versuchen</string>
     <string name="pref_title_filter_visited">Filter besuchte</string>
@@ -313,6 +316,11 @@
     <string name="title_activity__picture_slider">Activity_PictureSlider</string>
 
     <string name="backButtonExit">Nochmal drücken um die App zu beenden</string>
+
+    <string name="sumSavedText">Ges. Ersparnis:</string>
+
+    <string name="currencyformat">€ %f.2</string>
+    <string name="currencyformatString">€ %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

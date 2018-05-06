@@ -70,6 +70,8 @@ public class DestinationsDB {
             values.put(DB_Visited_Locations.KEY_LOC_ID, visited.getLocId());
             values.put(DB_Visited_Locations.KEY_YEAR, visited.getYear());
             values.put(DB_Visited_Locations.KEY_LOGGED_DATE, visited.getDate());
+            values.put(DB_Visited_Locations.KEY_SAVED, visited.getSaved());
+
 
             // Inserting Row
             db.insert(DB_Visited_Locations.TABLE_NAME, null, values);
@@ -233,8 +235,8 @@ public class DestinationsDB {
     }
 
     // Getting All locations
-    public List<DB_Location_NoeC> getAllVisitedLocations(int year) {
-        List<DB_Location_NoeC> locationList = new ArrayList<DB_Location_NoeC>();
+    public List<DB_Visited_ArrayAdapter> getAllVisitedLocations(int year) {
+        List<DB_Visited_ArrayAdapter> locationList = new ArrayList<DB_Visited_ArrayAdapter>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + DB_Visited_Locations.TABLE_NAME + " LEFT JOIN "+DB_Location_NoeC.TABLE_NAME+" ON " + DB_Visited_Locations.TABLE_NAME+"."+ DB_Visited_Locations.KEY_LOC_ID +"="+DB_Location_NoeC.TABLE_NAME+"."+DB_Location_NoeC.KEY_ID+" WHERE "+ DB_Visited_Locations.TABLE_NAME+"."+ DB_Visited_Locations.KEY_YEAR+"="+String.valueOf(year)+ " ORDER BY "+ DB_Visited_Locations.TABLE_NAME+"."+ DB_Visited_Locations.KEY_LOGGED_DATE + " DESC";
 
@@ -246,8 +248,9 @@ public class DestinationsDB {
         // looping through all rows and adding to list
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                DB_Location_NoeC location = getLocationfromCursor(cursor);
-                locationList.add(location);
+                DB_Visited_ArrayAdapter da = new DB_Visited_ArrayAdapter(getLocationfromCursor(cursor), getVisitedLocationfromCursor(cursor));
+
+                locationList.add(da);
             } while (cursor.moveToNext());
         }
         if(cursor != null) {
@@ -686,7 +689,18 @@ public class DestinationsDB {
     	db.rawQuery(deleteQuery,null);
     	db.close();
     }
+    private DB_Visited_Locations getVisitedLocationfromCursor(Cursor cursor) {
+        DB_Visited_Locations location = new DB_Visited_Locations();
+        location.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Visited_Locations.KEY_ID))));
+        location.setLocId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Visited_Locations.KEY_LOC_ID))));
+        location.setYear(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Visited_Locations.KEY_YEAR))));
+        location.setDate(cursor.getString(cursor.getColumnIndex(DB_Visited_Locations.KEY_LOGGED_DATE)));
+        location.setLat((float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_LAT)));
+        location.setLon((float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_LON)));
+        location.setSaved((float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_SAVED)));
 
+        return location;
+    }
     private DB_Location_NoeC getLocationfromCursor(Cursor cursor)
     {
         DB_Location_NoeC location = new DB_Location_NoeC();
@@ -1055,7 +1069,8 @@ public class DestinationsDB {
     }
     public float getSavingsToYear(int year, boolean filterAccepted) {
         float ersparnis = 0;
-        String query = "SELECT " + DB_Location_NoeC.TABLE_NAME + "." + DB_Location_NoeC.KEY_ERSPARNIS + " AS " + DB_Location_NoeC.KEY_ERSPARNIS + " FROM " + DB_Visited_Locations.TABLE_NAME + " LEFT JOIN " + DB_Location_NoeC.TABLE_NAME + " ON " + DB_Visited_Locations.TABLE_NAME + "." + DB_Visited_Locations.KEY_LOC_ID + " = " + DB_Location_NoeC.TABLE_NAME + "." + DB_Location_NoeC.KEY_ID + " WHERE " + DB_Visited_Locations.TABLE_NAME + "."+DB_Visited_Locations.KEY_YEAR+"=" + String.valueOf(year) + (filterAccepted ? " AND " + DB_Visited_Locations.TABLE_NAME + "." + DB_Visited_Locations.KEY_ACCEPTED+"=1" : "");
+
+        String query = "SELECT " + DB_Visited_Locations.KEY_SAVED + " FROM " + DB_Visited_Locations.TABLE_NAME + " WHERE " + DB_Visited_Locations.KEY_YEAR+"=" + String.valueOf(year) + (filterAccepted ? " AND " + DB_Visited_Locations.KEY_ACCEPTED+"=1" : "");
 
         HyperLog.d(TAG, String.valueOf(query));
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -1065,30 +1080,7 @@ public class DestinationsDB {
             HyperLog.d(TAG,String.valueOf(cursor.getCount()));
             do {
                 try{
-                    String ersparnis_str = cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ERSPARNIS));
-                    HyperLog.d(TAG,String.valueOf(ersparnis_str ));
-                    String[] splitResult = ersparnis_str.split("€");
-                    float[] zwischarr = new float[splitResult.length-1];
-                    float zwischenwert = 0;
-                    for(int j = 1; j < splitResult.length; j++)
-                    {
-                        HyperLog.d(TAG,String.valueOf(splitResult[j]));
-                        if(splitResult[j].contains("-")){
-                            splitResult[j]=splitResult[j].substring(0,splitResult[j].indexOf("-"));
-                        }
-                        splitResult[j]=splitResult[j].replace("€","").replace(" " ,"").replace("-","").replace(".","");
-                        splitResult[j]=splitResult[j].replace(",",".");
-                        zwischarr[j-1]=Float.valueOf(splitResult[j]).floatValue();
-                        HyperLog.d(TAG,String.valueOf(zwischarr[j-1]));
-                    }
-
-                    for(int j = 0; j < zwischarr.length; j++) {
-                        zwischenwert = zwischenwert + zwischarr[j];
-                    }
-                    zwischenwert = zwischenwert / zwischarr.length;
-                    HyperLog.d(TAG,String.valueOf(zwischenwert ));
-
-                    ersparnis = ersparnis + zwischenwert;
+                    ersparnis = ersparnis + cursor.getFloat(cursor.getColumnIndex(DB_Visited_Locations.KEY_SAVED));
                 }
                 catch (Exception e) {
                     HyperLog.e(TAG,e.toString());

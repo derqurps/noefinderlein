@@ -38,7 +38,7 @@ public class Fragment_LocationVisited extends ListFragment {
 
     private DestinationsDB db;
     private Context mContext;
-    List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
+    List<DB_Visited_ArrayAdapter> listItems=new ArrayList<DB_Visited_ArrayAdapter>();
     ArrayAdapter_Visited adapter;
     private boolean mTwoPane;
     private Menu mMenu;

@@ -13,7 +13,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -844,13 +848,25 @@ public class Activity_Main extends AppCompatActivity implements
     }
     protected void updateDB(boolean force){
         Boolean offlinemode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OFFLINE_MODE, false);
+        Boolean wlanmode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_WLAN_MODE, false);
         if(!offlinemode) {
-            HyperLog.d("Response1: ", String.valueOf(mActiveyear));
-            Integer[] myTaskParams = {mActiveyear};
-            HyperLog.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
-            new Downloader_Destination_v2(getApplicationContext(), this).execute(myTaskParams);
+            if (!wlanmode || (wlanmode && checkWifiOnAndConnected())) {
+                HyperLog.d("Response1: ", String.valueOf(mActiveyear));
+                Integer[] myTaskParams = {mActiveyear};
+                HyperLog.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
+                new Downloader_Destination_v2(getApplicationContext(), this).execute(myTaskParams);
+            }
         }else{
             Util.setToast(this, getString(R.string.toast_offline),0);
+        }
+    }
+    private boolean checkWifiOnAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            return ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI;
+        } else {
+            return true;
         }
     }
     /*

@@ -24,6 +24,12 @@
         android:defaultValue="2018" />
 
     <CheckBoxPreference
+        android:key="pref_wlan_mode"
+        android:title="@string/pref_only_wlan"
+        android:summary="@string/pref_only_wlan_desc"
+        android:defaultValue="false" />
+    <CheckBoxPreference
+        android:dependency="pref_wlan_mode"
         android:key="pref_offline_mode"
         android:title="@string/pref_offline"
         android:summary="@string/pref_offline_desc"

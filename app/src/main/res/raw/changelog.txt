@@ -17,9 +17,15 @@
     </style>
   </head>
   <body>
+$ 1.5.1
+  % Version 1.5.1
+  _ 2018-05-04
+    * Schalter für WLAN-ONLY-Downloads in den Einstellungen hinzugefügt
+    * neuer "Abhaken"-Dialog mit der Möglichkeit den gesparten Preis zu ändern
+    * Google Bilder wieder ausgeschaltet nachdem Google für das Anzeigen jetzt etwas verlangen würde.
 $ 1.5.0
   % Version 1.5.0
-  _ 2018-05-09
+  _ 2018-04-09
     * Danke an alle Mithelfer beim alljährlichen Nummer zuordnen!
     * Und Danke für die vielen netten Bewertungen
     * die Möglichkeit zum Download-Error-Debugging in den Einstellungen hinzugefügt
