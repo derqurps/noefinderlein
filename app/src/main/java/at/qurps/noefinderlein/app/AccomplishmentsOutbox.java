@@ -60,15 +60,15 @@ public class AccomplishmentsOutbox {
     }
 
     public void saveLocal() {
-            /* TODO: This is left as an exercise. To make it more difficult to cheat,
-             * this data should be stored in an encrypted file! And remember not to
-             * expose your encryption key (obfuscate it by building it from bits and
-             * pieces and/or XORing with another string, for instance). */
+        /* TODO: This is left as an exercise. To make it more difficult to cheat,
+         * this data should be stored in an encrypted file! And remember not to
+         * expose your encryption key (obfuscate it by building it from bits and
+         * pieces and/or XORing with another string, for instance). */
     }
 
     public void loadLocal() {
-            /* TODO: This is left as an exercise. Write code here that loads data
-             * from the file you wrote in saveLocal(). */
+        /* TODO: This is left as an exercise. Write code here that loads data
+         * from the file you wrote in saveLocal(). */
     }
 
     void achievementToast(String achievement) {
@@ -224,14 +224,9 @@ public class AccomplishmentsOutbox {
         }
     }
     void checkForAchievements(int id) {
-        switch(myear) {
-            case 2017:
-                checkForAchievements2017();
-                break;
-        }
-
+        checkForAchievements();
     }
-    void checkForAchievements2017( ) {
+    void checkForAchievements( ) {
         int countOfUniqueVisited = mDb.getVisitedLocationsCount(myear, filterAccepted, true);
         int countOfMaxinOneDay = mDb.getMaxOnOneDayVisitedLocationsCount(myear, filterAccepted, true);
 

@@ -22,6 +22,7 @@ $ 1.5.1
   _ 2018-05-04
     * Schalter für WLAN-ONLY-Downloads in den Einstellungen hinzugefügt
     * neuer "Abhaken"-Dialog mit der Möglichkeit den gesparten Preis zu ändern
+    * Achievements sollten für 2018 wieder funktionieren (beim nächsten Abhaken werden alle neu berechnet)
     * Google Bilder wieder ausgeschaltet nachdem Google für das Anzeigen jetzt etwas verlangen würde.
 $ 1.5.0
   % Version 1.5.0
