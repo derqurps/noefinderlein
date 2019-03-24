@@ -1073,7 +1073,7 @@ public class Activity_Detail extends AppCompatActivity implements
         final String uuid = UUID.randomUUID().toString();
         HyperLog.d(TAG, "uuid: " + uuid);
         String bucketPath = STORAGE_PATH_UPLOADS + uuid + ".png";
-        StorageReference fireUpRef = mStorageRef.child(bucketPath);
+        final StorageReference fireUpRef = mStorageRef.child(bucketPath);
 
         String locationId = String.valueOf(ziel.getId());
         String locationName = String.valueOf(ziel.getName());
@@ -1116,7 +1116,7 @@ public class Activity_Detail extends AppCompatActivity implements
                 mNotifyManager.notify(UPLOAD_NOTIFICATION, mBuilder.build());
                 mNotifyManager.cancel(UPLOAD_NOTIFICATION);
                 System.out.println("Upload is complete");
-                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                @SuppressWarnings("VisibleForTests") String downloadUrl = fireUpRef.getDownloadUrl().toString();
                 @SuppressWarnings("VisibleForTests") String locationnoecIndex = taskSnapshot.getMetadata().getCustomMetadata("noec_idx");
                 @SuppressWarnings("VisibleForTests") String locationName = taskSnapshot.getMetadata().getCustomMetadata("name");
                 @SuppressWarnings("VisibleForTests") String locationId = taskSnapshot.getMetadata().getCustomMetadata("id");
@@ -1124,7 +1124,7 @@ public class Activity_Detail extends AppCompatActivity implements
 
                 String key = mDatabase.getReference().child(DATABASE_PATH_UPLOADS).push().getKey();
 
-                CloudPicture upload = new CloudPicture(locationId, downloadUrl.toString(), locationnoecIndex, locationName);
+                CloudPicture upload = new CloudPicture(locationId, downloadUrl, locationnoecIndex, locationName);
                 Map<String, Object> postValues = upload.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/" + DATABASE_PATH_UPLOADS + "/" + key, postValues);

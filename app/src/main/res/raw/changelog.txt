@@ -17,6 +17,15 @@
     </style>
   </head>
   <body>
+$ 1.5.3
+  % Version 1.5.3
+  _ 2019-02-15
+    * Fehler behoben: Wenn in den Einstellungen ein zukünftiges Jahr ausgewählt wurde, crashte die App. Diese Option sollte nur zum Debuggen verwendet werden.
+    * Möglichkeit die eigene Position auf der Übersichtskarte anzuzeigen hinzugefügt.
+$ 1.5.2
+  % Version 1.5.2
+  _ 2019-02-15
+    * Das Nö Finderlein wurde aus dem Play store geworfen weil ich einen Link auf die Spenden Seite in der App eingebaut hatte und dies gegen die Play-Store Benutzungsbedingungen verstößt. Diesen Link habe ich hiermit entfernt. Hoffentlich ist das Finderlein damit wieder Play-Store Benutzungsbedingungskonform.
 $ 1.5.1
   % Version 1.5.1
   _ 2018-05-04

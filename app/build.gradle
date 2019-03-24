@@ -10,14 +10,13 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "at.qurps.noefinderlein.app"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 99
-        versionName "1.5.1"
+        versionCode 101
+        versionName "1.5.3"
         multiDexEnabled true
         /*vectorDrawables.useSupportLibrary = true*/
     }
@@ -81,7 +80,7 @@ dependencies {
     // implementation "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
     //debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     implementation "com.google.android.gms:play-services-auth:$rootProject.ext.gms_library_version"
     implementation "com.google.android.gms:play-services-maps:$rootProject.ext.gms_library_version"
@@ -89,10 +88,11 @@ dependencies {
     implementation "com.google.android.gms:play-services-games:$rootProject.ext.gms_library_version"
     implementation "com.google.android.gms:play-services-plus:$rootProject.ext.gms_library_version"
     implementation "com.google.android.gms:play-services-places:$rootProject.ext.gms_library_version"
-    implementation "com.google.firebase:firebase-storage:$rootProject.ext.gms_library_version"
-    implementation "com.google.firebase:firebase-auth:$rootProject.ext.gms_library_version"
-    implementation "com.google.firebase:firebase-database:$rootProject.ext.gms_library_version"
+    implementation "com.google.firebase:firebase-storage:16.0.5"
+    implementation "com.google.firebase:firebase-auth:16.1.0"
+    implementation "com.google.firebase:firebase-database:16.0.6"
     implementation 'com.hypertrack:hyperlog:0.0.9'
+
     // implementation 'com.github.hanuor:pearl:0.0.8'
     implementation('com.github.aviadmini:quickimagepick:2.1.7') {
         // Uncomment next line if you have dependency conflict with AppCompat v7
@@ -109,13 +109,19 @@ dependencies {
     // implementation 'joda-time:joda-time:2.9.9'
     implementation 'com.koushikdutta.ion:ion:2.1.9'
     implementation 'com.gjiazhe:scrollparallaximageview:1.0'
-    implementation 'com.github.piasy:ProgressPieIndicator:1.2.9'
+    /*implementation('com.github.piasy:ProgressPieIndicator:1.5.6') {
+        exclude group: 'com.github.piasy.biv'
+    }*/
     testImplementation 'junit:junit:4.12'
     /*testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
         debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
         releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
-    implementation 'com.github.piasy:BigImageViewer:1.4.6'
-    implementation 'com.github.piasy:GlideImageLoader:1.4.6'
+    implementation('com.github.piasy:BigImageViewer:1.5.6'){
+        //exclude group: 'com.github.piasy.biv'
+    }
+    /*implementation('com.github.piasy:GlideImageLoader:1.5.6') {
+        exclude group: 'com.github.piasy.biv'
+    }*/
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.github.faranjit:currency-edittext:1.0.1'

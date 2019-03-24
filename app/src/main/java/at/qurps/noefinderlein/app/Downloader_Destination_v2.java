@@ -95,6 +95,7 @@ public class Downloader_Destination_v2 extends AsyncTask<Integer, String, Void> 
          */
         public void onDownloadCompleted();
         public void onDownloadCompleted(int id);
+        public void onDownloadError(String message);
     }
 
 
@@ -120,58 +121,64 @@ public class Downloader_Destination_v2 extends AsyncTask<Integer, String, Void> 
         try {
             CurrentIds yearData = noefinderleinAPI.loadChanges(year).execute().body();
 
-            assert yearData != null;
-            HyperLog.d("Response: ", "> " + String.valueOf(yearData.getChangeId()) + " " + String.valueOf(yearData.getDaysChangeId()) + " " + String.valueOf(year));
-            int updateneeded = db.updateForYearNeeded(year, yearData.getChangeId());
-            int currentChangeIdInDB = db.getCurrentLastChangeId(year);
-            HyperLog.d("Update neeeded?: ", String.valueOf(updateneeded));
+            if (yearData != null) {
+                HyperLog.d("Response: ", "> " + String.valueOf(yearData.getChangeId()) + " " + String.valueOf(yearData.getDaysChangeId()) + " " + String.valueOf(year));
+                int updateneeded = db.updateForYearNeeded(year, yearData.getChangeId());
+                int currentChangeIdInDB = db.getCurrentLastChangeId(year);
+                HyperLog.d("Update neeeded?: ", String.valueOf(updateneeded));
 
-            if (updateneeded == 1 ) {
-                mBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
-                mBuilder.setContentTitle("Data Download")
-                        .setContentText("Download in progress")
-                        .setSmallIcon(R.drawable.noefinderlein_outline_white);
+                if (updateneeded == 1) {
+                    mBuilder = new NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID);
+                    mBuilder.setContentTitle("Data Download")
+                            .setContentText("Download in progress")
+                            .setSmallIcon(R.drawable.noefinderlein_outline_white);
 
-                Intent resultIntent = new Intent(this.mContext, Activity_Main.class);
-                TaskStackBuilder stackBuilder = TaskStackBuilder.create(this.mContext);
-                stackBuilder.addParentStack(Activity_Main.class);
-                stackBuilder.addNextIntent(resultIntent);
-                PendingIntent resultPendingIntent =
-                        stackBuilder.getPendingIntent(
-                                0,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                        );
-                mBuilder.setContentIntent(resultPendingIntent);
-                mNotifyManager =
-                        (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-                mNotifyManager.notify(2, mBuilder.build());
+                    Intent resultIntent = new Intent(this.mContext, Activity_Main.class);
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(this.mContext);
+                    stackBuilder.addParentStack(Activity_Main.class);
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    mNotifyManager =
+                            (NotificationManager) this.mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                    mNotifyManager.notify(2, mBuilder.build());
 
 
-                String putBody = db.getStringAktDates(year);
-                HyperLog.d(TAG, putBody);
+                    String putBody = db.getStringAktDates(year);
+                    HyperLog.d(TAG, putBody);
 
-                RequestBody body = RequestBody.create(JSON, putBody);
+                    RequestBody body = RequestBody.create(JSON, putBody);
 
-                List<Integer> changedLocationIds = noefinderleinAPI.getChangedDestinationIds(body).execute().body();
+                    List<Integer> changedLocationIds = noefinderleinAPI.getChangedDestinationIds(body).execute().body();
 
-                assert changedLocationIds != null;
-                HyperLog.d(TAG, changedLocationIds.toString());
 
-                updatewiththisJsondata(changedLocationIds);
+                    if (changedLocationIds != null) {
+                        HyperLog.d(TAG, changedLocationIds.toString());
 
-                db.updateChangeId(year, yearData.getChangeId());
+                        updatewiththisJsondata(changedLocationIds);
 
-            }
-            HyperLog.d("Day Update neeeded?: ", String.valueOf(loadOpenData) +" "+ String.valueOf(currentChangeIdInDB) +" "+ String.valueOf(yearData.getDaysChangeId()) +" "+ String.valueOf(currentChangeIdInDB < yearData.getDaysChangeId()));
-            if(loadOpenData && currentChangeIdInDB < yearData.getDaysChangeId()) {
-                int downloadChangeAnz = yearData.getDaysChangeCount();
-                int anzPackages = (downloadChangeAnz / dayPkgCount) + 1;
-                HyperLog.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " +String.valueOf(anzPackages)  );
-                progress.setMax(downloadChangeAnz);
-                progress.setProgress(0);
+                        db.updateChangeId(year, yearData.getChangeId());
+                    }
 
-                publishProgress("Updating opening days  ...");
-                downloadSegment(year, yearData.getDaysChangeId(), anzPackages, 0, 0);
+                }
+                HyperLog.d("Day Update neeeded?: ", String.valueOf(loadOpenData) + " " + String.valueOf(currentChangeIdInDB) + " " + String.valueOf(yearData.getDaysChangeId()) + " " + String.valueOf(currentChangeIdInDB < yearData.getDaysChangeId()));
+                if (loadOpenData && currentChangeIdInDB < yearData.getDaysChangeId()) {
+                    int downloadChangeAnz = yearData.getDaysChangeCount();
+                    int anzPackages = (downloadChangeAnz / dayPkgCount) + 1;
+                    HyperLog.d(TAG, " gesamt und anzahl an x packages " + String.valueOf(downloadChangeAnz) + " " + String.valueOf(anzPackages));
+                    progress.setMax(downloadChangeAnz);
+                    progress.setProgress(0);
+
+                    publishProgress("Updating opening days  ...");
+                    downloadSegment(year, yearData.getDaysChangeId(), anzPackages, 0, 0);
+                }
+            } else {
+                mCallbacks.onDownloadError("No Location data yet for year: " + String.valueOf(year));
+                return null;
             }
 
         } catch (IOException e) {
@@ -180,9 +187,13 @@ public class Downloader_Destination_v2 extends AsyncTask<Integer, String, Void> 
         }
         try {
             List<Integer> yearIds = noefinderleinAPI.findAllIdsToYear(year).execute().body();
-            assert yearIds != null;
-            if(yearIds.size() > 3) {
-                db.delItemsNotInArray(year, yearIds);
+
+            if (yearIds != null) {
+                if (yearIds.size() > 3) {
+                    db.delItemsNotInArray(year, yearIds);
+                }
+            } else {
+                mCallbacks.onDownloadError("No Location data yet for year: " + String.valueOf(year));
             }
         } catch (IOException e) {
             e.printStackTrace();

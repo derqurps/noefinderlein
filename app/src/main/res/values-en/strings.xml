@@ -87,8 +87,7 @@
     <string name="pref_title_download_new">Update data</string>
     <string name="pref_description_download_new">Update data from internet</string>
     <string name="overwrite_year_summary">Should the automatic year changing be disabled?</string>
-    <string name="overwrite_year_title">Choose year manually</string>
-    <string name="str_donate">Donate to the developer</string>
+    <string name="overwrite_year_title">Choose year manually (Debug option)</string>
     <string name="str_navdraw_show_data">All</string>
     <string name="str_navdraw_show_region">Regions</string>
     <string name="str_settings">Settings</string>

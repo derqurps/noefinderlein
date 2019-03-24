@@ -1,20 +1,17 @@
 package at.qurps.noefinderlein.app;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,15 +26,10 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
-import com.google.maps.android.ui.IconGenerator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Activity_Map extends FragmentActivity implements OnMapReadyCallback,
@@ -63,6 +55,8 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
     private ClusterManager<DB_Location_NoeC> mClusterManager;
     private String mItemIds;
     private int mYear;
+
+    private static final int LAST_LOCATION_REQUEST = 2;
     private SharedPreferences prefs;
 
     @Override
@@ -120,7 +114,14 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
         if (mMap != null) {
             // The Map is verified. It is now safe to manipulate the map.
 
-            //mMap.setMyLocationEnabled(true);
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            } else {
+                mMap.setMyLocationEnabled(false);
+                ActivityCompat.requestPermissions(this, new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+            }
             mMap.setInfoWindowAdapter(new Adapter_GMapInfoWindow());
 
 
@@ -158,12 +159,7 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setCompassEnabled(true);
 
-            /*if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                mMap.setMyLocationEnabled(true);
-            } else {
-                // Show rationale and request permission.
-            }
+            /*
             mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
@@ -191,6 +187,26 @@ public class Activity_Map extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }*/
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults){
+        switch (requestCode){
+            case LAST_LOCATION_REQUEST:
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                            == PackageManager.PERMISSION_GRANTED) {
+                        mMap.setMyLocationEnabled(true);
+                    }
+
+                }else{
+                    Util.setToast(this, "Location updates denied", 1);
+                    //startDefaultScreen();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
+
+    }
     @Override
     public boolean onClusterClick(Cluster<DB_Location_NoeC> cluster) {
         return false;

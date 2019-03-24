@@ -452,10 +452,6 @@ public class Activity_Main extends AppCompatActivity implements
             onShowAchievementsRequested();
         } else if (id == R.id.game_leaderboard) {
             onShowLeaderboardsRequested();
-        } else if (id == R.id.nav_money) {
-            String url = String.valueOf("https://noecard.reitschmied.at/donate");
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(browserIntent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Activity_Settings.class);
             startActivity(intent);
@@ -893,6 +889,10 @@ public class Activity_Main extends AppCompatActivity implements
         /*if(mGoogleApiClient!= null && !mGoogleApiClient.isConnected()){
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }*/
+    }
+    @Override
+    public void onDownloadError(String message) {
+        Util.setToast(this, message, 1);
     }
     public void notifyDataChanged() {
         System.gc();

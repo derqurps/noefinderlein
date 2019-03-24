@@ -134,8 +134,7 @@
     <string name="pref_title_download_new">Daten aktualisieren</string>
     <string name="pref_description_download_new">Aktualisierungen aus dem Internet abrufen</string>
     <string name="overwrite_year_summary">Soll der automatische Jahreswechsel ausgeschaltet werden?</string>
-    <string name="overwrite_year_title">Jahr selber festlegen</string>
-    <string name="str_donate">Dem Entwickler spenden</string>
+    <string name="overwrite_year_title">Jahr selber festlegen (Debug option)</string>
     <string name="str_navdraw_show_data">Alle</string>
     <string name="str_navdraw_show_region">Regionen</string>
     <string name="str_settings">Einstellungen</string>
