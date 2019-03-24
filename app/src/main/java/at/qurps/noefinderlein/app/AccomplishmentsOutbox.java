@@ -91,123 +91,73 @@ public class AccomplishmentsOutbox {
         }
         switch(myear) {
             case 2017:
-                pushAccomplishments2017();
+                pushAccomplishments(String.valueOf(myear));
                 break;
             case 2018:
-                pushAccomplishments2018();
+                pushAccomplishments(String.valueOf(myear));
+                break;
+            case 2019:
+                pushAccomplishments(String.valueOf(myear));
                 break;
         }
         this.saveLocal();
     }
 
-    private void pushAccomplishments2017() {
+    private void pushAccomplishments(String year) {
         if (this.mfirstLocation) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2017_first_location));
+                    .unlock(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_first_location")));
             this.mfirstLocation = false;
         }
         if (this.m3in1) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2017_3in1));
+                    .unlock(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_3in1")));
             this.m3in1 = false;
         }
         if (this.m7in1) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2017_7in1));
+                    .unlock(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_7in1")));
             this.m7in1 = false;
         }
 
         if(this.malllocations != 0){
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2017_all), this.malllocations);
+                    .setSteps(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_all")), this.malllocations);
             this.malllocations = 0;
         }
         if (this.m50locations != 0) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2017_50), this.m50locations);
+                    .setSteps(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_50")), this.m50locations);
             this.m50locations = 0;
         }
         if (this.m10locations != 0) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2017_10), this.m10locations);
+                    .setSteps(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_10")), this.m10locations);
             this.m10locations = 0;
         }
         if (this.m5locations != 0) {
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2017_5), this.m5locations);
+                    .setSteps(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_5")), this.m5locations);
             this.m5locations = 0;
         }
         if(this.mtoplocations != 0){
             Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2017_top), this.mtoplocations);
+                    .setSteps(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_top")), this.mtoplocations);
             this.mtoplocations = 0;
         }
 
         if (this.mScoreCount >= 0) {
             Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .submitScore(mContext.getString(R.string.leaderboard_2017_count), this.mScoreCount);
+                    .submitScore(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_count")), this.mScoreCount);
             this.mScoreCount = -1;
         }
         if (this.mScoreSavings >= 0) {
             Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .submitScore(mContext.getString(R.string.leaderboard_2017_savings), (long)(this.mScoreSavings*1000000));
+                    .submitScore(mContext.getString(getStringIdentifier(mContext, "achievement_" + year + "_savings")), (long)(this.mScoreSavings*1000000));
             this.mScoreSavings = -1;
         }
     }
-    private void pushAccomplishments2018() {
-        if (this.mfirstLocation) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2018_first_location));
-            this.mfirstLocation = false;
-        }
-        if (this.m3in1) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2018_3in1));
-            this.m3in1 = false;
-        }
-        if (this.m7in1) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .unlock(mContext.getString(R.string.achievement_2018_7in1));
-            this.m7in1 = false;
-        }
 
-        if(this.malllocations != 0){
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2018_all), this.malllocations);
-            this.malllocations = 0;
-        }
-        if (this.m50locations != 0) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2018_50), this.m50locations);
-            this.m50locations = 0;
-        }
-        if (this.m10locations != 0) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2018_10), this.m10locations);
-            this.m10locations = 0;
-        }
-        if (this.m5locations != 0) {
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2018_5), this.m5locations);
-            this.m5locations = 0;
-        }
-        if(this.mtoplocations != 0){
-            Games.getAchievementsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .setSteps(mContext.getString(R.string.achievement_2018_top), this.mtoplocations);
-            this.mtoplocations = 0;
-        }
-
-        if (this.mScoreCount >= 0) {
-            Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .submitScore(mContext.getString(R.string.leaderboard_2018_count), this.mScoreCount);
-            this.mScoreCount = -1;
-        }
-        if (this.mScoreSavings >= 0) {
-            Games.getLeaderboardsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
-                    .submitScore(mContext.getString(R.string.leaderboard_2018_savings), (long)(this.mScoreSavings*1000000));
-            this.mScoreSavings = -1;
-        }
-    }
     void updateLeaderboards(int id) {
         int countOfVisited = mDb.getVisitedLocationsCount(myear, filterAccepted);
         sendEvent(mContext.getString(R.string.event_location_visited_count), countOfVisited);
@@ -272,5 +222,8 @@ public class AccomplishmentsOutbox {
         }
         Games.getEventsClient(mContext, GoogleSignIn.getLastSignedInAccount(mContext))
                 .increment(eventId, pushnum);
+    }
+    public static int getStringIdentifier(Context context, String name) {
+        return context.getResources().getIdentifier(name, "string", context.getPackageName());
     }
 }
