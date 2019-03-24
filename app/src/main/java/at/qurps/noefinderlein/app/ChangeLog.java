@@ -24,6 +24,8 @@ import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.webkit.WebView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -66,16 +68,16 @@ public class ChangeLog {
 
         // get version numbers
         this.lastVersion = sp.getString(VERSION_KEY, NO_VERSION);
-        Log.d(TAG, "lastVersion: " + lastVersion);
+        HyperLog.d(TAG, "lastVersion: " + lastVersion);
         try {
             this.thisVersion = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), 0).versionName;
         } catch (NameNotFoundException e) {
             this.thisVersion = NO_VERSION;
-            Log.e(TAG, "could not get version name from manifest!");
+            HyperLog.e(TAG, "could not get version name from manifest!");
             e.printStackTrace();
         }
-        Log.d(TAG, "appVersion: " + this.thisVersion);
+        HyperLog.d(TAG, "appVersion: " + this.thisVersion);
     }
 
     /**

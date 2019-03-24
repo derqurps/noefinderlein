@@ -29,6 +29,8 @@
     <color name="overlay_grey">#3b060606</color>
     <color name="grey_not_open_background">#78909C</color>
 
+    <color name="picture_background">#001820</color>
+
     <color name="noecard_menu_subtext">#343434</color>
 
 </resources>

@@ -134,8 +134,7 @@
     <string name="pref_title_download_new">Daten aktualisieren</string>
     <string name="pref_description_download_new">Aktualisierungen aus dem Internet abrufen</string>
     <string name="overwrite_year_summary">Soll der automatische Jahreswechsel ausgeschaltet werden?</string>
-    <string name="overwrite_year_title">Jahr selber festlegen</string>
-    <string name="str_donate">Dem Entwickler spenden</string>
+    <string name="overwrite_year_title">Jahr selber festlegen (Debug option)</string>
     <string name="str_navdraw_show_data">Alle</string>
     <string name="str_navdraw_show_region">Regionen</string>
     <string name="str_settings">Einstellungen</string>
@@ -238,6 +237,7 @@
     <string name="visitedNotChecked">Eintrag schon hinzugefügt</string>
     <string name="visitedChooseWhen">Für welchen Tag abhaken?</string>
     <string name="deleteVisited">Besichtigten Eintrag löschen?</string>
+    <string name="payedAmount">Gesparter Betrag:</string>
     <string name="visitedtoday">Heute</string>
     <string name="visitedchoose">Auswählen</string>
 
@@ -257,11 +257,21 @@
     <string name="title_activity_activity__about">Über</string>
     <string name="title_activity_activity_detail">Detail</string>
 
+    <string name="pref_only_wlan">Update WLAN-Only</string>
+    <string name="pref_only_wlan_desc">Ziele nur im WLAN updaten</string>
     <string name="pref_offline">Offline Modus</string>
     <string name="pref_offline_desc">Nicht bei jedem Öffnen der App ein Update versuchen</string>
     <string name="pref_title_filter_visited">Filter besuchte</string>
     <string name="pref_filter_visited">Besuchte Ziele aus den Listen entfernen</string>
     <string name="pref_title_load_open_data">Offene Tage anzeigen/updaten</string>
+
+    <string name="pref_title_logging">Logging aktivieren</string>
+    <string name="pref_summary_logging">Wenn aktiviert werden einige Log Meldungen zum Exportieren gespeichert</string>
+
+    <string name="pref_title_show_log">Log anzeigen/senden</string>
+    <string name="pref_summary_show_log">Gesammelte Logdaten anzeigen und bei Bedarf senden</string>
+    <string name="send_log">Logdaten senden</string>
+
     <string name="pref_open_data">Bei einem Update auch die offenen Tage der Ziele mit herunterladen und anzeigen</string>
     <string name="toast_offline">Updates deaktiviert - Siehe Einstellungen</string>
     <string name="not_open_today">Heute nicht offen</string>
@@ -302,5 +312,15 @@
     <string name="imgupconosenttitle">Uploadlizenz</string>
 
     <string name="title_activity__picture">Activity_Picture</string>
+    <string name="title_activity__picture_slider">Activity_PictureSlider</string>
 
+    <string name="backButtonExit">Nochmal drücken um die App zu beenden</string>
+
+    <string name="sumSavedText">Ges. Ersparnis:</string>
+
+    <string name="currencyformat">€ %f.2</string>
+    <string name="currencyformatString">€ %s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

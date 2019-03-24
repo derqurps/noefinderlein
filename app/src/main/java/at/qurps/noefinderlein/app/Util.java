@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.hypertrack.hyperlog.HyperLog;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -78,7 +79,7 @@ public class Util {
 		File file = new File(context.getExternalFilesDir(
 				Environment.DIRECTORY_PICTURES), albumName);
 		if (!file.mkdirs()) {
-			Log.e(TAG, "Directory not created");
+			HyperLog.e(TAG, "Directory not created");
 		}
 		return file;
 	}
@@ -474,5 +475,42 @@ public class Util {
         int day = preferences.getInt(DialogFragment_ChooseDates.DAY, 0);
         return ((year == (int)cNow.get(Calendar.YEAR)) && (month == (int)cNow.get(Calendar.MONTH)) && (day == (int)cNow.get(Calendar.DAY_OF_MONTH)));
     }
+    public final static float ersparnisStringToFloat(String ersparnis_str) {
+        float ersparnis = 0;
+        try {
+            HyperLog.d(TAG,String.valueOf(ersparnis_str));
+            String[] splitResult = ersparnis_str.split("€");
+            float[] zwischarr = new float[splitResult.length-1];
+            float zwischenwert = 0;
+            for(int j = 1; j < splitResult.length; j++)
+            {
 
+                zwischarr[j-1] = moneyToFloat(splitResult[j]);
+                HyperLog.d(TAG,String.valueOf(zwischarr[j-1]));
+            }
+
+            for (float aZwischarr : zwischarr) {
+                zwischenwert = zwischenwert + aZwischarr;
+            }
+            zwischenwert = zwischenwert / zwischarr.length;
+            HyperLog.d(TAG,String.valueOf(zwischenwert ));
+
+            ersparnis = ersparnis + zwischenwert;
+        }
+        catch (Exception e) {
+            HyperLog.e(TAG,e.toString());
+        }
+	    return ersparnis;
+    }
+    public final static float moneyToFloat(String money_str) {
+
+        HyperLog.d(TAG,String.valueOf(money_str));
+        if(money_str.contains("-")){
+            money_str=money_str.substring(0,money_str.indexOf("-"));
+        }
+        money_str=money_str.replace("€","").replace(" " ,"").replace("-","").replace(".","");
+        money_str=money_str.replace(",",".");
+
+        return Float.valueOf(money_str).floatValue();
+    }
 }

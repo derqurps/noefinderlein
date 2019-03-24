@@ -21,9 +21,15 @@
         android:dialogTitle="@string/str_dialog_jahr_waehlen"
         android:entries="@array/pref_year"
         android:entryValues="@array/pref_year_val"
-        android:defaultValue="2016" />
+        android:defaultValue="2018" />
 
     <CheckBoxPreference
+        android:key="pref_wlan_mode"
+        android:title="@string/pref_only_wlan"
+        android:summary="@string/pref_only_wlan_desc"
+        android:defaultValue="false" />
+    <CheckBoxPreference
+        android:dependency="pref_wlan_mode"
         android:key="pref_offline_mode"
         android:title="@string/pref_offline"
         android:summary="@string/pref_offline_desc"
@@ -53,7 +59,16 @@
         android:title="@string/pref_title_load_pictures"
         android:summary="@string/pref_load_pictures"
         android:defaultValue="true" />
-
+    <CheckBoxPreference
+        android:key="pref_load_logging"
+        android:title="@string/pref_title_logging"
+        android:summary="@string/pref_summary_logging"
+        android:defaultValue="false" />
+    <Preference
+        android:dependency="pref_load_logging"
+        android:key="pref_show_log"
+        android:title="@string/pref_title_show_log"
+        android:summary="@string/pref_summary_show_log"/>
     <!--<PreferenceCategory
         android:title="Ziele löschen"
         android:key="pref_key_storage_settings">

@@ -1,8 +1,16 @@
 package at.qurps.noefinderlein.app;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.hypertrack.hyperlog.HyperLog;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by roman on 03.04.16.
@@ -11,7 +19,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Database_Destinations extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
     private static Database_Destinations sInstance;
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "NoecardData.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -73,7 +81,8 @@ public class Database_Destinations extends SQLiteOpenHelper {
                     DB_Visited_Locations.KEY_LOGGED_DATE + TEXT_TYPE_0 + COMMA_SEP +
                     DB_Visited_Locations.KEY_ACCEPTED + BOOL_TYPE_0 + COMMA_SEP +
                     DB_Visited_Locations.KEY_LAT + DOUBLE_TYPE_0 + COMMA_SEP +
-                    DB_Visited_Locations.KEY_LON + DOUBLE_TYPE_0 +
+                    DB_Visited_Locations.KEY_LON + DOUBLE_TYPE_0 + COMMA_SEP +
+                    DB_Visited_Locations.KEY_SAVED + DOUBLE_TYPE_0 +
                     " )";
 
     private static final String SQL_CREATE_CHANGEVAL =
@@ -143,7 +152,16 @@ public class Database_Destinations extends SQLiteOpenHelper {
             case 9:
                 db.execSQL("DELETE FROM " + DB_Location_NoeC.TABLE_NAME + " WHERE " + DB_Location_NoeC.KEY_JAHR + "=2017;");
                 db.execSQL("DELETE FROM " + DB_Changeval.TABLE_NAME + " WHERE " + DB_Changeval.KEY_YEAR + "=2017;");
+
             case 10:
+                db.execSQL("ALTER TABLE " + DB_Visited_Locations.TABLE_NAME + " RENAME TO TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+                db.execSQL(SQL_CREATE_VISITED);
+                db.execSQL("INSERT INTO " + DB_Visited_Locations.TABLE_NAME + " (" + DB_Visited_Locations.KEY_ID + ", " + DB_Visited_Locations.KEY_LOC_ID + ", " + DB_Visited_Locations.KEY_YEAR + ", " + DB_Visited_Locations.KEY_LOGGED_DATE + ", " + DB_Visited_Locations.KEY_LAT + ", " + DB_Visited_Locations.KEY_LON + ") SELECT " + DB_Visited_Locations.KEY_ID + ", " + DB_Visited_Locations.KEY_LOC_ID + ", " + DB_Visited_Locations.KEY_YEAR + ", " + DB_Visited_Locations.KEY_LOGGED_DATE + ", " + DB_Visited_Locations.KEY_LAT + ", " + DB_Visited_Locations.KEY_LON + " FROM TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+                db.execSQL("DROP TABLE TempOldTable_" + DB_Visited_Locations.TABLE_NAME + ";");
+                // TODO fill all visited locations with price data
+
+                fillSavedDataOnDbConvert(db);
+            case 11:
         }
     }
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -153,6 +171,64 @@ public class Database_Destinations extends SQLiteOpenHelper {
             case 2:
             case 3:
             case 4:
+        }
+    }
+
+    private List<Integer> getYearsInDB (SQLiteDatabase db) {
+        List<Integer> years = new ArrayList<>();
+        String query = "SELECT distinct " + DB_Location_NoeC.KEY_JAHR + " FROM " + DB_Location_NoeC.TABLE_NAME;
+        Cursor cursor = db.rawQuery(query, new String[]{});
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                years.add(cursor.getInt(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR)));
+            } while (cursor.moveToNext());
+        }
+        if(cursor != null) {
+            cursor.close();
+        }
+        return years;
+    }
+    private void fillSavedDataOnDbConvert (SQLiteDatabase db) {
+        List<Integer> years = getYearsInDB(db);
+        for (int i = 0; i < years.size(); i++) {
+            fillSavedDataOnDbConvert(db, years.get(i));
+        }
+    }
+    private void fillSavedDataOnDbConvert (SQLiteDatabase db, int year) {
+        String query = "SELECT a." + DB_Visited_Locations.KEY_ID + ", a." + DB_Visited_Locations.KEY_LOC_ID + ", a." + DB_Visited_Locations.KEY_SAVED + ", c." + DB_Location_NoeC.KEY_ERSPARNIS + " FROM " + DB_Visited_Locations.TABLE_NAME + " a LEFT JOIN " + DB_Location_NoeC.TABLE_NAME + " c ON a." + DB_Visited_Locations.KEY_LOC_ID + "=c." + DB_Location_NoeC.KEY_ID + " WHERE a." + DB_Visited_Locations.KEY_YEAR + " = " + year;
+        Log.d("DBDEST", query);
+        Cursor cursor = db.rawQuery(query, new String[]{});
+        List<ContentValues> updateList = new ArrayList<ContentValues>();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                float saved = 0;
+                try{
+                    saved = (float)cursor.getDouble(cursor.getColumnIndex(DB_Visited_Locations.KEY_SAVED));
+                } catch(Exception e) {}
+                if (saved == 0) {
+                    ContentValues values = new ContentValues();
+                    values.put(DB_Visited_Locations.KEY_ID, cursor.getInt(cursor.getColumnIndex(DB_Visited_Locations.KEY_ID)));
+                    String ersparnis = cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ERSPARNIS));
+                    values.put(DB_Visited_Locations.KEY_SAVED, Util.ersparnisStringToFloat(ersparnis));
+
+                    updateList.add(values);
+                }
+            } while (cursor.moveToNext());
+        }
+        if(cursor != null) {
+            cursor.close();
+        }
+        db.beginTransaction();
+        try {
+            for (int i = 0; i < updateList.size(); i++) {
+                db.update(DB_Visited_Locations.TABLE_NAME,
+                        updateList.get(i),
+                        DB_Visited_Locations.KEY_ID + " = ? ",
+                        new String[]{String.valueOf(updateList.get(i).get(DB_Visited_Locations.KEY_ID))});
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 }

@@ -23,7 +23,7 @@ public class Fragment_Regions extends ListFragment {
 
     private int mActivatedPosition = ListView.INVALID_POSITION;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
     private DestinationsDB db;
     private Context mContext;
     private boolean mTwoPane;
@@ -39,15 +39,6 @@ public class Fragment_Regions extends ListFragment {
         public void onRegionSelected(int i, String name);
     }
 
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onRegionSelected(int id, String name) {
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,8 +93,5 @@ public class Fragment_Regions extends ListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
     }
 }

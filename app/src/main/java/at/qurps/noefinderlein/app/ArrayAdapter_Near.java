@@ -102,7 +102,7 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
             //((ViewHolder) view.getTag()).checkbox.setTag(list.get(position));
         }
         ViewHolder holder = (ViewHolder) view.getTag();
-        //Log.d(TAG,String.valueOf(list.get(position).getSort()));
+        //HyperLog.d(TAG,String.valueOf(list.get(position).getSort()));
 
         boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
         if(useOpenData) {
@@ -258,10 +258,6 @@ public class ArrayAdapter_Near extends ArrayAdapter<DB_Location_NoeC> {
                 //list.get(i).setDistance(actuallocation.distanceTo(zwischenloc)); //Error in manchen Android Versionen
                 list.get(i).setDistance(Util.distance_between(zwischenloc,actuallocation));
             }
-        }
-        else
-        {
-            Toast.makeText(context, R.string.hint_no_network_location, Toast.LENGTH_LONG).show();
         }
         this.filteredData = list ;
         notifyDataSetChanged();

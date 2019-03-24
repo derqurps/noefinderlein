@@ -22,6 +22,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
@@ -53,13 +54,17 @@ import com.bumptech.glide.load.model.LazyHeaderFactory;
 import com.bumptech.glide.load.model.LazyHeaders;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
 import com.google.android.gms.location.places.PlacePhotoMetadataBuffer;
@@ -83,11 +88,13 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.hypertrack.hyperlog.HyperLog;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.squareup.leakcanary.LeakCanary;
+//import com.squareup.leakcanary.LeakCanary;
 
 
 
@@ -101,13 +108,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
 public class Activity_Detail extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-DialogFragment_ChooseCheckinDate.Callbacks,
-DialogFragment_PictureConsent.NoticeDialogListener{
+        DialogFragment_ChooseCheckinDate.Callbacks,
+        DialogFragment_PictureConsent.NoticeDialogListener,
+        ArrayAdapter_Pictures.ClickThumbPictureCallback {
 
     public static final String ARG_ITEM_ID = "item_id" ;
     public static final String ARG_ITEM_JAHR = "item_jahr" ;
@@ -142,7 +148,8 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     private SharedPreferences prefs;
     private String fDate;
 
-    private GoogleApiClient mGoogleApiClient;
+    // private GoogleApiClient mGoogleApiClient;
+    private FusedLocationProviderClient mFusedLocationClient;
     private boolean mGameSignInClicked = false;
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
@@ -166,7 +173,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     private ImageView im;
     private NotificationManager mNotifyManager;
 
-    private RecyclerView.Adapter adapter;
+    private ArrayAdapter_Pictures adapter;
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
     private Toolbar toolbar;
@@ -210,27 +217,29 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    HyperLog.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
                 } else {
                     // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    HyperLog.d(TAG, "onAuthStateChanged:signed_out");
                 }
                 // ...
             }
         };
 
 
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         mAuth.signInAnonymously()
         .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
+                HyperLog.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
 
                 // If sign in fails, display a message to the user. If sign in succeeds
                 // the auth state listener will be notified and logic to handle the
                 // signed in user can be handled in the listener.
                 if (!task.isSuccessful()) {
-                    Log.w(TAG, "signInAnonymously", task.getException());
+                    HyperLog.w(TAG, "signInAnonymously", task.getException());
                     Toast.makeText(Activity_Detail.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -286,36 +295,27 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
         mGameSignInClicked = Util.getPreferencesBoolean(this, Activity_Main.KEY_GAME_SIGN_IN_CLICKED, false);
 
-        if(mGoogleApiClient == null ) {
+        /*if(mGoogleApiClient == null ) {
             GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
             mGoogleApiClientBuilder.addConnectionCallbacks(this);
-            mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
             mGoogleApiClientBuilder.addApi(LocationServices.API);
             mGoogleApiClientBuilder.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             mGoogleApiClientBuilder.setViewForPopups(rootView);
-            if(mGameSignInClicked) {
-
-                GoogleSignInOptions options = new GoogleSignInOptions
-                        .Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                        .build();
-                mGoogleApiClientBuilder.addApi(Auth.GOOGLE_SIGN_IN_API, options);
-                mGoogleApiClientBuilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
-            }
             mGoogleApiClient = mGoogleApiClientBuilder.build();
 
-        }
+        }*/
         changeView(getIntent().getExtras());
         aktjahr = getIntent().getIntExtra(ARG_ITEM_JAHR, 0);
         mOutbox = new AccomplishmentsOutbox(this, aktjahr, this.db);
         mOutbox.loadLocal();
 
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(getApplication());
+        LeakCanary.install(getApplication());*/
     }
 
     private void fabAddStandardPicture(){
@@ -369,13 +369,17 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     public void onResume() {
 
         super.onResume();
+        if (mGameSignInClicked) {
+            signInSilently();
+        }
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle item selection
         switch (item.getItemId()) {
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+                //NavUtils.navigateUpFromSameTask(this);
                 return true;
             case R.id.actionb_navigate_to_dest:
 
@@ -394,20 +398,20 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                 return true;
 
             case R.id.actionb_favorit_star:
-                //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
-                //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
+                //HyperLog.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
+                //HyperLog.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
                 Drawable drawable;
                 if(ziel.getFavorit())
                 {
                     drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star_outline);
                     ziel.setFavorit(false);
-                    Log.d(TAG +"false",String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG +"false",String.valueOf(ziel.getFavorit()));
                 }
                 else
                 {
                     drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
                     ziel.setFavorit(true);
-                    Log.d(TAG +"true",String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG +"true",String.valueOf(ziel.getFavorit()));
 
                 }
                 drawable = DrawableCompat.wrap(drawable);
@@ -423,6 +427,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                 argumentsa.putInt(DialogFragment_ChooseCheckinDate.ARG_YEAR, ziel.getJahr());
                 argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LAT, mLatitude);
                 argumentsa.putDouble(DialogFragment_ChooseCheckinDate.ARG_LON, mLongitude);
+                argumentsa.putFloat(DialogFragment_ChooseCheckinDate.ARG_AMOUNT, Util.ersparnisStringToFloat(ziel.getErsparnis()));
 
                 DialogFragment_ChooseCheckinDate newFragment = new DialogFragment_ChooseCheckinDate();
                 newFragment.setArguments(argumentsa);
@@ -431,20 +436,20 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
 
 
-                //Log.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
-                //Log.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
+                //HyperLog.d(TAG,String.valueOf(mMenu.findItem(R.id.actionb_favorit_star).getIcon()));
+                //HyperLog.d(TAG,String.valueOf(getResources().getDrawable(R.drawable.ic_action_star_0)));
 
                 /*if(ziel.getAngesehen())
                 {
                     mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick);
                     ziel.setAngesehen(false);
-                    //Log.d(TAG +"false",String.valueOf(ziel.getAngesehen()));
+                    //HyperLog.d(TAG +"false",String.valueOf(ziel.getAngesehen()));
                 }
                 else
                 {
                     mMenu.findItem(R.id.actionb_destination_visited).setIcon(R.mipmap.ic_action_tick_grey);
                     ziel.setAngesehen(true);
-                    //Log.d(TAG +"true",String.valueOf(ziel.getAngesehen()));
+                    //HyperLog.d(TAG +"true",String.valueOf(ziel.getAngesehen()));
 
                 }
                 //db.updateAngesehen(ziel);*/
@@ -460,7 +465,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
     private boolean updateOptionsMenu(){
         if(ziel != null) {
-            Log.d(TAG , String.valueOf(ziel.getFavorit()));
+            HyperLog.d(TAG , String.valueOf(ziel.getFavorit()));
             Drawable drawable;
             if (mMenu != null && ziel.getFavorit()) {
                 drawable = ContextCompat.getDrawable(mContext,R.drawable.ic_star);
@@ -546,8 +551,9 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         RecyclerView rvMoving = (RecyclerView) findViewById(R.id.header_logo_gall);
         rvMoving.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
 
-
-        rvMoving.setAdapter(new ArrayAdapter_Pictures(getApplicationContext(), uploadsCP, findViewById(R.id.toolbar_layout).getHeight()));
+        adapter = new ArrayAdapter_Pictures(getApplicationContext(), uploadsCP, findViewById(R.id.toolbar_layout).getHeight());
+        adapter.setCallback(this);
+        rvMoving.setAdapter(adapter);
     }
     private void updateView(){
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -600,11 +606,11 @@ DialogFragment_PictureConsent.NoticeDialogListener{
             }
 
 
-            if(ziel.getGooglePlaceId()!=null && loadPictures){
+            if(ziel.getGooglePlaceId()!=null && loadPictures && false){
 
                 //"https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key)
                 String loadUrl = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + ziel.getGooglePlaceId() + "&key=" + getString(R.string.google_photo_key);
-                Log.d(TAG, loadUrl);
+                HyperLog.d(TAG, loadUrl);
                 Ion.with(mContext)
                     .load(loadUrl )
                     .setHeader("Referer", "https://noecard.reitschmied.at")
@@ -887,7 +893,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
     public void changeView(Bundle arguments){
         getNewLocationArguments(arguments);
-        Log.d("da","da");
+        HyperLog.d("da","da");
         updateView();
         updateOptionsMenu();
     }
@@ -899,12 +905,12 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                 // to load content from a content provider.
                 //mItem = DummyContent.ITEM_MAP.get(getArguments().getString(
                 //		ARG_ITEM_NUMMER));
-                Log.d("nr + jahr: ", String.valueOf(arguments.getInt(ARG_ITEM_ID))+" " + String.valueOf(arguments.getInt(ARG_ITEM_JAHR)));
+                HyperLog.d("nr + jahr: ", String.valueOf(arguments.getInt(ARG_ITEM_ID))+" " + String.valueOf(arguments.getInt(ARG_ITEM_JAHR)));
                 aktID = arguments.getInt(ARG_ITEM_ID);
                 aktjahr = arguments.getInt(ARG_ITEM_JAHR);
                 if(db != null) {
                     ziel = db.getLocationToId(aktID);
-                    Log.d(TAG, String.valueOf(ziel.getFavorit()));
+                    HyperLog.d(TAG, String.valueOf(ziel.getFavorit()));
                 }
 
             }
@@ -914,140 +920,63 @@ DialogFragment_PictureConsent.NoticeDialogListener{
         }
     }
     private boolean isGameSignedIn() {
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
-            return true;
-        } else {
-            return false;
-        }
+        return GoogleSignIn.getLastSignedInAccount(this) != null;
     }
     @Override
     protected void onStart() {
-        Log.d(TAG, "onStart()");
+        HyperLog.d(TAG, "onStart()");
         super.onStart();
 
-        if(!isGameSignedIn()) {
+        /*if(!isGameSignedIn()) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
-        }
+        }*/
         mAuth.addAuthStateListener(mAuthListener);
     }
     @Override
     protected void onStop() {
-        Log.d(TAG, "onStop()");
+        HyperLog.d(TAG, "onStop()");
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
+        /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
-        }
+        }*/
     }
 
     @Override
     public void onConnected(@Nullable final Bundle connectionHint) {
-        if (mGoogleApiClient.hasConnectedApi(LocationServices.API)) {
+        /*if (mGoogleApiClient.hasConnectedApi(LocationServices.API)) {
             getLastKnownLocation();
 
-        }
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
-                new ResultCallback<GoogleSignInResult>() {
-                    @Override
-                    public void onResult(
-                            @NonNull GoogleSignInResult googleSignInResult) {
-                        if (googleSignInResult.isSuccess()) {
-                            onSignedIn(googleSignInResult.getSignInAccount(),
-                                    connectionHint);
-                        } else {
-                            Log.e(TAG, "Error with silentSignIn: " +
-                                    googleSignInResult.getStatus());
-                            // Don't show a message here, this only happens
-                            // when the user can be authenticated, but needs
-                            // to accept consent requests.
-                            handleSignOut();
-                        }
-                    }
-                }
-            );
-            if (!mOutbox.isEmpty()) {
-                mOutbox.pushAccomplishments(mGoogleApiClient, 0);
-                Toast.makeText(this, getString(R.string.your_progress_will_be_uploaded),
-                        Toast.LENGTH_LONG).show();
-            }
-        } else {
-            handleSignOut();
-        }
+        }*/
+
         isGameSignedIn();
     }
 
-    private void handleSignOut() {
-        // sign out.
-        Log.d(TAG, "Sign-out button clicked");
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Games.signOut(mGoogleApiClient);
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        }
-        isGameSignedIn();
-
-    }
-
-    public void onSignedIn(GoogleSignInAccount acct, @Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected() called. Sign in successful!");
-
-        //serverAuthCode = acct.getServerAuthCode();
-
-    }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(TAG, "onConnectionSuspended() called: " );
+        HyperLog.d(TAG, "onConnectionSuspended() called: " );
 
-        mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+        //mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
 
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
-        if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed(): already resolving");
-            // already resolving
-            return;
-        }
-
-        // if the sign-in button was clicked or if auto sign-in is enabled,
-        // launch the sign-in flow
-        if (mGameSignInClicked || mAutoStartSignInflow) {
-            mAutoStartSignInflow = false;
-            mGameSignInClicked = false;
-            mResolvingConnectionFailure = true;
-
-            // Attempt to resolve the connection failure using BaseGameUtils.
-            // The R.string.signin_other_error value should reference a generic
-            // error string in your strings.xml file, such as "There was
-            // an issue with sign-in, please try again later."
-            if (!BaseGameUtils.resolveConnectionFailure(this,
-                    mGoogleApiClient, connectionResult,
-                    RC_SIGN_IN, getString(R.string.signin_other_error))) {
-                mResolvingConnectionFailure = false;
-            }
-        }
-
-        // Put code here to display the sign-in button
-        isGameSignedIn();
     }
 
     @Override
     public void onItemSelected_DialogFragment_ChooseCheckinDate(int id) {
+        HyperLog.d(TAG, "onItemSelected_DialogFragment_ChooseCheckinDate() called: " );
         checkAchievements(id);
     }
 
     private void checkAchievements(int id) {
+        HyperLog.d(TAG, "checkAchievements() called: " );
+        Util.setToast(this, "check achievements", 0);
+        mOutbox.checkForAchievements(id);
 
-        mOutbox.checkForAchievements(mGoogleApiClient, id);
+        mOutbox.updateLeaderboards(id);
 
-        mOutbox.updateLeaderboards(mGoogleApiClient, id);
-
-        mOutbox.pushAccomplishments(mGoogleApiClient, id);
+        mOutbox.pushAccomplishments(id);
     }
 
     @Override
@@ -1068,20 +997,25 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     }
 
     protected void getLastKnownLocation(){
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
-            if(ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(Activity_Detail.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(Activity_Detail.this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
-                return;
-            }
-            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            if (mLastLocation != null) {
-                mLatitude = mLastLocation.getLatitude();
-                mLongitude = mLastLocation.getLongitude();
-            }
+            ActivityCompat.requestPermissions(Activity_Detail.this, new String[] {android.Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+            return;
         }
+        mFusedLocationClient.getLastLocation()
+            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        mLastLocation = location;
+                        mLatitude = mLastLocation.getLatitude();
+                        mLongitude = mLastLocation.getLongitude();
+                    }
+                }
+            });
     }
 
     @Override
@@ -1109,12 +1043,12 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
         @Override
         public void onError(@NonNull final PickSource pPickSource, final int pRequestType, @NonNull final String pErrorString) {
-            Log.e(TAG, "Err: " + pErrorString);
+            HyperLog.e(TAG, "Err: " + pErrorString);
         }
 
         @Override
         public void onCancel(@NonNull final PickSource pPickSource, final int pRequestType) {
-            Log.d(TAG, "Cancel: " + pPickSource.name());
+            HyperLog.d(TAG, "Cancel: " + pPickSource.name());
         }
 
     };
@@ -1137,9 +1071,9 @@ DialogFragment_PictureConsent.NoticeDialogListener{
     @Override
     public void onDialogPositiveClick(Uri pImageUri) {
         final String uuid = UUID.randomUUID().toString();
-        Log.d(TAG, "uuid: " + uuid);
+        HyperLog.d(TAG, "uuid: " + uuid);
         String bucketPath = STORAGE_PATH_UPLOADS + uuid + ".png";
-        StorageReference fireUpRef = mStorageRef.child(bucketPath);
+        final StorageReference fireUpRef = mStorageRef.child(bucketPath);
 
         String locationId = String.valueOf(ziel.getId());
         String locationName = String.valueOf(ziel.getName());
@@ -1182,7 +1116,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
                 mNotifyManager.notify(UPLOAD_NOTIFICATION, mBuilder.build());
                 mNotifyManager.cancel(UPLOAD_NOTIFICATION);
                 System.out.println("Upload is complete");
-                @SuppressWarnings("VisibleForTests") Uri downloadUrl = taskSnapshot.getMetadata().getDownloadUrl();
+                @SuppressWarnings("VisibleForTests") String downloadUrl = fireUpRef.getDownloadUrl().toString();
                 @SuppressWarnings("VisibleForTests") String locationnoecIndex = taskSnapshot.getMetadata().getCustomMetadata("noec_idx");
                 @SuppressWarnings("VisibleForTests") String locationName = taskSnapshot.getMetadata().getCustomMetadata("name");
                 @SuppressWarnings("VisibleForTests") String locationId = taskSnapshot.getMetadata().getCustomMetadata("id");
@@ -1190,7 +1124,7 @@ DialogFragment_PictureConsent.NoticeDialogListener{
 
                 String key = mDatabase.getReference().child(DATABASE_PATH_UPLOADS).push().getKey();
 
-                CloudPicture upload = new CloudPicture(locationId, downloadUrl.toString(), locationnoecIndex, locationName);
+                CloudPicture upload = new CloudPicture(locationId, downloadUrl, locationnoecIndex, locationName);
                 Map<String, Object> postValues = upload.toMap();
                 Map<String, Object> childUpdates = new HashMap<>();
                 childUpdates.put("/" + DATABASE_PATH_UPLOADS + "/" + key, postValues);
@@ -1204,6 +1138,38 @@ DialogFragment_PictureConsent.NoticeDialogListener{
             }
         });
     }
+    private void signInSilently() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+            GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        signInClient.silentSignIn().addOnCompleteListener(this,
+            new OnCompleteListener<GoogleSignInAccount>() {
+                @Override
+                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                    if (task.isSuccessful()) {
+                        // The signed in account is stored in the task's result.
+                        GoogleSignInAccount signedInAccount = task.getResult();
+                        GamesClient gamesClient = Games.getGamesClient(Activity_Detail.this, signedInAccount);
+                        gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                        gamesClient.setViewForPopups(rootView);
+                    } else {
+                        // Player will need to sign-in explicitly using via UI
+                    }
+                }
+            });
+    }
 
 
+    @Override
+    public void thumbPictureClicked(int position) {
+
+        ArrayList<CloudPicture> upList = adapter.getSortedList(position);
+
+        Bundle arguments = new Bundle();
+        arguments.putParcelableArrayList("upList", upList);
+        arguments.putInt("position", position);
+
+        Intent intent = new Intent(mContext, Activity_PictureSlider.class);
+        intent.putExtras(arguments);
+        mContext.startActivity(intent);
+    }
 }

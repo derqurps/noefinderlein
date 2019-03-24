@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class Fragment_LocationFavorits extends ListFragment {
     public static final String ARG_MTWOPANE ="mTwoPane" ;
     public static final String ARG_ISREGION ="isRegion" ;
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
     private DestinationsDB db;
     private Context mContext;
     List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
@@ -47,15 +49,6 @@ public class Fragment_LocationFavorits extends ListFragment {
         public void onItemSelected_Fragment_LocationFavorits(int i,int year);
     }
 
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected_Fragment_LocationFavorits(int id, int year) {
-        }
-    };
 
     public Fragment_LocationFavorits() {
     }
@@ -84,7 +77,7 @@ public class Fragment_LocationFavorits extends ListFragment {
     }
     private void dbContentChanged(){
         listItems = db.getAllFavoritLocations(mRegionItemJahr);
-        adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+        adapter=new ArrayAdapter_Mainlist(mContext, listItems, mRegionItemJahr);
         adapter.setCallingFragment(TAG);
         setListAdapter(adapter);
     }
@@ -119,9 +112,6 @@ public class Fragment_LocationFavorits extends ListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
     }
 
     @Override
@@ -165,7 +155,7 @@ public class Fragment_LocationFavorits extends ListFragment {
             if (arguments.containsKey(ARG_ITEM_JAHR)) {
                 mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
             }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+            HyperLog.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
         }
     }
 }

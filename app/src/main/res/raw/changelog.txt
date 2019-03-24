@@ -17,6 +17,46 @@
     </style>
   </head>
   <body>
+$ 1.5.3
+  % Version 1.5.3
+  _ 2019-02-15
+    * Fehler behoben: Wenn in den Einstellungen ein zukünftiges Jahr ausgewählt wurde, crashte die App. Diese Option sollte nur zum Debuggen verwendet werden.
+    * Möglichkeit die eigene Position auf der Übersichtskarte anzuzeigen hinzugefügt.
+$ 1.5.2
+  % Version 1.5.2
+  _ 2019-02-15
+    * Das Nö Finderlein wurde aus dem Play store geworfen weil ich einen Link auf die Spenden Seite in der App eingebaut hatte und dies gegen die Play-Store Benutzungsbedingungen verstößt. Diesen Link habe ich hiermit entfernt. Hoffentlich ist das Finderlein damit wieder Play-Store Benutzungsbedingungskonform.
+$ 1.5.1
+  % Version 1.5.1
+  _ 2018-05-04
+    * Schalter für WLAN-ONLY-Downloads in den Einstellungen hinzugefügt
+    * neuer "Abhaken"-Dialog mit der Möglichkeit den gesparten Preis zu ändern
+    * Achievements sollten für 2018 wieder funktionieren (beim nächsten Abhaken werden alle neu berechnet)
+    * Google Bilder wieder ausgeschaltet nachdem Google für das Anzeigen jetzt etwas verlangen würde.
+$ 1.5.0
+  % Version 1.5.0
+  _ 2018-04-09
+    * Danke an alle Mithelfer beim alljährlichen Nummer zuordnen!
+    * Und Danke für die vielen netten Bewertungen
+    * die Möglichkeit zum Download-Error-Debugging in den Einstellungen hinzugefügt
+    * Downloader auf neue Library umgebaut für niedrigere Android Versionen
+$ 1.4.3
+  % Version 1.4.3
+  _ 2018-04-01
+    * some new year fixes
+$ 1.4.2
+  % Version 1.4.2
+  _ 2018-03-26
+    * fix login error when play games is not installed
+$ 1.4.1
+  % Version 1.4.1
+  _ 2018-03-04
+    * add Adaptive Icon
+$ 1.4.0
+  % Version 1.4.0
+  _ 2018-02-22
+    * Back/Up Navigation endlich gefixt
+    * Libraries upgedated & Build Target erhöht
 $ 1.3.1
   % Version 1.3.1
   _ 2017-04-24

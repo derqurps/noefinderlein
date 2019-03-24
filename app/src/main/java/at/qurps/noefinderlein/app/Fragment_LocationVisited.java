@@ -16,6 +16,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hypertrack.hyperlog.HyperLog;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,13 +32,13 @@ public class Fragment_LocationVisited extends ListFragment {
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
 
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks;
 
 
 
     private DestinationsDB db;
     private Context mContext;
-    List<DB_Location_NoeC> listItems=new ArrayList<DB_Location_NoeC>();
+    List<DB_Visited_ArrayAdapter> listItems=new ArrayList<DB_Visited_ArrayAdapter>();
     ArrayAdapter_Visited adapter;
     private boolean mTwoPane;
     private Menu mMenu;
@@ -58,17 +60,8 @@ public class Fragment_LocationVisited extends ListFragment {
         public void onItemSelected_Fragment_LocationVisited(int i, int year);
     }
 
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected_Fragment_LocationVisited(int id, int year) {
-        }
-    };
+    public Fragment_LocationVisited () {
 
-    public Fragment_LocationVisited() {
     }
 
     @Override
@@ -81,6 +74,18 @@ public class Fragment_LocationVisited extends ListFragment {
         if (mMenu != null) {
             onPrepareOptionsMenu(mMenu);
         }
+    }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+        // Activities containing this fragment must implement its callbacks.
+        if (!(context instanceof Fragment_LocationList.Callbacks)) {
+            throw new IllegalStateException(
+                    "Activity must implement fragment's callbacks.");
+        }
+
+        mCallbacks = (Callbacks) context;
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -150,6 +155,7 @@ public class Fragment_LocationVisited extends ListFragment {
 
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
+        HyperLog.d(TAG, String.valueOf(adapter.getIdtoPosition(position)) + String.valueOf(adapter.getJahrtoPosition(position)));
         mCallbacks.onItemSelected_Fragment_LocationVisited(adapter.getIdtoPosition(position), adapter.getJahrtoPosition(position));
     }
 
@@ -181,7 +187,7 @@ public class Fragment_LocationVisited extends ListFragment {
             if (arguments.containsKey(ARG_ITEM_JAHR)) {
                 mRegionItemJahr = arguments.getInt(ARG_ITEM_JAHR);
             }
-            Log.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
+            HyperLog.d(TAG, "oncreate hier" + String.valueOf(mTwoPane));
         }
     }
     private void setActivatedPosition(int position) {

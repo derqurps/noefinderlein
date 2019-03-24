@@ -67,7 +67,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	 * The fragment's current callback object, which is notified of list item
 	 * clicks.
 	 */
-	private Callbacks mCallbacks = sDummyCallbacks;
+	private Callbacks mCallbacks;
 
 	/**
 	 * The current activated item position. Only used on tablets.
@@ -103,16 +103,6 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		 */
 		public void onItemSelected_Fragment_LocationList(int i, int year);
 	}
-
-	/**
-	 * A dummy implementation of the {@link Callbacks} interface that does
-	 * nothing. Used only when this fragment is not attached to an activity.
-	 */
-	private static Callbacks sDummyCallbacks = new Callbacks() {
-		@Override
-		public void onItemSelected_Fragment_LocationList(int id, int year) {
-		}
-	};
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the
@@ -237,9 +227,6 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 	@Override
 	public void onDetach() {
 		super.onDetach();
-
-		// Reset the active callbacks interface to the dummy implementation.
-		mCallbacks = sDummyCallbacks;
 	}
 
 	@Override
@@ -297,7 +284,7 @@ public class Fragment_LocationList extends ListFragment implements DialogFragmen
 		//Log.d(TAG," --- size "+String.valueOf(listItems.get(0).getName()));
         SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         int sortByWhat = sharedPref.getInt(PREF_SORT_STRING,0);
-		adapter=new ArrayAdapter_Mainlist(mContext,listItems);
+		adapter=new ArrayAdapter_Mainlist(mContext, listItems, mRegionItemJahr);
         filterWithNewData(getFilterliste(), getOpenFilter());
         sortBy(sortByWhat);
 		setListAdapter(adapter);

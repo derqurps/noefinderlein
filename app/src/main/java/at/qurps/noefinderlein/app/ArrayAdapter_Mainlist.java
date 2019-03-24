@@ -8,6 +8,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LightingColorFilter;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,13 +43,15 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
     private DestinationsDB db;
     private String fDate;
 	private String callingFragment;
+	private int year;
 
 
-	public ArrayAdapter_Mainlist(Context context, List<DB_Location_NoeC> list) {
+	public ArrayAdapter_Mainlist(Context context, List<DB_Location_NoeC> list, int year) {
 		super(context, R.layout.listitem_main, list);
 		this.context = context;
 		//this.list = list;
 
+		this.year = year;
 		this.filteredData = list ;
 		this.originalData = list ;
 		this.anz = DialogFragment_FilterList.anz;
@@ -75,6 +78,14 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 		this.callingFragment = callingFragment;
 	}
 
+	private int getLayout(int year) {
+		if (year >= 2018) {
+			//return R.layout.listitem_main_2018;
+            return R.layout.listitem_main;
+		} else {
+			return R.layout.listitem_main;
+		}
+	}
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View view = null;
@@ -90,7 +101,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
         if (convertView == null) {
 
             LayoutInflater inflator = LayoutInflater.from(context);
-            view = inflator.inflate(R.layout.listitem_main, null);
+            view = inflator.inflate(getLayout(this.year), null);
 
 			final ViewHolder viewHolder = new ViewHolder();
 			viewHolder.sortnumber = (TextView) view.findViewById(R.id.menuitem_sortnumber);
@@ -112,7 +123,7 @@ public class ArrayAdapter_Mainlist extends ArrayAdapter<DB_Location_NoeC> /*impl
 			//((ViewHolder) view.getTag()).checkbox.setTag(list.get(position));
 		}
 		ViewHolder holder = (ViewHolder) view.getTag();
-		//Log.d(TAG,String.valueOf(list.get(position).getSort()));
+		//HyperLog.d(TAG,String.valueOf(list.get(position).getSort()));
         boolean useOpenData = this.prefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, false);
         if(useOpenData) {
             if(filteredData.get(position).getTodayActive() || this.callingFragment == Fragment_LocationFavorits.TAG) {

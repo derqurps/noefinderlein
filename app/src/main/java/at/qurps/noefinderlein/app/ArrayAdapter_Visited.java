@@ -13,17 +13,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
+public class ArrayAdapter_Visited extends ArrayAdapter<DB_Visited_ArrayAdapter> {
 
     //private final List<Location> list;
-    private List<DB_Location_NoeC> originalData = null;
-    private List<DB_Location_NoeC> filteredData = null;
+    private List<DB_Visited_ArrayAdapter> originalData = null;
+    private List<DB_Visited_ArrayAdapter> filteredData = null;
     private final Context context;
     private String filterstring;
     private boolean[] filtertyp;
     private static final String TAG = "VisitedArrayAdapter";
 
-    public ArrayAdapter_Visited(Context context, List<DB_Location_NoeC> list) {
+    public ArrayAdapter_Visited(Context context, List<DB_Visited_ArrayAdapter> list) {
         super(context, R.layout.listitem_visited, list);
         this.context = context;
         //this.list = list;
@@ -61,8 +61,8 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
             //((ViewHolder) view.getTag()).checkbox.setTag(list.get(position));
         }
         ViewHolder holder = (ViewHolder) view.getTag();
-        //Log.d(TAG,String.valueOf(list.get(position).getSort()));
-        int nummer = filteredData.get(position).getNummer();
+        //HyperLog.d(TAG,String.valueOf(list.get(position).getSort()));
+        int nummer = filteredData.get(position).getLoc().getNummer();
         if(nummer!= 0) {
             holder.sortnumber.setVisibility(View.VISIBLE);
             holder.sortnumber.setText(String.valueOf(nummer));
@@ -70,32 +70,32 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
             holder.sortnumber.setVisibility(View.GONE);
         }
         //holder.sortnumber.setText(String.valueOf(filteredData.get(position).getNummer()));
-        holder.name.setText(filteredData.get(position).getName());
-        holder.ort.setText(filteredData.get(position).getAdr_ort());
+        holder.name.setText(filteredData.get(position).getLoc().getName());
+        holder.ort.setText(filteredData.get(position).getLoc().getAdr_ort());
 
-        holder.ersparnis.setText(filteredData.get(position).getErsparnis());
+        holder.ersparnis.setText(String.format(context.getString(R.string.currencyformatString), String.valueOf(filteredData.get(position).getVis().getSaved()).replace(',',Character.MIN_VALUE).replace('.',',')));
 
-        holder.date.setText(filteredData.get(position).getVisited_date());
+        holder.date.setText(filteredData.get(position).getVis().getDate());
         return view;
     }
     @Override
     public int getCount() {
         return filteredData!=null ? filteredData.size() : 0;
     }
-    public DB_Location_NoeC getLocationtoPosition(int position) {
+    public DB_Visited_ArrayAdapter getLocationtoPosition(int position) {
         return filteredData.get(position);
     }
     public int getNumbertoPosition(int position) {
-        return filteredData.get(position).getNummer();
+        return filteredData.get(position).getLoc().getNummer();
     }
     public int getIdtoPosition(int position) {
-        return filteredData.get(position).getId();
+        return filteredData.get(position).getLoc().getId();
     }
     public int getVIdtoPosition(int position) {
-        return filteredData.get(position).getVisited_id();
+        return filteredData.get(position).getVis().getId();
     }
     public int getJahrtoPosition(int position) {
-        return filteredData.get(position).getJahr();
+        return filteredData.get(position).getLoc().getJahr();
     }
     public void filterwithtyp(boolean[] filtertyploc)
     {
@@ -112,17 +112,18 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
         }
         executefilter();
     }
+
     public String getItemsString()
     {
         String returnstring="";
         for (int i = 0; i < filteredData.size(); i++) {
-            returnstring=returnstring+String.valueOf(filteredData.get(i).getId())+";";
+            returnstring=returnstring+String.valueOf(filteredData.get(i).getLoc().getId())+";";
         }
         return returnstring;
     }
     public int getItemsYear() {
         int returnyear=0;
-        returnyear=filteredData.get(0).getJahr();
+        returnyear=filteredData.get(0).getLoc().getJahr();
         return returnyear;
     }
 
@@ -130,22 +131,22 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
     {
         boolean[] filterbool= filtertyp;
 
-        final List<DB_Location_NoeC> firstlist = originalData;
+        final List<DB_Visited_ArrayAdapter> firstlist = originalData;
         int count = firstlist.size();
-        final ArrayList<DB_Location_NoeC> firstnlist = new ArrayList<DB_Location_NoeC>(count);
+        final ArrayList<DB_Visited_ArrayAdapter> firstnlist = new ArrayList<DB_Visited_ArrayAdapter>(count);
 
-        DB_Location_NoeC filterableLocation ;
+        DB_Visited_ArrayAdapter filterableLocation ;
         for (int i = 0; i < count; i++) {
             filterableLocation = firstlist.get(i);
 
-            if ( (filterbool[0] && filterableLocation.getTop_ausflugsziel()) ) {
+            if ( (filterbool[0] && filterableLocation.getLoc().getTop_ausflugsziel()) ) {
                 firstnlist.add(filterableLocation);
                 continue;
             }
 
             for(int j=1;j<filterbool.length;j++)
             {
-                int category = filterableLocation.getKat();
+                int category = filterableLocation.getLoc().getKat();
                 if(filterbool[j] && category==j){
                     firstnlist.add(filterableLocation);
                     break;
@@ -156,11 +157,11 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
 
         int nummer;
         String filterString = filterstring;
-        final List<DB_Location_NoeC> list = firstnlist;
+        final List<DB_Visited_ArrayAdapter> list = firstnlist;
         if(filterString != null && filterString.length() > 0)
         {
             count = list.size();
-            final ArrayList<DB_Location_NoeC> nlist = new ArrayList<DB_Location_NoeC>(count);
+            final ArrayList<DB_Visited_ArrayAdapter> nlist = new ArrayList<DB_Visited_ArrayAdapter>(count);
 
             try
             {
@@ -168,7 +169,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
                 for (int i = 0; i < count; i++) {
                     filterableLocation = list.get(i);
 
-                    if (filterableLocation.getNummer()==nummer) {
+                    if (filterableLocation.getLoc().getNummer()==nummer) {
                         nlist.add(filterableLocation);
                     }
                 }
@@ -178,7 +179,7 @@ public class ArrayAdapter_Visited extends ArrayAdapter<DB_Location_NoeC> {
                 for (int i = 0; i < count; i++) {
                     filterableLocation = list.get(i);
 
-                    if (filterableLocation.getName().toLowerCase().contains(filterString)) {
+                    if (filterableLocation.getLoc().getName().toLowerCase().contains(filterString)) {
                         nlist.add(filterableLocation);
                     }
                 }

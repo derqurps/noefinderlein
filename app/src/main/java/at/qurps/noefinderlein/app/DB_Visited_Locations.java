@@ -13,6 +13,7 @@ public class DB_Visited_Locations {
     public static final String KEY_ACCEPTED = "vis_accepted";
     public static final String KEY_LAT= "vis_latitude";
     public static final String KEY_LON = "vis_longitude";
+    public static final String KEY_SAVED = "vis_saved";
 
 
     int _id;
@@ -21,18 +22,20 @@ public class DB_Visited_Locations {
     String _date;
     float _lat;
     float _lon;
+    float _saved;
 
     // Empty constructor
     public DB_Visited_Locations(){
 
     }
     // constructor
-    public DB_Visited_Locations(int locid, int year, String date, float lat, float lon){
+    public DB_Visited_Locations(int locid, int year, String date, float lat, float lon, float saved){
         this._locid = locid;
         this._year = year;
         this._date = date;
         this._lat = lat;
         this._lon = lon;
+        this._saved = saved;
     }
 
     // getting ID
@@ -70,4 +73,31 @@ public class DB_Visited_Locations {
         this._date = date;
     }
 
+    // getting lat
+    public float getLat(){
+        return this._lat;
+    }
+    // setting lat
+    public void setLat(float lat){
+        this._lat = lat;
+    }
+
+    // getting lon
+    public float getLon(){
+        return this._lon;
+    }
+    // setting lon
+    public void setLon(float lon){
+        this._lon = lon;
+    }
+
+
+    // getting saved
+    public float getSaved(){
+        return this._saved;
+    }
+    // setting saved
+    public void setSaved(float saved){
+        this._saved = saved;
+    }
 }

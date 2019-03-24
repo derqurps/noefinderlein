@@ -5,6 +5,12 @@
     <string name="leaderboard_2017_count">CgkI2Onf0PYQEAIQCQ</string>
     <string name="leaderboard_2017_savings">CgkI2Onf0PYQEAIQCw</string>
 
+    <string name="leaderboard_2018_count">CgkI2Onf0PYQEAIQGg</string>
+    <string name="leaderboard_2018_savings">CgkI2Onf0PYQEAIQGw</string>
+
+    <string name="leaderboard_2019_count">CgkI2Onf0PYQEAIQHQ</string>
+    <string name="leaderboard_2019_savings">CgkI2Onf0PYQEAIQHA</string>
+
     <string name="achievement_2017_first_location">CgkI2Onf0PYQEAIQAQ</string>
     <string name="achievement_2017_5">CgkI2Onf0PYQEAIQAg</string>
     <string name="achievement_2017_10">CgkI2Onf0PYQEAIQAw</string>
@@ -14,6 +20,23 @@
     <string name="achievement_2017_3in1">CgkI2Onf0PYQEAIQBw</string>
     <string name="achievement_2017_top">CgkI2Onf0PYQEAIQCA</string>
 
+    <string name="achievement_2018_first_location">CgkI2Onf0PYQEAIQEg</string>
+    <string name="achievement_2018_5">CgkI2Onf0PYQEAIQEw</string>
+    <string name="achievement_2018_10">CgkI2Onf0PYQEAIQFA</string>
+    <string name="achievement_2018_7in1">CgkI2Onf0PYQEAIQFQ</string>
+    <string name="achievement_2018_50">CgkI2Onf0PYQEAIQFg</string>
+    <string name="achievement_2018_all">CgkI2Onf0PYQEAIQFw</string>
+    <string name="achievement_2018_3in1">CgkI2Onf0PYQEAIQGA</string>
+    <string name="achievement_2018_top">CgkI2Onf0PYQEAIQGQ</string>
+
+    <string name="achievement_2019_first_location">CgkI2Onf0PYQEAIQJQ</string>
+    <string name="achievement_2019_5">CgkI2Onf0PYQEAIQJA</string>
+    <string name="achievement_2019_10">CgkI2Onf0PYQEAIQIw</string>
+    <string name="achievement_2019_7in1">CgkI2Onf0PYQEAIQIg</string>
+    <string name="achievement_2019_50">CgkI2Onf0PYQEAIQIQ</string>
+    <string name="achievement_2019_all">CgkI2Onf0PYQEAIQIA</string>
+    <string name="achievement_2019_3in1">CgkI2Onf0PYQEAIQHw</string>
+    <string name="achievement_2019_top">CgkI2Onf0PYQEAIQHg</string>
 
     <string name="event_location_visited_count">CgkI2Onf0PYQEAIQDA</string>
     <string name="event_location_visited_num">CgkI2Onf0PYQEAIQDQ</string>

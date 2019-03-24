@@ -13,7 +13,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -39,40 +43,50 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
-import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.squareup.leakcanary.LeakCanary;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.hypertrack.hyperlog.HyperLog;
+// import com.squareup.leakcanary.LeakCanary;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-import at.qurps.noefinderlein.app.basegameutils.BaseGameUtils;
 
 
 public class Activity_Main extends AppCompatActivity implements
-        ConnectionCallbacks,
-        OnConnectionFailedListener,
         NavigationView.OnNavigationItemSelectedListener,
         Fragment_LocationList.Callbacks,
         Fragment_LocationNear.Callbacks,
         Fragment_LocationFavorits.Callbacks,
+        Fragment_LocationVisited.Callbacks,
         Fragment_Regions.Callbacks,
-        Downloader_Destination.Callbacks {
+        Downloader_Destination_v2.Callbacks {
 
     private static final String TAG = "Activity_Main";
-    public static final String KEY_LICENCE_ACCEPTED="licence_accepted_v3";
+    public static final String KEY_LICENCE_ACCEPTED = "licence_accepted_v3";
     public static final String KEY_GAME_SIGN_IN_CLICKED = "game_sign_in_clicked_v2";
+    public static final String REQUESTING_LOCATION_UPDATES_KEY = "requestLocationUpdateKey";
 
     private SharedPreferences mPrefs;
+    private static final int TIME_INTERVAL = 2000; // # milliseconds, desired time passed between two back presses.
+    private long mBackPressed;
 
     private SharedPreferences.Editor mEditor;
     public DestinationsDB db;
@@ -82,13 +96,14 @@ public class Activity_Main extends AppCompatActivity implements
 
     private String serverAuthCode;
 
-    private boolean locationUpdatesRunning = false;
     private boolean mDownloadDone = false;
     private static final int LOCATION_REQUEST = 1;
     private static final int LAST_LOCATION_REQUEST = 2;
 
-    protected LocationManager locationManager;
-    private GoogleApiClient mGoogleApiClient;
+    // protected LocationManager locationManager;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    //private GoogleApiClient mGoogleApiClient;
 
     private TextView yeartext;
     /**
@@ -103,10 +118,14 @@ public class Activity_Main extends AppCompatActivity implements
     private static final int RC_RESOLVE = 5000;
     private static final int RC_UNUSED = 5001;
     private static final int RC_SIGN_IN = 9001;
+    private static final int RC_ACHIEVEMENT_UI = 9003;
+    private static final int RC_LEADERBOARD_UI = 9004;
 
     private boolean mResolvingConnectionFailure = false;
     private boolean mAutoStartSignInflow = true;
     private boolean mGameSignInClicked = false;
+    private int mGameSignInTry = 0;
+    private boolean mRequestingLocationUpdates = false;
 
     private NavigationView nav_view;
     private FrameLayout mainView;
@@ -114,29 +133,38 @@ public class Activity_Main extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+
+
+
         //JodaTimeAndroid.init(this);
+        if (savedInstanceState != null && savedInstanceState.keySet().contains(REQUESTING_LOCATION_UPDATES_KEY)) {
+            mRequestingLocationUpdates = savedInstanceState.getBoolean(
+                    REQUESTING_LOCATION_UPDATES_KEY);
+        }
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        mainView = (FrameLayout) findViewById(R.id.region_list_container);
+        mainView = findViewById(R.id.region_list_container);
 
-        nav_view = (NavigationView) findViewById(R.id.nav_view);
+        nav_view = findViewById(R.id.nav_view);
 
         if(nav_view!=null) {
             View headerLayout = nav_view.getHeaderView(0);
             nav_view.setNavigationItemSelectedListener(this);
-            yeartext = (TextView) headerLayout.findViewById(R.id.text_noecardyear);
+            yeartext = headerLayout.findViewById(R.id.text_noecardyear);
         }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mGameSignInTry = 0;
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mGameSignInClicked = Util.getPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, false);
 
-        buildGoogleApiClient();
 
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+
+
+        FloatingActionButton fab = findViewById(R.id.fab);
         if(fab!=null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -148,7 +176,7 @@ public class Activity_Main extends AppCompatActivity implements
             fab.hide();
         }
 
-        mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         if(mDrawer!=null) {
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, mDrawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -168,7 +196,15 @@ public class Activity_Main extends AppCompatActivity implements
 
         Boolean opendata = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, true);
         mEditor.putBoolean(Activity_Settings.KEY_PREF_LOAD_OPEN_DATA, opendata);
-        mEditor.commit();
+        mEditor.apply();
+
+        Boolean logginEnabled = mPrefs.getBoolean(Activity_Settings.KEY_PREF_LOAD_LOGGING, false);
+
+        HyperLog.deleteLogs();
+        if (logginEnabled) {
+            HyperLog.initialize(this);
+            HyperLog.setLogLevel(Log.VERBOSE);
+        }
 
         initYear();
 
@@ -209,15 +245,15 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return;
         }
-        LeakCanary.install(getApplication());
+        LeakCanary.install(getApplication());*/
     }
 
-    private void buildGoogleApiClient() {
+    /*private void buildGoogleApiClient() {
         buildGoogleApiClient(false);
     }
     private void buildGoogleApiClient(boolean reconnect) {
@@ -226,45 +262,50 @@ public class Activity_Main extends AppCompatActivity implements
 
         if(mGoogleApiClient == null || reconnect) {
             GoogleApiClient.Builder mGoogleApiClientBuilder = new GoogleApiClient.Builder(this);
-            mGoogleApiClientBuilder.addConnectionCallbacks(this);
+            //mGoogleApiClientBuilder.addConnectionCallbacks(this);
             mGoogleApiClientBuilder.addOnConnectionFailedListener(this);
             mGoogleApiClientBuilder.addApi(LocationServices.API);
             mGoogleApiClientBuilder.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             mGoogleApiClientBuilder.setViewForPopups(mainView);
-            if(mGameSignInClicked) {
-
-                GoogleSignInOptions options = new GoogleSignInOptions
-                        .Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                        .build();
-                mGoogleApiClientBuilder.addApi(Auth.GOOGLE_SIGN_IN_API, options);
-                mGoogleApiClientBuilder.addApiIfAvailable(Games.API).addScope(Games.SCOPE_GAMES);
-            }
             mGoogleApiClient = mGoogleApiClientBuilder.build();
 
         }
-    }
+    }*/
     @Override
     public void onResume() {
         super.onResume();  // Always call the superclass method first
         initYear();
         notifyDataChanged();
+        if (mGameSignInClicked) {
+            signInSilently();
+        }
+        if (mRequestingLocationUpdates) {
+            startLocationUpdates();
+        }
     }
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart()");
         super.onStart();
 
-        if(mDownloadDone && !isGameSignedIn()) {
+        /*if(mDownloadDone && !isGameSignedIn()) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
-        }
+        }*/
     }
     @Override
     protected void onStop() {
         Log.d(TAG, "onStop()");
         super.onStop();
-        if (mGoogleApiClient.isConnected()) {
+        /*if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
-        }
+        }*/
+    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY,
+                mRequestingLocationUpdates);
+        // ...
+        super.onSaveInstanceState(outState);
     }
     protected final LocationListener listener = new LocationListener() {
         @Override
@@ -312,7 +353,20 @@ public class Activity_Main extends AppCompatActivity implements
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
+            if (backStackEntryCount == 0) {
+                if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
+                    super.onBackPressed();
+                    return;
+                } else {
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.backButtonExit), Toast.LENGTH_SHORT).show();
+                }
+
+                mBackPressed = System.currentTimeMillis();
+            } else {
+                super.onBackPressed();
+                return;
+            }
         }
     }
 
@@ -360,6 +414,7 @@ public class Activity_Main extends AppCompatActivity implements
             getLastKnownLocation();
             //startLocationUpdates();
         }else{
+
             stopLocationUpdates();
         }
         if (id == R.id.nav_all) {
@@ -379,29 +434,24 @@ public class Activity_Main extends AppCompatActivity implements
         } else if (id == R.id.nav_near) {
             startNearScreen();
         } else if (id == R.id.game_login) {
-            Log.d(TAG, "Sign-in button clicked");
+            HyperLog.d(TAG, "Sign-in button clicked");
 
+            mGameSignInTry = 0;
             mGameSignInClicked = true;
-
-            buildGoogleApiClient(true);
-            mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
-            handleSignin();
+            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
+            startSignInIntent();
 
         } else if (id == R.id.game_logout) {
 
             mGameSignInClicked = false;
             Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
             setToast(getResources().getString(R.string.game_loggedout),1);
-            handleSignOut();
+            signOut();
 
         } else if (id == R.id.game_achievements) {
             onShowAchievementsRequested();
         } else if (id == R.id.game_leaderboard) {
             onShowLeaderboardsRequested();
-        } else if (id == R.id.nav_money) {
-            String url = String.valueOf("https://noecard.reitschmied.at/donate");
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(browserIntent);
         } else if (id == R.id.nav_settings) {
             Intent intent = new Intent(this, Activity_Settings.class);
             startActivity(intent);
@@ -496,7 +546,7 @@ public class Activity_Main extends AppCompatActivity implements
             FragmentManager man = getSupportFragmentManager();
 
             if (man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -511,9 +561,9 @@ public class Activity_Main extends AppCompatActivity implements
             }
             transABla.commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -529,7 +579,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -540,9 +590,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -559,7 +609,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -570,9 +620,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -589,7 +639,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -600,9 +650,9 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
@@ -619,7 +669,7 @@ public class Activity_Main extends AppCompatActivity implements
             fragment.setArguments(arguments);
             FragmentManager man = getSupportFragmentManager();
             if ( man.getBackStackEntryCount() > 0) {
-                Log.d(TAG, String.valueOf(man.getBackStackEntryCount()));
+                HyperLog.d(TAG, String.valueOf(man.getBackStackEntryCount()));
                 man.popBackStack(man.getBackStackEntryAt(0).getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
             }
@@ -630,14 +680,14 @@ public class Activity_Main extends AppCompatActivity implements
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .commit();
                 /*LocationListFragment existingfragment = (LocationListFragment) man.findFragmentByTag(LocationListFragment.TAG);
-                Log.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
+                HyperLog.d(TAG,"----"+String.valueOf(mTwoPane)+" "+String.valueOf(existingfragment));
                 if(mTwoPane && (existingfragment==null || (existingfragment.mcontainer.getId()!=R.id.region_detail_container && ! existingfragment.isVisible()))){
-                    Log.d(TAG," lalala----");
+                    HyperLog.d(TAG," lalala----");
                     onItemSelected(0);
                 }*/
         }
     }
-    private void detailItemChosen(int id, int year){
+    private void detailItemChosen(int id, int year) {
         detailItemChosen(id, year, this);
     }
     public void detailItemChosen(int id, int year, Context mContext) {
@@ -655,25 +705,27 @@ public class Activity_Main extends AppCompatActivity implements
     public void initYear(){
         Boolean overwriteyear = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OVERWRITE_YEAR, false);
         Integer year;
-        if(overwriteyear){
+        if(overwriteyear) {
             year = Integer.valueOf(mPrefs.getString(Activity_Settings.KEY_PREF_OVERWRITE_YEAR_MAN, "2014"));
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             setYear(year);
-            if(!(db.isYearInDatabase(year))){
+            if(!(db.isYearInDatabase(year))) {
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
                 updateDB();
             }
-        }else{
+        } else {
             Calendar currentDay = Calendar.getInstance();
             year = currentDay.get(Calendar.YEAR);
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             Calendar endOfMarch = Calendar.getInstance();
-            endOfMarch.set(year, 3, 1);
+            endOfMarch.set(year, 2, 31);
+
+            HyperLog.d(TAG, String.valueOf(endOfMarch) + String.valueOf(currentDay));
 
             if(currentDay.before(endOfMarch)){
                 year = year-1;
             }
-            Log.d(TAG, String.valueOf(year));
+            HyperLog.d(TAG, String.valueOf(year));
             setYear(year);
             if(!(db.isYearInDatabase(year))){
                 setToast(getResources().getString(R.string.error_year_not_found_in_database),1);
@@ -681,22 +733,22 @@ public class Activity_Main extends AppCompatActivity implements
 
         }
     }
-    public int getYear(){
+    public int getYear() {
         return mActiveyear;
     }
-    public void setYear(int year){
+    public void setYear(int year) {
         mActiveyear=year;
         setYearString();
     }
-    public void setYearString(){
+    public void setYearString() {
 
-        String year = ""+String.valueOf(mActiveyear)+"/"+String.valueOf(mActiveyear+1);
+        String year = "" + String.valueOf(mActiveyear) + "/" + String.valueOf(mActiveyear+1);
         if(yeartext != null){
             yeartext.setText(year);
         }
     }
 
-    public void setToast(final String message,final int length) {
+    public void setToast(final String message, final int length) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -716,18 +768,24 @@ public class Activity_Main extends AppCompatActivity implements
 
 
     protected void getLastKnownLocation(){
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected()){
-            if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if(ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-                ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
-                return;
-            }
-            Location loc = LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);
-            locationChanged(loc);
-            startLocationUpdates();
+            ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LAST_LOCATION_REQUEST);
+            return;
         }
+        mFusedLocationClient.getLastLocation()
+            .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location. In some rare situations this can be null.
+                    if (location != null) {
+                        // Logic to handle location object
+                        locationChanged(location);
+                        startLocationUpdates();
+                    }
+                }
+            });
     }
 
     protected void startLocationUpdates() {
@@ -738,32 +796,44 @@ public class Activity_Main extends AppCompatActivity implements
             ActivityCompat.requestPermissions(Activity_Main.this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
             return;
         }
-        if (locationManager != null) {
-            final int minTime = 10*1000;
-            final int minDistance = 0;
-            final Criteria criteria = new Criteria();
-            String provider;
-            criteria.setAccuracy(Criteria.ACCURACY_FINE);
-            provider = locationManager.getBestProvider(criteria, true);
-            locationManager.requestLocationUpdates(provider, minTime, minDistance, listener);
-            locationUpdatesRunning = true;
-        }
-        setToast(getResources().getString(R.string.location_updated_started), 0);
+        mRequestingLocationUpdates = true;
+        LocationRequest request = LocationRequest.create();
+        request.setSmallestDisplacement(20);
+        request.setInterval(2000);
+        mFusedLocationClient.requestLocationUpdates(request,
+            new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    // setToast("gotLocation", 0);
+                    for (Location location : locationResult.getLocations()) {
+                        // Update UI with location data
+                        // ...
+                        locationChanged(location);
+                        mRequestingLocationUpdates = false;
+                    }
+                };
+            },
+        null /* Looper */);
+
+        //setToast(getResources().getString(R.string.location_updated_started), 0);
     }
 
     protected void stopLocationUpdates() {
 
-        if(locationUpdatesRunning) {
+        if(mRequestingLocationUpdates) {
             if (ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(Activity_Main.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
                 ActivityCompat.requestPermissions(Activity_Main.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
                 return;
             }
-            if (locationManager != null) {
-                locationManager.removeUpdates(listener);
-            }
-            locationUpdatesRunning = false;
+            mFusedLocationClient.removeLocationUpdates(new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    mRequestingLocationUpdates = false;
+                };
+            });
+
         }
     }
     protected void broadcastUpdate(Intent data){
@@ -774,13 +844,25 @@ public class Activity_Main extends AppCompatActivity implements
     }
     protected void updateDB(boolean force){
         Boolean offlinemode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_OFFLINE_MODE, false);
+        Boolean wlanmode = mPrefs.getBoolean(Activity_Settings.KEY_PREF_WLAN_MODE, false);
         if(!offlinemode) {
-            Log.d("Response1: ", String.valueOf(mActiveyear));
-            Integer[] myTaskParams = {mActiveyear};
-            Log.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
-            new Downloader_Destination(getApplicationContext(), this).execute(myTaskParams);
+            if (!wlanmode || (wlanmode && checkWifiOnAndConnected())) {
+                HyperLog.d("Response1: ", String.valueOf(mActiveyear));
+                Integer[] myTaskParams = {mActiveyear};
+                HyperLog.d("api path: ", String.valueOf(getResources().getString(R.string.api_path)));
+                new Downloader_Destination_v2(getApplicationContext(), this).execute(myTaskParams);
+            }
         }else{
             Util.setToast(this, getString(R.string.toast_offline),0);
+        }
+    }
+    private boolean checkWifiOnAndConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm != null) {
+            NetworkInfo ni = cm.getActiveNetworkInfo();
+            return ni != null && ni.getType() == ConnectivityManager.TYPE_WIFI;
+        } else {
+            return true;
         }
     }
     /*
@@ -794,15 +876,23 @@ public class Activity_Main extends AppCompatActivity implements
     }
     @Override
     public void onItemSelected_Fragment_LocationFavorits(int id,int year) {
-
+        detailItemChosen(id, year);
+    }
+    @Override
+    public void onItemSelected_Fragment_LocationVisited(int id, int year) {
+        HyperLog.d(TAG, String.valueOf(id) + ' ' + String.valueOf(year));
         detailItemChosen(id, year);
     }
     @Override
     public void onDownloadCompleted() {
         notifyDataChanged();
-        if(mGoogleApiClient!= null && !mGoogleApiClient.isConnected()){
+        /*if(mGoogleApiClient!= null && !mGoogleApiClient.isConnected()){
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
-        }
+        }*/
+    }
+    @Override
+    public void onDownloadError(String message) {
+        Util.setToast(this, message, 1);
     }
     public void notifyDataChanged() {
         System.gc();
@@ -847,11 +937,11 @@ public class Activity_Main extends AppCompatActivity implements
         }
 
     }
-    @Override
+    /*@Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
-        Log.d(TAG, "onConnectionFailed() called, result: " + result);
+        HyperLog.d(TAG, "onConnectionFailed() called, result: " + result);
         if (mResolvingConnectionFailure) {
-            Log.d(TAG, "onConnectionFailed(): already resolving");
+            HyperLog.d(TAG, "onConnectionFailed(): already resolving");
             // already resolving
             return;
         }
@@ -876,56 +966,27 @@ public class Activity_Main extends AppCompatActivity implements
 
         // Put code here to display the sign-in button
         isGameSignedIn();
-    }
+    }*/
 
-    @Override
+
+    /*@Override
     public void onConnectionSuspended(int cause) {
-        Log.d(TAG, "onConnectionSuspended() called: " + cause);
+        HyperLog.d(TAG, "onConnectionSuspended() called: " + cause);
         if(mDownloadDone) {
             mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
         }
-    }
+    }*/
 
     /*@Override
     public void onConnected(Bundle connectionHint) {
         // The player is signed in. Hide the sign-in button and allow the
         // player to proceed.
-        Log.d(TAG, "onconnected");
+        HyperLog.d(TAG, "onconnected");
 
         if(isGameSignedIn()){
-            Log.d(TAG, "Connected successful to games");
+            HyperLog.d(TAG, "Connected successful to games");
         }
     }*/
-
-    @Override
-    public void onConnected(@Nullable final Bundle connectionHint) {
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Log.d(TAG, "onConnected now");
-
-            Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<GoogleSignInResult>() {
-                        @Override
-                        public void onResult(
-                                @NonNull GoogleSignInResult googleSignInResult) {
-                            if (googleSignInResult.isSuccess()) {
-                                onSignedIn(googleSignInResult.getSignInAccount(),
-                                        connectionHint);
-                            } else {
-                                Log.e(TAG, "Error with silentSignIn: " +
-                                        googleSignInResult.getStatus());
-                                // Don't show a message here, this only happens
-                                // when the user can be authenticated, but needs
-                                // to accept consent requests.
-                                handleSignOut();
-                            }
-                        }
-                    }
-            );
-        } else {
-            handleSignOut();
-        }
-        isGameSignedIn();
-    }
 
 
     @Override
@@ -934,74 +995,61 @@ public class Activity_Main extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int responseCode,
-                                    Intent intent) {
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Log.d(TAG, "onActivityResult RC_SIGN_IN, responseCode="
-                    + responseCode + ", intent=" + intent);
-            mGameSignInClicked = false;
-            mResolvingConnectionFailure = false;
-            if (responseCode == RESULT_OK) {
-                mGoogleApiClient.connect(GoogleApiClient.SIGN_IN_MODE_OPTIONAL);
+            HyperLog.d(TAG, "onActivityResult RC_SIGN_IN, responseCode="
+                    + resultCode + ", intent=" + data);
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // The signed in account is stored in the result.
+                GoogleSignInAccount signedInAccount = result.getSignInAccount();
+                GamesClient gamesClient = Games.getGamesClient(Activity_Main.this, signedInAccount);
+                gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                gamesClient.setViewForPopups(mainView);
             } else {
-                // Bring up an error dialog to alert the user that sign-in
-                // failed. The R.string.signin_failure should reference an error
-                // string in your strings.xml file that tells the user they
-                // could not be signed in, such as "Unable to sign in."
-                if(!isGameSignedIn()) {
-                    BaseGameUtils.showActivityResultError(this,
-                            requestCode, responseCode, R.string.sign_in_failed);
+                String message = result.getStatus().getStatusMessage();
+                if (message == null || message.isEmpty()) {
+                    message = getString(R.string.signin_other_error);
                 }
+                new AlertDialog.Builder(this).setMessage(message)
+                        .setNeutralButton(android.R.string.ok, null).show();
             }
             isGameSignedIn();
-        } else {
-            super.onActivityResult(requestCode, responseCode, intent);
         }
     }
     private boolean isGameSignedIn() {
-        if(mGoogleApiClient != null && mGoogleApiClient.isConnected() && mGoogleApiClient.hasConnectedApi(Games.API)){
-            mGameSignInClicked = true;
-            Util.setPreferencesBoolean(this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
-            showGameLogout();
-            return true;
-        } else {
-            showGameLogin();
-            return false;
-        }
+        return GoogleSignIn.getLastSignedInAccount(this) != null;
     }
     public void onShowAchievementsRequested() {
         if (isGameSignedIn()) {
-            startActivityForResult(Games.Achievements.getAchievementsIntent(mGoogleApiClient), RC_UNUSED);
+            Games.getAchievementsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                    .getAchievementsIntent()
+                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        @Override
+                        public void onSuccess(Intent intent) {
+                            startActivityForResult(intent, RC_ACHIEVEMENT_UI);
+                        }
+                    });
         } else {
-            BaseGameUtils.makeSimpleDialog(this, getString(R.string.achievements_not_available)).show();
+            setToast(getString(R.string.achievements_not_available), 2);
         }
     }
 
-    /**
-     * Show a meaningful error when sign-in fails.
-     *
-     * @param errorCode - The errorCode.
-     */
-    public void showSignInError(int errorCode) {
-        Dialog dialog = GoogleApiAvailability.getInstance()
-                .getErrorDialog(this, errorCode, RC_SIGN_IN);
-        if (dialog != null) {
-            dialog.show();
-        } else {
-            // no built-in dialog: show the fallback error message
-            (new AlertDialog.Builder(this))
-                    .setMessage("Could not sign in!")
-                    .setNeutralButton(android.R.string.ok, null)
-                    .show();
-        }
-    }
+
 
     public void onShowLeaderboardsRequested() {
         if (isGameSignedIn()) {
-            startActivityForResult(Games.Leaderboards.getAllLeaderboardsIntent(mGoogleApiClient), RC_UNUSED); // , getString(R.string.mainLeaderboardId)
+            Games.getLeaderboardsClient(this, GoogleSignIn.getLastSignedInAccount(this))
+                    .getAllLeaderboardsIntent()
+                    .addOnSuccessListener(new OnSuccessListener<Intent>() {
+                        @Override
+                        public void onSuccess(Intent intent) {
+                            startActivityForResult(intent, RC_LEADERBOARD_UI);
+                        }
+                    });
         } else {
-            BaseGameUtils.makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
+            setToast(getString(R.string.leaderboards_not_available), 2);
         }
     }
     private void showGameLogin() {
@@ -1019,40 +1067,54 @@ public class Activity_Main extends AppCompatActivity implements
         mainmenu.findItem(R.id.game_leaderboard).setVisible(true);
     }
 
-    /**
-     * Handle being signed in successfully.  The account information is
-     * populated from the Auth API, and now Games APIs can be called.
-     * <p/>
-     * Here the server auth code is read from the account.
-     * <p>
-     * </p>
-     *
-     * @param acct   - the Google account information.
-     * @param bundle - the connection Hint.
-     */
-    public void onSignedIn(GoogleSignInAccount acct, @Nullable Bundle bundle) {
-        Log.d(TAG, "onConnected() called. Sign in successful!");
 
-        serverAuthCode = acct.getServerAuthCode();
 
+    private void signInSilently() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        signInClient.silentSignIn().addOnCompleteListener(this,
+            new OnCompleteListener<GoogleSignInAccount>() {
+                @Override
+                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                    if (task.isSuccessful()) {
+                        // The signed in account is stored in the task's result.
+                        GoogleSignInAccount signedInAccount = task.getResult();
+
+                        GamesClient gamesClient = Games.getGamesClient(Activity_Main.this, signedInAccount);
+                        gamesClient.setGravityForPopups(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+                        gamesClient.setViewForPopups(mainView);
+                        showGameLogout();
+                    } else {
+                        mGameSignInTry++;
+                        if (mGameSignInTry > 0) {
+                            mGameSignInClicked = false;
+                            Util.setPreferencesBoolean(Activity_Main.this, KEY_GAME_SIGN_IN_CLICKED, mGameSignInClicked);
+                        } else {
+                            // Player will need to sign-in explicitly using via UI
+                            startSignInIntent();
+                        }
+                    }
+                }
+            });
     }
 
-    private void handleSignOut() {
-        // sign out.
-        Log.d(TAG, "Sign-out button clicked");
-        if (mGoogleApiClient.hasConnectedApi(Games.API)) {
-            Games.signOut(mGoogleApiClient);
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-        }
-        isGameSignedIn();
-
+    private void startSignInIntent() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        Intent intent = signInClient.getSignInIntent();
+        startActivityForResult(intent, RC_SIGN_IN);
     }
-
-    private void handleSignin() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-        isGameSignedIn();
+    private void signOut() {
+        GoogleSignInClient signInClient = GoogleSignIn.getClient(this,
+                GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN);
+        signInClient.signOut().addOnCompleteListener(this,
+            new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    // at this point, the user is signed out.
+                    showGameLogin();
+                }
+            });
     }
-
 
 }
