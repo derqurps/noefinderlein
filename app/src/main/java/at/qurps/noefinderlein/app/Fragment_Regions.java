@@ -58,6 +58,7 @@ public class Fragment_Regions extends ListFragment {
         listItems.add(new Region_Picture_and_Text(getString(R.string.region_list_burgenland), R.mipmap.liste_region_burgenland, 84)); // 1541
         listItems.add(new Region_Picture_and_Text(getString(R.string.region_list_oberoesterreich), R.mipmap.liste_region_oberoesterreich, 87)); // 1591
         listItems.add(new Region_Picture_and_Text(getString(R.string.region_list_steiermark), R.mipmap.liste_region_steiermark, 86)); // 1540
+        listItems.add(new Region_Picture_and_Text(getString(R.string.region_list_salzburg), R.mipmap.liste_region_salzburg, 90)); // 1540
         adapter = new ArrayAdapter_Region(getActivity(), listItems);
         setListAdapter(adapter);
     }

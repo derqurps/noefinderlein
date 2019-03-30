@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 
 def keystorePropertiesFile = rootProject.file("Noefinderlein_Keystore.txt")
 
@@ -13,12 +15,12 @@ android {
 
     defaultConfig {
         applicationId "at.qurps.noefinderlein.app"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 27
-        versionCode 101
-        versionName "1.5.3"
+        versionCode 103
+        versionName "1.5.4"
         multiDexEnabled true
-        /*vectorDrawables.useSupportLibrary = true*/
+        vectorDrawables.useSupportLibrary = true
     }
     signingConfigs {
         debug {
@@ -66,9 +68,6 @@ android {
 }
 
 
-
-
-
 dependencies {
     //implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:cardview-v7:$rootProject.ext.support_library_version"
@@ -76,9 +75,6 @@ dependencies {
     implementation "com.android.support:design:$rootProject.ext.support_library_version"
     implementation "com.android.support:appcompat-v7:$rootProject.ext.support_library_version"
     implementation "com.android.support:exifinterface:$rootProject.ext.support_library_version"
-
-    // implementation "com.android.support:support-vector-drawable:$rootProject.ext.support_library_version"
-    //debugCompile 'com.awesomedroidapps:inappstoragereader:1.0.0-beta'
 
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
@@ -93,7 +89,6 @@ dependencies {
     implementation "com.google.firebase:firebase-database:16.0.6"
     implementation 'com.hypertrack:hyperlog:0.0.9'
 
-    // implementation 'com.github.hanuor:pearl:0.0.8'
     implementation('com.github.aviadmini:quickimagepick:2.1.7') {
         // Uncomment next line if you have dependency conflict with AppCompat v7
         // exclude group: 'com.android.support', module: 'appcompat-v7'
@@ -106,24 +101,21 @@ dependencies {
 
     implementation 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     implementation 'com.google.maps.android:android-maps-utils:0.5'
-    // implementation 'joda-time:joda-time:2.9.9'
+
     implementation 'com.koushikdutta.ion:ion:2.1.9'
     implementation 'com.gjiazhe:scrollparallaximageview:1.0'
-    /*implementation('com.github.piasy:ProgressPieIndicator:1.5.6') {
-        exclude group: 'com.github.piasy.biv'
-    }*/
+    implementation 'com.github.piasy:ProgressPieIndicator:1.5.6'
     testImplementation 'junit:junit:4.12'
-    /*testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-        debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
-        releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'*/
-    implementation('com.github.piasy:BigImageViewer:1.5.6'){
-        //exclude group: 'com.github.piasy.biv'
-    }
-    /*implementation('com.github.piasy:GlideImageLoader:1.5.6') {
-        exclude group: 'com.github.piasy.biv'
-    }*/
+
+    implementation 'com.github.piasy:BigImageViewer:1.5.6'
+    implementation 'com.github.piasy:GlideImageLoader:1.5.6'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
     implementation 'com.github.faranjit:currency-edittext:1.0.1'
+
+    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
+
+    compile 'joda-time:joda-time:2.9.4'
 }
+
 apply plugin: 'com.google.gms.google-services'

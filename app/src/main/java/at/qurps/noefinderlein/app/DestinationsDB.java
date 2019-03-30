@@ -248,9 +248,11 @@ public class DestinationsDB {
         // looping through all rows and adding to list
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                DB_Visited_ArrayAdapter da = new DB_Visited_ArrayAdapter(getLocationfromCursor(cursor), getVisitedLocationfromCursor(cursor));
+                if (cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID)) != null) {
+                    DB_Visited_ArrayAdapter da = new DB_Visited_ArrayAdapter(getLocationfromCursor(cursor), getVisitedLocationfromCursor(cursor));
 
-                locationList.add(da);
+                    locationList.add(da);
+                }
             } while (cursor.moveToNext());
         }
         if(cursor != null) {
@@ -704,6 +706,7 @@ public class DestinationsDB {
     private DB_Location_NoeC getLocationfromCursor(Cursor cursor)
     {
         DB_Location_NoeC location = new DB_Location_NoeC();
+        HyperLog.e("ID",  String.valueOf(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID))) );
         location.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_ID))));
         location.setNummer(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_NUMMER))));
         location.setJahr(Integer.parseInt(cursor.getString(cursor.getColumnIndex(DB_Location_NoeC.KEY_JAHR))));
