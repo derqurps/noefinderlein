@@ -28,7 +28,8 @@
         android:roundIcon="@mipmap/ic_launcher_noefinderlein_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".Activity_Main"
             android:label="@string/app_name"
@@ -84,10 +85,10 @@
             android:label="@string/title_activity_activity__about"
             android:parentActivityName=".Activity_Main"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="at.qurps.noefinderlein.app.Activity_Main" />
+                android:value=".Activity_Main" />
         </activity>
         <activity
             android:name=".Activity_Picture"
@@ -96,7 +97,7 @@
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="at.qurps.noefinderlein.app.Activity_Detail" />
+                android:value=".Activity_Detail" />
         </activity>
         <activity
             android:name=".Activity_PictureSlider"
@@ -105,7 +106,7 @@
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="at.qurps.noefinderlein.app.Activity_Detail" />
+                android:value=".Activity_Detail" />
         </activity>
     </application>
 

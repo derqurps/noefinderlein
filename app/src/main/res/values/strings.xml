@@ -29,6 +29,7 @@
     <string name="region_list_steiermark">Steiermark</string>
     <string name="region_list_burgenland">Burgenland</string>
     <string name="region_list_oberoesterreich">Oberösterreich</string>
+    <string name="region_list_salzburg">Salzburg</string>
 
     <string-array name="region_list">
         <item>@string/region_list_all_regions</item>
@@ -42,6 +43,7 @@
         <item>@string/region_list_steiermark</item>
         <item>@string/region_list_burgenland</item>
         <item>@string/region_list_oberoesterreich</item>
+        <item>@string/region_list_salzburg</item>
     </string-array>
     <plurals name="mapinfo_clusterdest">
         <item quantity="one">%d Ziel</item>
@@ -147,6 +149,7 @@
     <string name="str_navdraw_destinations">Ziele</string>
     <string name="str_navdraw_favorites">Favoriten</string>
     <string name="str_navdraw_nahe_ziele">Nahe</string>
+    <string name="str_navdraw_my_cards">Meine Karten</string>
 
     <string name="str_navdraw_open_ziele">Geöffnete</string>
     <string name="str_navdraw_other">Anderes</string>
