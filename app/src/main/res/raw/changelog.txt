@@ -17,9 +17,13 @@
     </style>
   </head>
   <body>
+$ 1.5.4
+  % Version 1.5.4
+  _ 2019-04-01
+    * Salzburg als Region hinzugefügt
 $ 1.5.3
   % Version 1.5.3
-  _ 2019-02-15
+  _ 2019-03-24
     * Fehler behoben: Wenn in den Einstellungen ein zukünftiges Jahr ausgewählt wurde, crashte die App. Diese Option sollte nur zum Debuggen verwendet werden.
     * Möglichkeit die eigene Position auf der Übersichtskarte anzuzeigen hinzugefügt.
 $ 1.5.2
